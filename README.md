@@ -4,7 +4,7 @@ A clean desktop screenshot.
 
 ![AltText](http://i.imgur.com/FTlNFr2.png)
 
-With radical menus...
+With Radical menus...
 
 ![AltText](http://i.imgur.com/QfZJa9v.png)
 
