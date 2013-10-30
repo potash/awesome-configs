@@ -64,23 +64,23 @@ end
 
 -- Add titlebar
 function module.add(c)
-    if not cache[c.name] then
+    if not cache[c.window] then
         add_titlebar(c)
-        cache[c.name] = true
+        cache[c.window] = true
     end
 end
 
 -- Remove titlebar
 function module.del(c)
-    if cache[c.name] then
+    if cache[c.window] then
         awful.titlebar(c, { size = 0 })
-        cache[c.name] = false
+        cache[c.window] = false
     end
 end
 
 -- Toggle titlebar
 function module.toggle(c)
-    if cache[c.name] then
+    if cache[c.window] then
         module.del(c)
     else
         module.add(c)
@@ -89,7 +89,7 @@ end
 
 -- Check for visible titlebar
 function module.visible(c)
-    if cache[c.name] then
+    if cache[c.window] then
         return true
     else
         return false
