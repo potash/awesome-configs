@@ -8,6 +8,6 @@ With Radical menus...
 
 ![AltText](http://i.imgur.com/QfZJa9v.png)
 
-+ GNU/Emacs, urxvt, zsh, pms.
+... GNU/Emacs, urxvt, zsh, pms.
 
 ![AltText](http://i.imgur.com/K5ZkQiV.png)
