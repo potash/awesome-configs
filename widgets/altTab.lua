@@ -6,6 +6,7 @@
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
+
 local awful     = require("awful")
 local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
@@ -34,32 +35,38 @@ function module.timer_restart()
 end
 
 local function new()
-    module.timer_restart()
-    module.menu = radical.box({filter = true, show_filter = true, style = style, item_style = item_style})
-    module.menu:add_key_hook({}, "Tab", "press", function()
+    local cls = client.get(1)
+    if #cls > 1 then -- run alt-tab behavior when there is more than one client running.
         module.timer_restart()
-        local item = module.menu.next_item
-        item.selected = true
-        item.button1()
-        return true
-    end)
-    for _,v in pairs(client.get(1)) do
-        module.menu:add_item({
-            text = awful.util.escape(v.name) or "N/A",
-            button1 = function()
-                module.timer_restart()
-                if v:tags()[1] and v:tags()[1].selected == false then
-                    awful.tag.viewonly(v:tags()[1])
-                end
-                client.focus = v
-            end,
-            icon = v.icon or beautiful.cm["none"],
-            selected = client.focus == v,
-            underlay = underlay(v:tags()[1].name)
+        module.menu = radical.box({
+            filter = true, show_filter = true,
+            style = style, item_style = item_style, fkeys_prefix = true,
         })
+        module.menu:add_key_hook({}, "Tab", "press", function()
+            module.timer_restart()
+            local item = module.menu.next_item
+            item.selected = true
+            item.button1()
+            return true
+        end)
+        for _,v in pairs(cls) do
+            module.menu:add_item({
+                text = awful.util.escape(v.name) or "N/A",
+                button1 = function()
+                    module.timer_restart()
+                    if v:tags()[1] and v:tags()[1].selected == false then
+                        awful.tag.viewonly(v:tags()[1])
+                    end
+                    client.focus = v
+                end,
+                icon = v.icon or beautiful.cm["none"],
+                selected = client.focus == v,
+                underlay = underlay(v:tags()[1].name)
+            })
+        end
+        module.menu.visible  = true
+        return module.menu
     end
-    module.menu.visible  = true
-    return module.menu
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })
