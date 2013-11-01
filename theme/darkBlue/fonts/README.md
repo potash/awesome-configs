@@ -1,6 +1,6 @@
 ### Installation
 
-in your home directory, create .fonts/
+in your home directory, create .fonts/awesome
 
 ```sh
 mkdir -p ~/.fonts/awesome
@@ -18,5 +18,7 @@ Alternatively, you can use the linking method
 
 
 Crashed Scoreboard - http://4logoz.cjb.net.
+
 Sci Fied - by dustBUST Fonts.
+
 Ticking Timebomb BB - by Nate Piekos.
