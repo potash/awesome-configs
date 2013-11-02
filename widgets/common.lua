@@ -10,8 +10,29 @@
 local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
+local dbg       = require("extern.dbg")
 
 local module = {}
+module.timer = {}
+
+--- Timers
+function module.reg_menu(m)
+    module.timer[m] = timer{ timeout = beautiful.popup_time_out }
+    module.timer[m]:connect_signal("timeout", function()
+        module.hide_menu(m)
+    end)
+
+    module.timer[m]:start()
+    m.visible = true
+end
+function module.hide_menu(m)
+    module.timer[m]:stop()
+    m.visible = false
+end
+function module.show_menu(m)
+    module.timer[m]:start()
+    m.visible = true
+end
 
 --- Create text-box widgets
 function module.cwu(args)
@@ -87,7 +108,6 @@ function module.cwt(args)
         awful.button({ }, 5, b5)
     ))
 
-
     w:set_widget(wt)
     w:set_bg(bg)
 
@@ -96,6 +116,7 @@ function module.cwt(args)
 
     return w
 end
+
 --- Create image-box widget
 function module.cwi(args)
     local args = args or {}
@@ -128,6 +149,7 @@ function module.cwi(args)
 
     return w
 end
+
 --- Arrow widget
 -- @n: arrow type number
 -- returns: arrow image widget

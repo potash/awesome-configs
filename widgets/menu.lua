@@ -82,7 +82,9 @@ function module.mitems()
         icon = beautiful.mapp["reader"],
         items = {
             { name="Qpdf",                     command="qpdf",                 icon=path.."/app/okular.png"      },
-            { name="QuiteRSS",                 command="quiterss",             icon=path.."/app/quiterss.png"    }
+            { name="QuiteRSS",                 command="quiterss",             icon=path.."/app/quiterss.png"    },
+            { name="Deskzilla",                command="deskzilla"                                               },
+            { name="Claws mail",               command="claws-mail"                                              }
         }
     }
     module.mapp["Graphics"] = {
@@ -137,7 +139,7 @@ function module.mitems()
     module.mapp["Miscellaneous"] = {
         icon = beautiful.mapp["miscellaneous"],
         items = {
-            { name="Name", command="" }
+            { name="Name", command="Command" }
         }
     }
     module.mapp["Awesome"] = {
@@ -162,26 +164,6 @@ module.qapp["IDE"]          = { command="idea",       key="I", icon=path.."/quic
 module.qapp["Irc Client"]   = { command="kvirc4",     key="C", icon=path.."/quick/irc.svg",          tag=5 }
 module.qapp["Task Manager"] = { command="qps",        key="P", icon=path.."/quick/proc.svg",         tag=0 }
 
-module.timer={}
-module.timer[1] = timer{timeout = beautiful.popup_time_out}
-module.timer[1]:connect_signal("timeout", function()
-    if module.menu_qapp.visible then
-        module.menu_qapp.visible = false
-        keygrabber.stop()
-        module.timer[1]:stop()
-    end
-end)
-function module.timer_stop()
-    if module.timer[1].started then
-        module.timer[1]:stop()
-    end
-end
-function module.timer_start()
-    if not module.timer[1].started then
-        module.timer[1]:start()
-    end
-end
-
 -- TODO: remove this shit!
 local function tablelength(t)
     local count = 0
@@ -198,13 +180,12 @@ function module.main_app()
             local items = radical.context({ style=style, item_style=item_style, enable_keyboard=false })
             for i,_ in pairs(t) do
                 items:add_item({
-                    text = t[i].name,
                     button1 = function()
                         awful.util.spawn_with_shell(t[i].command)
                         module.menu_app.visible = false
                         keygrabber.stop()
                     end,
-                    icon = t[i].icon or beautiful.cm["none"]
+                    text = t[i].name, icon = t[i].icon or beautiful.cm["none"]
                 })
             end
             return items
@@ -228,34 +209,28 @@ function module.main_qapp()
         local tags = awful.tag.gettags(1)
         local items = module.qapp
         module.menu_qapp = radical.context({
-            enable_keyboard = true,
+            filer = false, enable_keyboard = true, direction = "bottom",
             x = 105,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - ((tablelength(items))*beautiful.menu_height) - 22,
-            direction = "bottom",
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - ((tablelength(items))*beautiful.menu_height) - 22
         })
         for i,v in pairs(items) do
             module.menu_qapp:add_item({
-                text = i or "N/A",
                 button1 = function()
                     awful.util.spawn_with_shell(v.command)
                     if tags[v.tag] and tags[v.tag] ~= 0 then
                         awful.tag.viewonly(tags[v.tag])
                     end
-                    module.timer_stop()
-                    module.menu_qapp.visible = false
+                    common.hide_menu(module.menu_qapp)
                 end,
-                icon = v.icon or beautiful.cm["none"],
+                text = i or "N/A", icon = v.icon or beautiful.cm["none"],
                 underlay = underlay(v.key)
             })
         end
-        module.timer_start()
-        module.menu_qapp.visible = true
+        common.reg_menu(module.menu_qapp)
     elseif module.menu_qapp.visible then
-        module.menu_qapp.visible = false
-        module.timer_stop()
+        common.hide_menu(module.menu_qapp)
     else
-        module.menu_qapp.visible = true
-        module.timer_start()
+        common.show_menu(module.menu_qapp)
     end
 end
 

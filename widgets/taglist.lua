@@ -56,57 +56,31 @@ function module.taglist()
     return widget
 end
 
-module.timer={}
-module.timer[1] = timer{timeout = beautiful.popup_time_out}
-module.timer[1]:connect_signal("timeout", function()
-    if module.menu.visible then
-        module.menu.visible = false
-        keygrabber.stop()
-        module.timer[1]:stop()
-    end
-end)
-
-function module.timer_stop()
-    if module.timer[1].started then
-        module.timer[1]:stop()
-        keygrabber.stop()
-    end
-end
-function module.timer_start()
-    if not module.timer[1].started then
-        module.timer[1]:start()
-    end
-end
-
 module.menu=false
 function module.main()
     if not module.menu then
         local tags = awful.tag.gettags(1)
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom", x = 180,
+            filer = false, enable_keyboard = true, direction = "bottom",
+            x = 180,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#tags*beautiful.menu_height) - 22,
         })
         local i,t
         for i,t in ipairs(tags) do
             module.menu:add_item({
-                text = module.tag[i].name,
                 button1 = function()
                     awful.tag.viewonly(t)
-                    module.menu.visible = false
-                    module.timer_stop()
+                    common.hide_menu(module.menu)
                 end,
                 --selected = (t == awful.tag.selected(1)),
-                icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
+                text = module.tag[i].name, icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
             })
         end
-        module.menu.visible = true
-        module.timer_start()
+        common.reg_menu(module.menu)
     elseif module.menu.visible then
-        module.menu.visible = false
-        module.timer_stop()
+        common.hide_menu(module.menu)
     else
-        module.menu.visible = true
-        module.timer_start()
+        common.show_menu(module.menu)
     end
 end
 

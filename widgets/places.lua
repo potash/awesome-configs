@@ -13,7 +13,6 @@ local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local awful     = require("awful")
 local common    = require("widgets.common")
-
 local module = {}
 
 local HOME = os.getenv("HOME")
@@ -30,59 +29,30 @@ module.PATHS={
     { "Security",    "/opt/Security",      beautiful.pl["security"],    "S" }
 }
 
-module.timer={}
-module.timer[1] = timer{timeout = beautiful.popup_time_out}
-module.timer[1]:connect_signal("timeout", function()
-    if module.menu.visible then
-        module.menu.visible = false
-        keygrabber.stop()
-        module.timer[1]:stop()
-    end
-end)
-function module.timer_stop()
-    if module.timer[1].started then
-        module.timer[1]:stop()
-    end
-end
-function module.timer_start()
-    if not module.timer[1].started then
-        module.timer[1]:start()
-    end
-end
-
 module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false,
-            enable_keyboard = true,
-            direction = "bottom",
+            filer = false, enable_keyboard = true, direction = "bottom",
             x = screen[1].geometry.width - 140,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#module.PATHS*beautiful.menu_height) - 22,
         })
         local tags = awful.tag.gettags(1)
         for _,t in ipairs(module.PATHS) do
             module.menu:add_item({
-                text=t[1],
                 button1 = function()
                     awful.util.spawn(OPEN.." "..t[2])
                     awful.tag.viewonly(tags[4])
-                    module.timer_stop()
-                    keygrabber.stop()
-                    module.menu.visible = false
+                    common.hide_menu(module.menu)
                 end,
-                icon=t[3],
-                underlay = underlay(t[4]),
+                text=t[1], icon=t[3], underlay = underlay(t[4]),
             })
         end
-        module.timer_start()
-        module.menu.visible = true
+        common.reg_menu(module.menu)
     elseif module.menu.visible then
-        module.menu.visible = false
-        module.timer_stop()
+        common.hide_menu(module.menu)
     else
-        module.menu.visible = true
-        module.timer_start()
+        common.show_menu(module.menu)
     end
 end
 

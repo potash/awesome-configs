@@ -32,33 +32,12 @@ module.layouts = {
     awful.layout.suit.magnifier,         -- 12
 }
 
-module.timer={}
-module.timer[1] = timer{timeout = beautiful.popup_time_out}
-module.timer[1]:connect_signal("timeout", function()
-    if module.menu.visible then
-        module.menu.visible = false
-        keygrabber.stop()
-        module.timer[1]:stop()
-    end
-end)
-
-function module.timer_stop()
-    if module.timer[1].started then
-        module.timer[1]:stop()
-        keygrabber.stop()
-    end
-end
-function module.timer_start()
-    if not module.timer[1].started then
-        module.timer[1]:start()
-    end
-end
-
 module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom", x = 15,
+            filer = false, enable_keyboard = true, direction = "bottom",
+            x = 15,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#module.layouts*beautiful.menu_height) - 22})
         local current = awful.layout.get(awful.tag.getscreen(awful.tag.selected()))
         for i, layout_real in ipairs(module.layouts) do
@@ -68,24 +47,17 @@ function module.main()
                     icon = beautiful.li["layout_" .. layout_name] or beautiful.cm["none"], text = layout_name,
                     button1 = function(_, mod)
                         awful.layout.set(module.layouts[module.menu.current_index] or module.layouts[1], awful.tag.selected())
-                        module.menu.visible = false
-                        module.timer_stop()
+                        common.hide_menu(module.menu)
                     end,
-                    selected = (layout_real == current),
-                    underlay = underlay(i),
+                    selected = (layout_real == current), underlay = underlay(i),
                 })
-            else
-                dbg.error(layout_name.." Failed.")
             end
         end
-        module.timer_start()
-        module.menu.visible = true
+        common.reg_menu(module.menu)
     elseif module.menu.visible then
-        module.menu.visible = false
-        module.timer_stop()
+        common.hide_menu(module.menu)
     else
-        module.menu.visible = true
-        module.timer_start()
+        common.show_menu(module.menu)
     end
 end
 

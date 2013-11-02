@@ -20,7 +20,6 @@ module.lang={}
 module.lang["lt"]="Lithuanian"
 module.lang["us"]="English"
 --module.lang["ru"]="Russian" -- FIXME: well, now RU keybindings are corrupted (WHY?)
-
 module.current = "us" -- default.
 function module.set(lang_layout)
     if module.widget and lang_layout ~= module.current then
@@ -39,24 +38,29 @@ function module.switch()
     module.set(k.layout[k.current])
 end
 
+
 module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 220,
+            filer = false, enable_keyboard = true, direction = "bottom",
+            x = screen[1].geometry.width - 220,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#awful.util.table.keys(module.lang)*beautiful.menu_height) - 22,
         })
         for k,v in pairs(module.lang) do
             module.menu:add_item({text = v,
-                button1 = function() module.set(k) module.menu.visible = false end,
+                button1 = function()
+                    module.set(k)
+                    common.hide_menu(module.menu)
+                end,
                 icon = beautiful.path.."/flags/"..k..".png", underlay = underlay(string.upper(k))
             })
         end
-        module.menu.visible = true
+        common.reg_menu(module.menu)
     elseif module.menu.visible then
-        module.menu.visible = false
+        common.hide_menu(module.menu)
     else
-        module.menu.visible = true
+        common.show_menu(module.menu)
     end
 end
 
