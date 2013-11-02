@@ -26,8 +26,8 @@ theme.icon_theme                 = nil
 
 gears.wallpaper.maximized(theme.wallpaper, 1, true)
 
-theme.wibox={}
 
+theme.wibox={}
 theme.wibox["main"]={}
 theme.wibox["main"].enable       = true
 theme.wibox["main"].position     = "bottom"

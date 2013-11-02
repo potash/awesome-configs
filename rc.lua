@@ -7,12 +7,6 @@
         NOTE:      -------
 --]]
 
---[[
--- 2013-10-30 TODO: themes
--- 2013-10-30 TODO: jeigu tik vienas klientas ant tago salinam borders.
--- 2013-10-30 TODO: clean up awfuldb
-]]
-
 -- Debugging utilities (signails, functions, notifications...)
 local dbg       = require("extern.dbg")
 dbg()
@@ -45,10 +39,10 @@ local main = awful.wibox({
 main:set_bg("#0F2766")
 
 -- Widgets that are aligned to the left
-layout["left"]:add(widgets.layout())          -- DONE
-layout["left"]:add(widgets.menu())            -- DONE
-layout["left"]:add(widgets.taglist())         -- DONE
-layout["left"]:add(widgets.prompt())          -- DONE
+layout["left"]:add(widgets.layout())
+layout["left"]:add(widgets.menu())
+layout["left"]:add(widgets.taglist())
+layout["left"]:add(widgets.prompt())
 
 -- Widgets that are aligned to the right
 layout["right"]:add(wibox.widget.systray())
@@ -100,7 +94,6 @@ keys["client"] = awful.util.table.join(
 )
 --  Key bindings
 keys["global"] = awful.util.table.join(
--- Prompt
     awful.key({ "Mod4"            }, "r",            function() widgets.prompt.run()                         end),
     awful.key({ "Mod4"            }, "x",            function() widgets.prompt.lua()                         end),
     awful.key({ "Mod4"            }, "c",            function() widgets.prompt.cmd()                         end),
@@ -138,9 +131,6 @@ keys["global"] = awful.util.table.join(
     awful.key({ "Mod4", "Mod1"    }, "KP_Subtract",  function() spawn("amixer -c 0 set Surround 1- unmute")  end),
     awful.key({ "Mod4"            }, "Prior",        function() spawn("/usr/bin/mpc prev")                   end),
     awful.key({ "Mod4"            }, "Next",         function() spawn("/usr/bin/mpc next")                   end),
-    awful.key({ "Mod1"            }, "Print",        function() spawn("")                                    end), -- TODO: screenshoot tools
-    awful.key({ "Mod4"            }, "Print",        function() spawn("")                                    end), --
-    awful.key({ "Control"         }, "Print",        function() spawn("")                                    end), --
     awful.key({ "Mod4", "Control" }, "r",            awful.util.restart                                         ),
     awful.key({ "Mod4", "Control" }, "q",            awesome.quit                                               ),
     awful.key({ "Mod1",           }, "bracketright", function() awful.client.swap.byidx(  1)                 end),
@@ -204,7 +194,6 @@ client.connect_signal("manage", function (c, startup)
 end)
 -- When a client gains focus.
 client.connect_signal("focus", function(c)
-    --dbg.dump(c.tags())
     c.border_color = beautiful.border_focus
 end)
 -- When a client looses focus.

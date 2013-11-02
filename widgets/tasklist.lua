@@ -157,7 +157,6 @@ function module.main(c)
     end
 end
 
---- Return widgets layout
 local function new()
     client.connect_signal("list", hideMenu)
     local buttons = awful.util.table.join(
