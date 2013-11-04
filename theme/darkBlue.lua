@@ -7,8 +7,9 @@
         NOTE:      -------
 --]]
 
-local gears = require("gears")
-local awful = require("awful")
+local gears   = require("gears")
+local awful   = require("awful")
+local naughty = require("naughty")
 
 local theme = {}
 
@@ -26,7 +27,21 @@ theme.icon_theme                 = nil
 
 gears.wallpaper.maximized(theme.wallpaper, 1, true)
 
+-- Naughty library settings
+naughty.config.defaults.timeout       = 30
+naughty.config.defaults.position      = "bottom_right"
+naughty.config.defaults.margin        = 1
+naughty.config.defaults.gap           = 10
+naughty.config.defaults.ontop         = true
+naughty.config.defaults.icon_size     = 16
+naughty.config.defaults.font          = "monospace 8"
+naughty.config.defaults.fg            = "#000000"
+naughty.config.defaults.bg            = "#F7DD65"
+naughty.config.defaults.border_color  = "#FFB111"
+naughty.config.defaults.border_width  = 1
+naughty.config.defaults.hover_timeout = 3
 
+-- Main wibox settings
 theme.wibox={}
 theme.wibox["main"]={}
 theme.wibox["main"].enable       = true
@@ -36,7 +51,6 @@ theme.wibox["main"].bg           = "#0F2766"
 theme.wibox["main"].fg           = "#1692D0"
 
 -- Widget icons
-
 theme.iw={}
 theme.iw["places"]               = ICONS.."/widgets/places.svg"
 theme.iw["menu"]                 = ICONS.."/widgets/menu.svg"
