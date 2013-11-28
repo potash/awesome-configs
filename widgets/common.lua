@@ -55,7 +55,7 @@ function module.cwu(args)
     local w  = wibox.widget.background()
     local wt = wibox.widget.textbox()
 
-    wt:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>")
+    wt:set_markup("<span color='"..fg.."'>"..text.."</span>")
     wt:set_align(align)
     wt:set_valign(valign)
     wt:set_font(font)
@@ -94,7 +94,7 @@ function module.cwt(args)
     local w  = wibox.widget.background()
     local wt = wibox.widget.textbox()
 
-    wt:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>")
+    wt:set_markup("<span color='"..fg.."'>"..text.."</span>")
     wt:set_align(align)
     wt:set_valign(valign)
     wt:set_font(font)
@@ -111,8 +111,8 @@ function module.cwt(args)
     w:set_widget(wt)
     w:set_bg(bg)
 
-    w:connect_signal("mouse::enter", function() wt:set_markup("<span color='#0092FF'><b>"..text.."</b></span>") end)
-    w:connect_signal("mouse::leave", function() wt:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>") end)
+    w:connect_signal("mouse::enter", function() wt:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>") end)
+    w:connect_signal("mouse::leave", function() wt:set_markup("<span color='"..fg.."'>"..text.."</span>") end)
 
     return w
 end
