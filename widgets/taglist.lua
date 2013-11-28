@@ -32,27 +32,24 @@ module.tag = {
     { name="System",        sname="S", icon=path.."system.svg",      layout=awful.layout.suit.floating }, -- 10
     { name="Miscellaneous", sname="X", icon=path.."misc.svg",        layout=awful.layout.suit.floating }  -- 11
 }
--- Load tags
+-- Create tags
 for _,t in ipairs(module.tag) do
     awful.tag.add(t.sname, { icon=t.icon, layout=t.layout })
 end
+-- Setup tags
 local tags = awful.tag.gettags(1)
-awful.tag.setproperty(tags[1], "mwfact", 0.60)
-tags[1].selected = false
-tags[3].selected = true
+--awful.tag.setproperty(tags[1], "mwfact", 0.60)
+tags[1].selected = true
+--tags[3].selected = true
 
 -- Tag list widget
 function module.taglist()
-    -- The style overrides default theme.
-    local style = {
-        -- TODO: add some style?
-    }
     -- A table with buttons binding to set.
     local buttons = awful.util.table.join(
         awful.button({ }, 1, awful.tag.viewonly),
         awful.button({ }, 3, function()      end)
     )
-    local widget = awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons, style)
+    local widget = awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons)
     return widget
 end
 
