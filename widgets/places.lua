@@ -56,22 +56,12 @@ function module.main()
     end
 end
 
--- Text
-function module.text()
-   return common.cwt({ text="PLACES", width=60, b1=module.main, font="Sci Fied 8" })
-end
-
--- Icon
-function module.icon()
-   return common.cwi({ icon=beautiful.iw["places"] })
-end
-
 --- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
     layout:add(common.arrow(5))
-    layout:add(module.icon())
-    layout:add(module.text())
+    layout:add(common.cwi({ icon=beautiful.iw["places"] }))
+    layout:add(common.cwt({ text="PLACES", width=60, b1=module.main, font="Sci Fied 8" }))
     return layout
 end
 

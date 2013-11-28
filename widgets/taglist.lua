@@ -84,20 +84,10 @@ function module.main()
     end
 end
 
--- Widget text
-function module.text()
-    return common.cwt({ text="TAG", width=35, b1=module.main, font="Sci Fied 8"})
-end
-
--- Widget icon
-function module.icon()
-    return common.cwi({ icon=beautiful.iw["tag"] })
-end
-
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    layout:add(module.icon())
-    layout:add(module.text())
+    layout:add(common.cwi({ icon=beautiful.iw["tag"] }))
+    layout:add(common.cwt({ text="TAG", width=35, b1=module.main, font="Sci Fied 8"}))
     layout:add(module.taglist())
     layout:add(common.arrow(6))
     return layout

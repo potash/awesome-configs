@@ -61,40 +61,18 @@ function module.main()
     end
 end
 
--- Widget text
-function module.text()
-    return common.cwt({ text="LAYOUT", width=60, b1=module.main, font="Sci Fied 8" })
-end
-
--- Widget icon
-function module.icon()
-    -- try to get the layout icon
-    local function geticon()
-        if beautiful.li then
-            return beautiful.li["layout_" ..awful.layout.getname(awful.layout.get(1))]
-        else
-            return
-        end
-    end
-    
-    -- Create widget
-    local widget = common.cwi({icon=geticon()})
-    
-    -- When tag property changes update layout icon.
+-- Return widgets layout
+local function new()
+    local layout = wibox.layout.fixed.horizontal()
+    local widget = common.cwi({icon=beautiful.li["layout_" ..awful.layout.getname(awful.layout.get(1))]})
     local function update()
-        widget:set_image(geticon())
+        widget:set_image(beautiful.li["layout_" ..awful.layout.getname(awful.layout.get(1))])
     end
     awful.tag.attached_connect_signal(1, "property::selected", update)
     awful.tag.attached_connect_signal(1, "property::layout",   update)
 
-    return widget
-end
-
--- Return widgets layout
-local function new()
-    local layout = wibox.layout.fixed.horizontal()
-    layout:add(module.icon())
-    layout:add(module.text())
+    layout:add(widget)
+    layout:add(common.cwt({ text="LAYOUT", width=60, b1=module.main, font="Sci Fied 8" }))
     layout:add(common.arrow(6))
     return layout
 end
