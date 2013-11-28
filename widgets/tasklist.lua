@@ -10,7 +10,6 @@ local awful     = require("awful")
 local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local beautiful = require("beautiful")
-local titlebar  = require("widgets.titlebar")
 local awfuldb   = require("extern.awfuldb")
 local tags      = require("widgets.taglist")
 
@@ -45,20 +44,6 @@ end
 local function items(c,m)
     -- Move to tag
     m:add_item({ text = "Move to tag", icon=beautiful.cm["move"], sub_menu=move2tag})
-    -- Title bar
-    m:add_item({ text="Title bar", icon=beautiful.cm["titlebar"],
-        checked = function()
-            if titlebar.visible(c) then
-                return true
-            else
-                return false
-            end
-        end,
-        button1 = function()
-            titlebar.toggle(c)
-            hideMenu()
-        end
-    })
     -- Ontop
     m:add_item({ text = "Ontop", icon = beautiful.cm["ontop"],
         checked = function()
@@ -106,7 +91,6 @@ local function items(c,m)
         end
     })
     -- Maximize
-    -- FIXME: Jeigu client yra maximize horizontal ir vertical, jis tampa ir floating.
     m:add_item({ text = "Maximize", icon = beautiful.cm["maximize"],
         checked = function()
             if c.maximized_horizontal or c.maximized_vertical then
