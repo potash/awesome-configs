@@ -16,11 +16,11 @@ local common    = require("widgets.common")
 
 local module = {}
 
-local path = beautiful.path.."/tags/"
+local path = beautiful.ICONS .. "/tags/"
 
 -- Tags table.
 module.tag = {
-    { name="Work",          sname="w", icon=path.."work.svg",        layout=awful.layout.suit.tile     }, -- 1
+    { name="Work",          sname="w", icon=path.."work.svg",        layout=awful.layout.suit.fair     }, -- 1
     { name="Network",       sname="N", icon=path.."network.svg",     layout=awful.layout.suit.max      }, -- 2
     { name="Development",   sname="D", icon=path.."development.svg", layout=awful.layout.suit.max      }, -- 3
     { name="File Manager",  sname="F", icon=path.."files.svg",       layout=awful.layout.suit.max      }, -- 4
