@@ -36,7 +36,7 @@ local main = awful.wibox({
     height = beautiful.wibox["main"].height
 })
 
-main:set_bg("#0F2766")
+main:set_bg(beautiful.wibox["main"].bg)
 
 -- Widgets that are aligned to the left
 layout["left"]:add(widgets.layout())
@@ -168,35 +168,21 @@ root.buttons(keys["mouse"])
 -- Initializes the windows rules system
 awfuldb.get(keys)
 
--- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c, startup)
+--- Signals emitted on client objects
+client.connect_signal("manage", function(c,startup)
     -- Enable sloppy focus
-    c:connect_signal("mouse::enter", function(c)
-        if awful.layout.get(0) ~= awful.layout.suit.magnifier and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
-    if not startup then
-        -- Put windows centered.
-        if not c.size_hints.user_position and not c.size_hints.program_position then
-            awful.placement.centered(c)
-        end
-    end
-    -- Set client on-top and add titlebars if client is dialog
-    if c.type == "dialog" then
-        widgets.titlebar.add(c)
+    c:connect_signal("mouse::enter", function(c) client.focus = c end)
+    if c.type == "dialog" or awful.client.floating.get(c) then
+        awful.placement.centered(c)
         c.ontop = true
     end
-    -- Add titlebar if client is floating
-    if awful.client.floating.get(c) then
-        widgets.titlebar.add(c)
-    end
+    --widgets.titlebar(c)
 end)
--- When a client gains focus.
+-- when a client gains focus
 client.connect_signal("focus", function(c)
     c.border_color = beautiful.border_focus
 end)
--- When a client looses focus.
+-- when a client looses focus
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
 end)
