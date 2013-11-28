@@ -7,26 +7,22 @@
         NOTE:      -------
 --]]
 
-local awful  = require("awful")
-local wibox  = require("wibox")
-local common = require("widgets.common")
+local awful     = require("awful")
+local wibox     = require("wibox")
+local common    = require("widgets.common")
+local beautiful = require("beautiful")
 
 local module = {}
 
--- Create a clock widget
-function module.text()
-    local widget = awful.widget.textclock("<span font='Crashed Scoreboard 17' color='#1692D0' >%H %M</span> ", 60)
-    local clock     = wibox.widget.background(widget, "#0F2766")
+local function new()
+    local widget = awful.widget.textclock("<span font='Crashed Scoreboard 17' color='"..beautiful.widget_text_fg.."'>%H %M</span> ", 60)
+    local clock = wibox.widget.background(widget, beautiful.widget_text_bg)
     widget:set_align("center")
     widget:set_valign("center")
-    widget.fit = function() return 65,10 end
-    return clock
-end
-
-local function new()
+    widget.fit = function() return 62,10 end
     local layout = wibox.layout.fixed.horizontal()
     layout:add(common.arrow(5))
-    layout:add(module.text())
+    layout:add(clock)
     return layout
 end
 
