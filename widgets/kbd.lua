@@ -26,7 +26,6 @@ function module.set(lang_layout)
         awful.util.spawn("setxkbmap "..lang_layout)
         module.widget:set_markup("<b>"..string.upper(lang_layout).."</b>")
         module.current = lang_layout
-        --dbg.info("Keyboard layout changed to <b>"..module.lang[lang_layout].."</b>")
     end
 end
 
@@ -37,7 +36,6 @@ function module.switch()
     k.current = k.current % #(k.layout) + 1
     module.set(k.layout[k.current])
 end
-
 
 module.menu = false
 function module.main()
@@ -64,23 +62,13 @@ function module.main()
     end
 end
 
--- Text
-function module.text()
-    local w,c  = common.cwu({ text=string.upper(module.current), width=35, b1=module.main, b3=module.switch, bg="#0F2766", font="Sci Fied 8", align="bottom" })
-    module.widget = c
-    return w
-end
-
--- Icon
-function module.icon()
-   return common.cwi({ icon=beautiful.iw["kbd"] })
-end
-
 local function new()
     local layout = wibox.layout.fixed.horizontal()
+    local w,c  = common.cwu({ text=string.upper(module.current), width=35, b1=module.main, b3=module.switch, font="Sci Fied 8", align="bottom", bg=beautiful.widget_text_bg })
+    module.widget = c
     layout:add(common.arrow(5))
-    layout:add(module.icon())
-    layout:add(module.text())
+    layout:add(common.cwi({ icon=beautiful.iw["kbd"] }))
+    layout:add(w)
     return layout
 end
 
