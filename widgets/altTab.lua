@@ -14,9 +14,6 @@ local beautiful = require("beautiful")
 
 local module = {}
 
-local style=radical.style.classic
-local item_style=radical.item_style.classic
-
 module.menu= {}
 module.timer={}
 
@@ -38,9 +35,8 @@ local function new()
     local cls = client.get(1)
     if #cls > 1 then -- run alt-tab behavior when there is more than one client running.
         module.timer_restart()
-        module.menu = radical.box({
-            filter = true, show_filter = true,
-            style = style, item_style = item_style, fkeys_prefix = true,
+        module.menu = radical.box({filter = true, show_filter = true, fkeys_prefix = true,
+            style = radical.style.classic, item_style = radical.item_style.classic
         })
         module.menu:add_key_hook({}, "Tab", "press", function()
             module.timer_restart()
@@ -51,7 +47,7 @@ local function new()
         end)
         for _,v in pairs(cls) do
             module.menu:add_item({
-                text = awful.util.escape(v.name) or "N/A",
+                text = awful.util.linewrap((awful.util.escape(v.name) or "N/A"), 80,0),
                 button1 = function()
                     module.timer_restart()
                     if v:tags()[1] and v:tags()[1].selected == false then
@@ -64,8 +60,7 @@ local function new()
                 underlay = underlay(v:tags()[1].name)
             })
         end
-        module.menu.visible  = true
-        return module.menu
+        module.menu.visible = true
     end
 end
 
