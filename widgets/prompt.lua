@@ -7,22 +7,23 @@
         NOTE:      -------
 --]]
 
-local awful = require("awful")
+local awful     = require("awful")
+local beautiful = require("beautiful")
 
 local module = {}
 
-local prompt = awful.widget.prompt()
+module.prompt = awful.widget.prompt()
 
--- Run
+-- Command prompt
 function module.run()
     awful.prompt.run({
-        fg_cursor = "#00B3FF",
-        bg_cursor = "#0F2766",
-        ul_cursor = "single",
-        prompt = "<span foreground='#1692D0' font='Sci Fied 8'>RUN:</span> ",
-        font = "munospace 10",
+        fg_cursor = beautiful.pr["fg_cursor"],
+        bg_cursor = beautiful.pr["bg_cursor"],
+        ul_cursor = beautiful.pr["ul_cursor"],
+        font = beautiful.pr["font"],
+        prompt = beautiful.pr["cmd"]
     },
-        prompt.widget,
+        module.prompt.widget,
         function(...) awful.util.spawn(...) end,
         awful.completion.shell,
         awful.util.getdir("cache").. "/history_run", 50
@@ -31,28 +32,28 @@ end
 -- Run in terminal
 function module.cmd()
     awful.prompt.run({
-        fg_cursor = "#00B3FF",
-        bg_cursor = "#0F2766",
-        ul_cursor = "single",
-        prompt = "<span foreground='#1692D0' font='Sci Fied 8'>CMD:</span> ",
-        font = "munospace 10",
+        fg_cursor = beautiful.pr["fg_cursor"],
+        bg_cursor = beautiful.pr["bg_cursor"],
+        ul_cursor = beautiful.pr["ul_cursor"],
+        font = beautiful.pr["font"],
+        prompt = beautiful.pr["run"]
     },
-        prompt.widget,
+        module.prompt.widget,
         function(...) awful.util.spawn("urxvt-aw ".. ...) end,
         awful.completion.shell,
         awful.util.getdir("cache").. "/history_cmd", 50
     )
 end
--- Lua
+-- Lua prompt
 function module.lua()
     awful.prompt.run({
-        fg_cursor = "#00B3FF",
-        bg_cursor = "#0F2766",
-        ul_cursor = "single",
-        prompt = "<span foreground='#1692D0' font='Sci Fied 8'>LUA:</span> ",
-        font = "munospace 10",
+        fg_cursor = beautiful.pr["fg_cursor"],
+        bg_cursor = beautiful.pr["bg_cursor"],
+        ul_cursor = beautiful.pr["ul_cursor"],
+        font = beautiful.pr["font"],
+        prompt = beautiful.pr["lua"]
     },
-        prompt.widget,
+        module.prompt.widget,
         awful.util.eval,
         nil,
         awful.util.getdir("cache").. "/history_eval", 50
@@ -60,7 +61,7 @@ function module.lua()
 end
 
 local function new()
-    return prompt
+    return module.prompt
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })
