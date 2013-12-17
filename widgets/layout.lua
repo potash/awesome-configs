@@ -44,8 +44,8 @@ function module.main()
             local layout_name = awful.layout.getname(layout_real)
             if layout_name then
                 module.menu:add_item({
-                    icon = beautiful.li["layout_" .. layout_name] or beautiful.cm["none"], text = layout_name,
-                    button1 = function(_, mod)
+                    icon = beautiful.li[layout_name] or beautiful.cm["none"], text = layout_name,
+                    button1 = function()
                         awful.layout.set(module.layouts[module.menu.current_index] or module.layouts[1], awful.tag.selected())
                         common.hide_menu(module.menu)
                     end,
@@ -64,10 +64,12 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local widget = common.cwi({icon=beautiful.li["layout_" ..awful.layout.getname(awful.layout.get(1))]})
+    local widget = common.cwi({icon=beautiful.li[awful.layout.getname(awful.layout.get(1))]})
+
     local function update()
-        widget:set_image(beautiful.li["layout_" ..awful.layout.getname(awful.layout.get(1))])
+        widget:set_image(beautiful.li[awful.layout.getname(awful.layout.get(1))])
     end
+
     awful.tag.attached_connect_signal(1, "property::selected", update)
     awful.tag.attached_connect_signal(1, "property::layout",   update)
 
