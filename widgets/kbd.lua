@@ -19,7 +19,7 @@ local module = {}
 module.lang={}
 module.lang["lt"]="Lithuanian"
 module.lang["us"]="English"
---module.lang["ru"]="Russian" -- FIXME: well, now RU keybindings are corrupted (WHY?)
+--module.lang["ru"]="Russian" -- FIXME: RU keybindings are corrupted (#982)
 module.current = "us" -- default.
 function module.set(lang_layout)
     if module.widget and lang_layout ~= module.current then
