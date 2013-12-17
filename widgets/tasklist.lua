@@ -6,12 +6,14 @@
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
+
 local awful     = require("awful")
 local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local beautiful = require("beautiful")
 local awfuldb   = require("extern.awfuldb")
 local tags      = require("widgets.taglist")
+local titlebar  = require("widgets.titlebar")
 
 local module = {}
 
@@ -24,16 +26,15 @@ local function hideMenu()
     end
 end
 
-local function move2tag()
+local function move2tag(c)
     local items = radical.context({enable_keyboard = false, style = style, item_style = item_style})
     local gt = awful.tag.gettags(1)
     for i, _ in ipairs(gt) do
         items:add_item({
             text = tags.tag[i].name,
             button1 = function()
-                awful.client.movetotag(gt[i]) -- TODO: focused? tai kiek pagreitina menu load time, bet turi problemu
-                module.menu.visible = false
-                keygrabber.stop()
+                awful.client.movetotag(gt[i], c)
+                hideMenu()
             end,
             icon = tags.tag[i].icon,
             underlay = underlay(tags.tag[i].sname)
@@ -43,7 +44,14 @@ local function move2tag()
 end
 local function items(c,m)
     -- Move to tag
-    m:add_item({ text = "Move to tag", icon=beautiful.cm["move"], sub_menu=move2tag})
+    m:add_item({ text = "Move to tag", icon=beautiful.cm["move"], sub_menu=move2tag(c) })
+    -- Add titlebar
+    m:add_item({ text = "Add titlebar", icon = beautiful.cm["titlebar"],
+        button1 = function()
+            titlebar(c)
+            hideMenu()
+        end
+    })
     -- Ontop
     m:add_item({ text = "Ontop", icon = beautiful.cm["ontop"],
         checked = function()
@@ -143,6 +151,8 @@ end
 
 local function new()
     client.connect_signal("list", hideMenu)
+    client.connect_signal("focus", hideMenu)
+
     local buttons = awful.util.table.join(
         awful.button({ }, 1, function(c)
             if module.menu and module.menu.visible then
