@@ -13,20 +13,25 @@ local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local awful     = require("awful")
 local common    = require("widgets.common")
+
 local module = {}
 
 local HOME = os.getenv("HOME")
 local OPEN = "krusader --left"
+local path = beautiful.ICONS.."/places/"
 
-module.PATHS={
-    { "Development", HOME.."/Development", beautiful.pl["development"], "D" },
-    { "Documents",   HOME.."/Documents",   beautiful.pl["documents"],   "H" },
-    { "Downloads",   HOME.."/Downloads",   beautiful.pl["downloads"],   "F" },
-    { "Music",       HOME.."/Music",       beautiful.pl["music"],       "M" },
-    { "Pictures",    HOME.."/Pictures",    beautiful.pl["pictures"],    "P" },
-    { "Videos",      HOME.."/Videos",      beautiful.pl["videos"],      "V" },
-    { "www",         HOME.."/public_html", beautiful.pl["public_html"], "W" },
-    { "Security",    "/opt/Security",      beautiful.pl["security"],    "S" }
+local PATHS = {
+    { "Home",        HOME,                 path.."home.svg",        "N" },
+    { "Cloud",       HOME.."/Cloud",       path.."remote.svg",      "R" },
+    { "Development", HOME.."/Development", path.."development.svg", "D" },
+    { "Workspace",   HOME.."/Workspace",   path.."workspace.svg",   "T" },
+    { "Documents",   HOME.."/Documents",   path.."documents.svg",   "H" },
+    { "Downloads",   HOME.."/Downloads",   path.."downloads.svg",   "F" },
+    { "Music",       HOME.."/Music",       path.."music.svg",       "M" },
+    { "Pictures",    HOME.."/Pictures",    path.."pictures.svg",    "P" },
+    { "Videos",      HOME.."/Videos",      path.."videos.svg",      "V" },
+    { "www",         HOME.."/public_html", path.."public_html.svg", "W" },
+    { "Security",    "/opt/Security",      path.."security.svg",    "S" }
 }
 
 module.menu = false
@@ -35,10 +40,10 @@ function module.main()
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom",
             x = screen[1].geometry.width - 140,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#module.PATHS*beautiful.menu_height) - 22,
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#PATHS*beautiful.menu_height) - 22,
         })
         local tags = awful.tag.gettags(1)
-        for _,t in ipairs(module.PATHS) do
+        for _,t in ipairs(PATHS) do
             module.menu:add_item({
                 button1 = function()
                     awful.util.spawn(OPEN.." "..t[2])
