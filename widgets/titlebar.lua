@@ -10,11 +10,11 @@
 local awful     = require("awful")
 local beautiful = require("beautiful")
 local wibox     = require("wibox")
+local dbg       = require("extern.dbg")
 
 local module = {}
-local cache  = {} -- XXX: Nes awful nera funkcijos patikrinti ar klientas turi titlebar.
 
-local function add_titlebar(c)
+local function new(c)
     -- buttons for the titlebar
     local buttons = awful.util.table.join(
         awful.button({ }, 1, function()
@@ -28,7 +28,20 @@ local function add_titlebar(c)
             awful.mouse.client.resize(c)
         end)
     )
-    -- TODO: Client menu
+    local wi = wibox.widget.imagebox()
+    local function update_icons()
+        local s=""
+        if c.sticky == true then s = s.."_sticky"  end
+        if c.ontop == true then  s = s.."_ontop"   end
+        if awful.client.floating.get(c) then s = s.."_float" end
+        wi:set_image(beautiful.ICONS .. "/titlebar/status"..s..".png")
+    end
+
+    --update_icons(c)
+    --c:connect_signal("property::floating", update_icons)
+    --c:connect_signal("property::ontop", update_icons)
+    --c:connect_signal("property::sticky", update_icons)
+
     local clientIcon = wibox.widget.imagebox()
     clientIcon:set_image(c.icon or beautiful.cm["none"])
     clientIcon:buttons(awful.util.table.join(awful.button({ }, 1, function() end)))
@@ -48,9 +61,23 @@ local function add_titlebar(c)
 
     -- The title goes in the middle
     local middle_layout = wibox.layout.flex.horizontal()
-    local title = awful.titlebar.widget.titlewidget(c)
-    title:set_align("left")
-    middle_layout:add(title)
+
+    local wt = wibox.widget.textbox()
+
+    local function update()
+        local title = awful.util.linewrap(awful.util.escape(c.name) or "N/A", 80)
+        wt:set_markup("<span color='#1692D0'>".. title .."</span>")
+    end
+
+    c:connect_signal("property::name", update)
+    update()
+
+    wt:set_align("left")
+    wt:set_valign("center")
+    wt:set_font("sans 8")
+    wt.fit = function() return 100,14 end
+
+    middle_layout:add(wt)
     middle_layout:buttons(buttons)
 
     -- Now bring it all together
@@ -59,45 +86,7 @@ local function add_titlebar(c)
     layout:set_right(right_layout)
     layout:set_middle(middle_layout)
 
-    awful.titlebar(c, { bg_normal = "#0A1535", bg_focus = "#0F2766", size = 14 }):set_widget(layout)
-end
-
--- Add titlebar
-function module.add(c)
-    if not cache[c.window] then
-        add_titlebar(c)
-        cache[c.window] = true
-    end
-end
-
--- Remove titlebar
-function module.del(c)
-    if cache[c.window] then
-        awful.titlebar(c, { size = 0 })
-        cache[c.window] = false
-    end
-end
-
--- Toggle titlebar
-function module.toggle(c)
-    if cache[c.window] then
-        module.del(c)
-    else
-        module.add(c)
-    end
-end
-
--- Check for visible titlebar
-function module.visible(c)
-    if cache[c.window] then
-        return true
-    else
-        return false
-    end
-end
-
--- Return widgets layout
-local function new()
+    awful.titlebar(c, { size = 12 }):set_widget(layout)
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })
