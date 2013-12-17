@@ -39,19 +39,8 @@ end
 -- Setup tags
 local tags = awful.tag.gettags(1)
 --awful.tag.setproperty(tags[1], "mwfact", 0.60)
+--tags[1].selected = true
 tags[1].selected = true
---tags[3].selected = true
-
--- Tag list widget
-function module.taglist()
-    -- A table with buttons binding to set.
-    local buttons = awful.util.table.join(
-        awful.button({ }, 1, awful.tag.viewonly),
-        awful.button({ }, 3, function()      end)
-    )
-    local widget = awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons)
-    return widget
-end
 
 module.menu=false
 function module.main()
@@ -69,7 +58,7 @@ function module.main()
                     awful.tag.viewonly(t)
                     common.hide_menu(module.menu)
                 end,
-                --selected = (t == awful.tag.selected(1)),
+                selected = (t == awful.tag.selected(1)),
                 text = module.tag[i].name, icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
             })
         end
@@ -83,9 +72,15 @@ end
 
 local function new()
     local layout = wibox.layout.fixed.horizontal()
+    local buttons = awful.util.table.join(
+        awful.button({        }, 1, awful.tag.viewonly),
+        awful.button({ "Mod4" }, 1, awful.client.movetotag),
+        awful.button({        }, 3, awful.tag.viewtoggle),
+        awful.button({ "Mod4" }, 3, awful.client.toggletag)
+    )
     layout:add(common.cwi({ icon=beautiful.iw["tag"] }))
     layout:add(common.cwt({ text="TAG", width=35, b1=module.main, font="Sci Fied 8"}))
-    layout:add(module.taglist())
+    layout:add(awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons))
     layout:add(common.arrow(6))
     return layout
 end
