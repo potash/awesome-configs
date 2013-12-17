@@ -14,8 +14,8 @@ local beautiful = require("beautiful")
 
 local module = {}
 
-module.menu= {}
-module.timer={}
+module.menu = {}
+module.timer = {}
 
 module.timer[1] = timer{timeout = beautiful.popup_time_out}
 module.timer[1]:connect_signal("timeout", function()
@@ -36,8 +36,7 @@ local function new()
     if #cls > 1 then -- run alt-tab behavior when there is more than one client running.
         module.timer_restart()
         module.menu = radical.box({filter = true, show_filter = true, fkeys_prefix = true,
-            style = radical.style.classic, item_style = radical.item_style.classic
-        })
+            style = radical.style.classic, item_style = radical.item_style.classic})
         module.menu:add_key_hook({}, "Tab", "press", function()
             module.timer_restart()
             local item = module.menu.next_item
@@ -47,7 +46,7 @@ local function new()
         end)
         for _,v in pairs(cls) do
             module.menu:add_item({
-                text = awful.util.linewrap((awful.util.escape(v.name) or "N/A"), 80,0),
+                text = awful.util.linewrap((awful.util.escape(v.name).."\t\t" or "N/A"), 80,0), -- FIXME: TAB nera butinas.
                 button1 = function()
                     module.timer_restart()
                     if v:tags()[1] and v:tags()[1].selected == false then
