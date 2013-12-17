@@ -15,215 +15,184 @@ local radical   = require("extern.radical")
 local common    = require("widgets.common")
 
 local module = {}
-local path = beautiful.path.."/launcher"
-local style = radical.style.classic
-local item_style = radical.item_style.classic
 
-function module.mitems()
-    --- Main menu table
-    module.mapp={}
-    module.mapp["Work"] = {
-        icon = beautiful.mapp["work"],
-        items = {
-            { name="GNU/Emacs",                command="emacs",                icon=path.."/app/emacs.png",      },
-            { name="Terminal",                 command="urxvt",                icon=path.."/app/terminal.png"    }
-        }
-    }
-    module.mapp["Network"] = {
-        -- GPS
-        icon = beautiful.mapp["network"],
-        items = {
-            { name="Firefox",                  command="firefox",              icon=path.."/app/firefox.png"     },
-            { name="Wireshark",                command="wireshark",            icon=path.."/app/wireshark.png"   },
-            { name="ZenMap",                   command="zenmap",               icon=path.."/app/zenmap.png"      },
-            { name="QNetStatView",             command="qnetstatview",         icon=path.."/app/netstat.png"     },
-            { name="BurpSuite",                command="burpsuite",            icon=path.."/app/burpsuite.png"   },
-            { name="CrossFTP",                 command="crossftp",             icon=path.."/app/crossftp.png"    },
-            { name="Tixati",                   command="tixati",               icon=path.."/app/tixati.png"      }
-        }
-    }
-    module.mapp["Development"] = {
-        icon = beautiful.mapp["development"],
-        items = {
-            { name="gdb",                      command="prompt_gdb",           icon=path.."/app/terminal.png"    },
-            { name="Python",                   command="prompt_python",        icon=path.."/app/terminal.png"    },
-            { name="Perl",                     command="prompt_perl",          icon=path.."/app/terminal.png"    },
-            { name="Lua",                      command="prompt_lua",           icon=path.."/app/terminal.png"    },
-            { name="Tk",                       command="tkcon",                icon=path.."/app/terminal.png"    },
-            { name="IDEA",                     command="idea",                 icon=path.."/app/idea.png"        },
-            { name="PyCrham",                  command="pycharm",              icon=path.."/app/pycharm.png"     },
-            { name="Sqlite",                   command="tksqlite",             icon=path.."/app/cpan.png"        },
-            { name="KDbg",                     command="kdbg",                 icon=path.."/app/kdbg.png"        },
-            { name="KCachegrind",              command="kcachegrind",          icon=path.."/app/kcachegrind.png" },
-            { name="IDA Hex-Rays",             command="ida",                  icon=path.."/app/ida.png"         },
-            { name="BeyondCompare",            command="bcompare",             icon=path.."/app/bcompare.png"    },
-            { name="gitk",                     command="gitk",                 icon=path.."/app/git.png"         },
-            { name="tkcvs",                    command="tkcvs",                icon=path.."/app/git.png"         },
-            { name="Visual REgex",             command="visual_regexp",        icon=path.."/app/re.png"          },
-            { name="Deskzilla",                command="Deskzilla",            icon=path.."/app/deskzilla.png"   }
-        }
-    }
-    module.mapp["File Manager"] = {
-        icon = beautiful.mapp["file_Manager"],
-        items = {
-            { name="Krusader",                 command="krusader",             icon=path.."/app/krusader.png"    },
-            { name="Kate",                     command="kate",                 icon=path.."/app/kate.png"        }
-        }
-    }
-    module.mapp["Messenger"] = {
-        icon = beautiful.mapp["messenger"],
-        items = {
-            { name="Skype",                    command="kvirc4",               icon=path.."/app/kvirc.png"       },
-            { name="KVirc",                    command="kopete",               icon=path.."/app/kopete.png"      },
-            { name="Kopete",                   command="skype",                icon=path.."/app/skype.png"       }
-        }
-    }
-    module.mapp["Reader"] = {
-        icon = beautiful.mapp["reader"],
-        items = {
-            { name="Qpdf",                     command="qpdf",                 icon=path.."/app/okular.png"      },
-            { name="QuiteRSS",                 command="quiterss",             icon=path.."/app/quiterss.png"    },
-            { name="Deskzilla",                command="deskzilla"                                               },
-            { name="Claws mail",               command="claws-mail"                                              }
-        }
-    }
-    module.mapp["Graphics"] = {
-        -- ccolor, image viever
-        icon = beautiful.mapp["graphics"],
-        items = {
-            { name="digiKam",                  command="digikam",              icon=path.."/app/digikam.png"     },
-            { name="Gimp",                     command="gimp-2.8",             icon=path.."/app/gimp.png"        },
-            { name="showFoto",                 command="showfoto",             icon=path.."/app/showfoto.png"    },
-            { name="LightScreen",              command="lightscreen",          icon=path.."/app/lightscreen.png" },
-            { name="Color Chooser",            command="ccolor",                                                 },
-            { name="Color Picker",             command="colorpicker",                                            },
-            { name="Ruler",                    command="lightscreen",                                            },
-            { name="Magnifer",                 command="lightscreen",                                            },
-        }
-    }
-    module.mapp["Multimedia"] = {
-        -- imdb database guisas
-        icon = beautiful.mapp["multimedia"],
-        items = {
-            { name="Kdenlive",                 command="kdenlive",             icon=path.."/app/kdenlive.png"    },
-            { name="Minitube",                 command="minitube"                                                },
-            { name="FeFF",                     command="feff",                 icon=path.."/app/feff.png"        },
-            { name="Minitube",                 command="minitube"                                                }
-        }
-    }
-    module.mapp["Office"] = {
-        icon = beautiful.mapp["office"],
-        items = {
-            { name="yEd",                      command="yEd",                  icon=path.."/app/yEd.png"         },
-            { name="Qpdf",                     command="qpdf",                 icon=path.."/app/qpdf.png"        },
-            { name="FreePlane",                command="freeplane",            icon=path.."/app/freeplane.png"   },
-            { name="Gephi",                    command="gephi",                icon=path.."/app/gephi.png"       },
-            { name="zNotes",                   command="znotes",               icon=path.."/app/znotes.png"      }
-        }
-    }
-    module.mapp["System"] = {
-        -- Virus total, lucky backup
-        icon = beautiful.mapp["system"],
-        items = {
-            { name="VirtualBox",               command="virtualbox",           icon=path.."/app/virtualbox.png"  },
-            { name="qps",                      command="qps",                  icon=path.."/app/qps.png"         },
-            { name="Highlight",                command="highlight-gui"                                           },
-            { name="KCalc",                    command="kcalc"                                                   },
-            { name="Porthole",                 command="porthole",             icon=path.."/app/porthole.png"    },
-            { name="QDbusViewer",              command="qdbusviewer",          icon=path.."/app/qdbusviewer.png" },
-            { name="Krename",                  command="krename",              icon=path.."/app/krename.png"     },
-            { name="Kfind",                    command="kfind",                icon=path.."/app/kfind.png"       },
-            { name="Screensaver",              command="xscreensaver-demo"                                       }
-        }
-    }
-    module.mapp["Miscellaneous"] = {
-        icon = beautiful.mapp["miscellaneous"],
-        items = {
-            { name="Name", command="Command" }
-        }
-    }
-    module.mapp["Awesome"] = {
-        icon = beautiful.mapp["awesome"],
-        items = {
-            { name="Restart", command="" },
-            { name="Quit",    command="" }
-        }
-    }
+local path = beautiful.ICONS.."/launcher"
 
-    return module.mapp
-end
+-- Main menu table
+module.mapp = {}
+module.mapp["Network"] = {
+    icon = beautiful.mapp["network"],
+    items = {
+        { name="Firefox",                  command="firefox",              icon=path.."/app/firefox.png"     },
+        { name="Wireshark",                command="wireshark",            icon=path.."/app/wireshark.png"   },
+        { name="ZenMap",                   command="zenmap",               icon=path.."/app/zenmap.png"      },
+        { name="QNetStatView",             command="qnetstatview",         icon=path.."/app/netstat.png"     },
+        { name="BurpSuite",                command="burpsuite",            icon=path.."/app/burpsuite.png"   },
+        { name="CrossFTP",                 command="crossftp",             icon=path.."/app/crossftp.png"    },
+        { name="Tixati",                   command="tixati",               icon=path.."/app/tixati.png"      },
+        { name="Deskzilla",                command="deskzilla",            icon=path.."/app/deskzilla.png"   },
+        { name="EiskaltDC++",              command="eiskaltdcpp-qt",       icon=path.."/app/eiskaltdcpp.png" },
+        { name="modRana",                  command="modrana",              icon=path.."/app/modrana.png"     }
+    }
+}
+module.mapp["Development"] = {
+    icon = beautiful.mapp["development"],
+    items = {
+        { name="gdb promp",                command="prompt_gdb",           icon=path.."/app/gdb.png"         },
+        { name="Python shell",             command="prompt_python",        icon=path.."/app/python.png"      },
+        { name="Perl shell",               command="prompt_perl",          icon=path.."/app/perl.png"        },
+        { name="Lua shell",                command="prompt_lua",           icon=path.."/app/lua.png"         },
+        { name="Tcl/Tk shell",             command="tkcon",                icon=path.."/app/tcl-tk.png"      },
+        { name="IDEA",                     command="idea",                 icon=path.."/app/idea.png"        },
+        { name="PyCrham",                  command="pycharm",              icon=path.."/app/pycharm.png"     },
+        { name="PhpStorm",                 command="phpstorm",             icon=path.."/app/phpstorm.png"    },
+        { name="Sqlite GUI",               command="tksqlite",             icon=path.."/app/sqlite.png"      },
+        { name="DBeaver",                  command="dbeaver",              icon=path.."/app/dbeaver.png"     },
+        { name="KCachegrind",              command="kcachegrind",          icon=path.."/app/cachegrind.png"  },
+        { name="IDA Hex-Rays",             command="ida",                  icon=path.."/app/ida.png"         },
+        { name="Beyond Compare",           command="bcompare",             icon=path.."/app/diff.png"        },
+        { name="Visual REgex",             command="visual_regexp",        icon=path.."/app/regex.png"       }
+    }
+}
+module.mapp["Messenger"] = {
+    icon = beautiful.mapp["messenger"],
+    items = {
+        { name="Kvirc",                    command="kvirc4",               icon=path.."/app/kvirc.png"       },
+        { name="Kopete",                   command="kopete",               icon=path.."/app/kopete.png"      },
+        { name="Skype",                    command="skype",                icon=path.."/app/skype.png"       }
+    }
+}
+module.mapp["Reader"] = {
+    icon = beautiful.mapp["reader"],
+    items = {
+        { name="QuiteRSS",                 command="quiterss",             icon=path.."/app/quiterss.png"    },
+        { name="Ebook Reader",             command="qpdf",                 icon=path.."/app/ebook.png"       },
+        { name="Deskzilla",                command="deskzilla",            icon=path.."/app/deskzilla.png"   },
+        { name="Thunderbird",              command="thunderbird",          icon=path.."/app/thunderbird.png" }
+    }
+}
+module.mapp["Graphics"] = {
+    icon = beautiful.mapp["graphics"],
+    items = {
+        { name="digiKam",                  command="digikam",              icon=path.."/app/digikam.png"     },
+        { name="Gimp",                     command="gimp-2.8",             icon=path.."/app/gimp.png"        },
+        { name="showFoto",                 command="showfoto",             icon=path.."/app/showfoto.png"    },
+        { name="5up",                      command="5up",                  icon=path.."/app/5up.png"         },
+        { name="Color Chooser",            command="ccolor",               icon=path.."/app/ccolor.png"      },
+        { name="Geegie",                   command="geegie",               icon=path.."/app/geeqie.png"      }
+    }
+}
+module.mapp["Multimedia"] = {
+    icon = beautiful.mapp["multimedia"],
+    items = {
+        { name="Kdenlive",                 command="kdenlive",             icon=path.."/app/kdenlive.png"    },
+        { name="Youtube Player",           command="minitube",             icon=path.."/app/youtube.png"     },
+        { name="Ffmpeg",                   command="feff",                 icon=path.."/app/ffmpeg.png"      },
+        { name="Record Desktop",           command="qx11grab",             icon=path.."/app/record.png"      },
+        { name="Jack control",             command="qjackctl",             icon=path.."/app/qjackctl.png"    },
+        { name="Ardour",                   command="ardour3",              icon=path.."/app/ardour.png"      },
+        { name="Japa",                     command="japa -J",              icon=path.."/app/japa.png"        },
+        { name="Cantata",                  command="cantata",              icon=path.."/app/cantata.png"     },
+        { name="Sound Mixer",              command="mixtray",              icon=path.."/app/alsa.png"        }
+    }
+}
+module.mapp["Office"] = {
+    icon = beautiful.mapp["office"],
+    items = {
+        { name="yEd",                      command="yEd",                  icon=path.."/app/yEd.png"         },
+        { name="Qpdf",                     command="qpdf",                 icon=path.."/app/ebook.png"       },
+        { name="Thunderbird",              command="thunderbird",          icon=path.."/app/thunderbird.png" }
+    }
+}
+module.mapp["System"] = {
+    icon = beautiful.mapp["system"],
+    items = {
+        { name="Nvidia Settings",          command="nvidia-settings",      icon=path.."/app/nvidia.png"      },
+        { name="VirtualBox",               command="virtualbox",           icon=path.."/app/virtualbox.png"  },
+        { name="Process Manager",          command="qps",                  icon=path.."/app/system.png"      },
+        { name="Porthole",                 command="porthole",             icon=path.."/app/porthole.png"    },
+        { name="Dbus Viewer",              command="qdbusviewer",          icon=path.."/app/qdbusviewer.png" },
+        { name="Gparted",                  command="gparted",              icon=path.."/app/gparted.png"     },
+        { name="Apol",                     command="apol",                 icon=path.."/app/apol.png"        },
+        { name="SeAudit",                  command="seaudit",              icon=path.."/app/seaudit.png"     },
+        { name="Selinux config",           command="config-selinux",       icon=path.."/app/selinux.png"     },
+        { name="Screensaver",              command="xscreensaver-demo",    icon=path.."/app/screen.png"      },
+        { name="Configure wine",           command="q4wine",               icon=path.."/app/wine.png"        }
+    }
+}
+module.mapp["Miscellaneous"] = {
+    icon = beautiful.mapp["miscellaneous"],
+    items = {
+        { name="Terminal",                 command="urxvt",                icon=path.."/app/terminal.svg"    },
+        { name="speedcrunch",              command="speedcrunch",          icon=path.."/app/speedcrunch.svg" },
+        { name="Virus Total",              command="virustotal",           icon=path.."/app/virustotal.png"  },
+        { name="Comodo AV",                command="comodo_start",         icon=path.."/app/comodo.png"      },
+        { name="ClamTk",                   command="clamtk",               icon=path.."/app/clamtk.png"      },
+        { name="Krusader",                 command="krusader",             icon=path.."/app/krusader.png"    },
+        { name="Kate",                     command="kate",                 icon=path.."/app/kate.png"        },
+        { name="Copyq",                    command="copyq",                icon=path.."/app/copyq.png"       }
+    }
+}
 
---- Quick menu table.
+-- Quick menu table.
 module.qapp = {}
-module.qapp["Terminal"]     = { command="urxvt",      key="T", icon=path.."/quick/terminal.svg",     tag=1 }
-module.qapp["File Manager"] = { command="krusader",   key="F", icon=path.."/quick/file-manager.svg", tag=4 }
-module.qapp["Web browser"]  = { command="firefox",    key="B", icon=path.."/quick/browser.svg",      tag=2 }
-module.qapp["Editor"]       = { command="emacs",      key="E", icon=path.."/quick/editor.svg",       tag=1 }
-module.qapp["eMail Reader"] = { command="claws-mail", key="M", icon=path.."/quick/email.svg",        tag=6 }
-module.qapp["IDE"]          = { command="idea",       key="I", icon=path.."/quick/IDE.svg",          tag=3 }
-module.qapp["Irc Client"]   = { command="kvirc4",     key="C", icon=path.."/quick/irc.svg",          tag=5 }
-module.qapp["Task Manager"] = { command="qps",        key="P", icon=path.."/quick/proc.svg",         tag=0 }
+module.qapp["Terminal"]     = { command="urxvt",       key="T", icon=path.."/quick/terminal.svg",     tag=1 }
+module.qapp["File Manager"] = { command="krusader",    key="F", icon=path.."/quick/file-manager.svg", tag=4 }
+module.qapp["Web browser"]  = { command="firefox",     key="B", icon=path.."/quick/browser.svg",      tag=2 }
+module.qapp["Editor"]       = { command="emacs",       key="E", icon=path.."/quick/editor.svg",       tag=1 }
+module.qapp["Thunderbird"]  = { command="thunderbird", key="M", icon=path.."/quick/thunderbird.svg",  tag=6 }
+module.qapp["IDE"]          = { command="idea",        key="I", icon=path.."/quick/IDE.svg",          tag=3 }
+module.qapp["Irc Client"]   = { command="kvirc4",      key="C", icon=path.."/quick/irc.svg",          tag=5 }
+module.qapp["Task Manager"] = { command="qps",         key="P", icon=path.."/quick/proc.svg",         tag=0 }
 
--- TODO: remove this shit!
-local function tablelength(t)
-    local count = 0
-    for _ in pairs(t) do count = count + 1 end
-    return count
+local function spawn(cmd)
+    awful.util.spawn(cmd)
 end
 
---- Main menu builder
-module.menu_app = false
+-- Main menu builder
+module.menu_visible = false
 function module.main_app()
-    if not module.menu_app then
-        module.menu_app = radical.context({ enable_keyboard=true, filter=false, style=style, item_style=item_style })
+    if module.menu_visible and module.menu_app then
+        module.menu_app:hide()
+        module.menu_visible = false
+        return
+    elseif not module.menu_visible and not module.menu_app then
+        local menu_items = {}
         local function submenu(t)
-            local items = radical.context({ style=style, item_style=item_style, enable_keyboard=false })
+            local submenus = {}
             for i,_ in pairs(t) do
-                items:add_item({
-                    button1 = function()
-                        awful.util.spawn_with_shell(t[i].command)
-                        module.menu_app.visible = false
-                        keygrabber.stop()
-                    end,
-                    text = t[i].name, icon = t[i].icon or beautiful.cm["none"]
-                })
+                table.insert(submenus,{t[i].name, t[i].command, t[i].icon or beautiful.cm["none"]})
             end
-            return items
+            return submenus
         end
-        for k,v in pairs(module.mitems()) do
-            module.menu_app:add_item({ text=k, sub_menu=submenu(v.items), icon=v.icon })
+        for k,v in pairs(module.mapp) do
+            table.insert(menu_items, {k, submenu(v.items), v.icon})
         end
-        module.menu_app.visible = true
-    elseif module.menu_app.visible then
-        module.menu_app.visible = false
-        keygrabber.stop()
-    else
-        module.menu_app.visible = true
+        module.menu_app = awful.menu.new({items=menu_items,theme={height=16,width=120}})
     end
+    module.menu_app:show()
+    module.menu_visible = true
 end
 
---- Quick menu builder
+-- Quick menu builder
 module.menu_qapp = false
 function module.main_qapp()
     if not module.menu_qapp then
         local tags = awful.tag.gettags(1)
-        local items = module.qapp
         module.menu_qapp = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom",
-            x = 105,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - ((tablelength(items))*beautiful.menu_height) - 22
+            filer = false, enable_keyboard = true, direction = "bottom", x = 105,
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - ((#awful.util.table.keys(module.qapp))*beautiful.menu_height) - 22
         })
-        for i,v in pairs(items) do
+        for i,v in pairs(module.qapp) do
             module.menu_qapp:add_item({
                 button1 = function()
-                    awful.util.spawn_with_shell(v.command)
+                    spawn(v.command)
                     if tags[v.tag] and tags[v.tag] ~= 0 then
                         awful.tag.viewonly(tags[v.tag])
                     end
                     common.hide_menu(module.menu_qapp)
                 end,
-                text = i or "N/A", icon = v.icon or beautiful.cm["none"],
-                underlay = underlay(v.key)
+                text = i or "N/A", icon = v.icon or beautiful.cm["none"],underlay = underlay(v.key)
             })
         end
         common.reg_menu(module.menu_qapp)
@@ -234,21 +203,11 @@ function module.main_qapp()
     end
 end
 
--- Widget text
-function module.text()
-    return common.cwt({ text="MENU", width=50, b1=module.main_qapp, b3=module.main_app, font="Sci Fied 8" })
-end
-
--- Widget icon
-function module.icon()
-    return common.cwi({ icon=beautiful.iw["menu"] })
-end
-
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    layout:add(module.icon())
-    layout:add(module.text())
+    layout:add(common.cwi({icon=beautiful.iw["menu"]}))
+    layout:add(common.cwt({text="MENU", width=50, b1=module.main_qapp, b3=module.main_app, font="Sci Fied 8"}))
     layout:add(common.arrow(6))
     return layout
 end
