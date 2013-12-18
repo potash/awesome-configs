@@ -42,7 +42,7 @@ function module.main()
     if not module.menu then
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom",
-            x = screen[1].geometry.width - 220,
+            x = screen[1].geometry.width - 285,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#awful.util.table.keys(module.lang)*beautiful.menu_height) - 22,
         })
         for k,v in pairs(module.lang) do

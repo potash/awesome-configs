@@ -48,6 +48,7 @@ layout["left"]:add(widgets.prompt())
 layout["right"]:add(wibox.widget.systray())
 layout["right"]:add(widgets.kbd())
 layout["right"]:add(widgets.places())
+layout["right"]:add(widgets.sys())
 layout["right"]:add(widgets.clock())
 
 -- Now bring it all together (with the tasklist in the middle)

@@ -39,7 +39,7 @@ function module.main()
     if not module.menu then
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom",
-            x = screen[1].geometry.width - 140,
+            x = screen[1].geometry.width - 210,
             y = screen[1].geometry.height - beautiful.wibox["main"].height - (#PATHS*beautiful.menu_height) - 22,
         })
         local tags = awful.tag.gettags(1)
