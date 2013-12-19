@@ -36,7 +36,7 @@ local function header(args)
    local i = wibox.widget.imagebox()
    local l = wibox.layout.align.horizontal()
 
-   t:set_markup("<span color='#000000' font='Election Day 8' font_weight='light'>".. text .."</span>")
+   t:set_markup("<span color='#000000' font='Election Day 8' font_weight='light'> ".. text .."</span>")
    t:set_valign("bottom")
 
    i:set_image(beautiful.ICONS .. "/widgets/sys/"..icon)
@@ -56,10 +56,10 @@ function module.main()
     if not module.menu then
         module.menu = radical.context({filer = false,enable_keyboard = false, direction = "bottom",width=120, fg="#005CB0"})
 
-        module.menu:add_widget(header({text="CPU", icon="cpu.svg"}),            { height = 12  })
+        module.menu:add_widget(header({text="CPU Usage", icon="cpu.svg"}),      { height = 12  })
         module.menu:add_widget(sys_cpu(),                                       { height = 104 })
-        module.menu:add_widget(header({text="MEM", icon="mem.svg"}),            { height = 12  })
-        module.menu:add_widget(sys_mem(),                                       { height = 20  })
+        module.menu:add_widget(header({text="MEM Status", icon="mem.svg"}),     { height = 12  })
+        module.menu:add_widget(sys_mem(),                                       { height = 85  })
         module.menu:add_widget(header({text="NET", icon="network.svg"}),        { height = 12  })
         module.menu:add_widget(sys_net(),                                       { height = 20  })
         module.menu:add_widget(header({text="DISK", icon="disks.svg"}),         { height = 12  })

@@ -135,7 +135,7 @@ theme.fg_urgent      = "#FF7777"
 theme.fg_minimize    = "#1577D3"
 
 theme.menu_border_width = 1
-theme.menu_border_color = "#002E69"
+theme.menu_border_color = "#003687"
 
 --theme.menu_fg_focus = "#FF001A"
 theme.menu_bg_focus = "#002251"
@@ -146,6 +146,7 @@ theme.menu_fg_normal = "#1692D0"
 theme.menu_bg_alternate = "#004FFF"
 theme.menu_bg_highlight = "#001026"
 --theme.menu_bg_header    = "#FFFFFF"
+
 
 -- bg_normal = "#0A1535", bg_focus = "#0F2766", 
 theme.titlebar_bg_normal = "#001734"

@@ -13,7 +13,7 @@ local awful      = require("awful")
 local vicious    = require("extern.vicious")
 local beautiful  = require("beautiful")
 local wibox      = require("wibox")
-local line_graph = require("extern.graph.line")
+local line_graph = require("extern.graph.line_graph")
 
 local module = {}
 
@@ -25,6 +25,7 @@ local function widget_graph()
     graph:set_width(120)
     graph:set_graph_line_color("#0036B8")
     graph:set_graph_color("#1C6D9550")
+    
     local base = wibox.widget.base.make_widget()
     local img = wibox.widget.imagebox()
     img:set_image(beautiful.ICONS .. "/widgets/background/sys.png")
