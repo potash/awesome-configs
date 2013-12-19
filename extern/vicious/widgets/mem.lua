@@ -10,7 +10,7 @@ local setmetatable = setmetatable
 local math = { floor = math.floor }
 local string = { gmatch = string.gmatch }
 -- }}}
-
+local print = print
 
 -- Mem: provides RAM and Swap usage statistics
 -- vicious.widgets.mem
@@ -33,7 +33,9 @@ local function worker(format)
             end
         end
     end
-
+    local buffers = _mem.buf.b
+    local cached = _mem.buf.c
+    
     -- Calculate memory percentage
     _mem.free  = _mem.buf.f + _mem.buf.b + _mem.buf.c
     _mem.inuse = _mem.total - _mem.free
@@ -45,7 +47,7 @@ local function worker(format)
 
     return {_mem.usep,     _mem.inuse,     _mem.total, _mem.free,
             _mem.swp.usep, _mem.swp.inuse, _mem.swp.t, _mem.swp.f,
-            _mem.bcuse }
+            _mem.bcuse, buffers, cached}
 end
 -- }}}
 

@@ -22,7 +22,7 @@ local helpers = require("extern.vicious.helpers")
 -- Vicious: widgets for the awesome window manager
 local vicious = {}
 vicious.widgets = require("extern.vicious.widgets")
---vicious.contrib = require("vicious.contrib")
+vicious.contrib = require("extern.vicious.contrib")
 
 -- Initialize tables
 local timers       = {}

@@ -8,7 +8,7 @@
 local setmetatable = setmetatable
 local math = { floor = math.floor }
 local string = { match = string.match }
-local helpers = require("vicious.helpers")
+local helpers = require("extern.vicious.helpers")
 -- }}}
 
 

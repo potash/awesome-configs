@@ -7,7 +7,7 @@
 
 -- {{{ Setup environment
 local setmetatable = setmetatable
-local wrequire = require("vicious.helpers").wrequire
+local wrequire = require("extern.vicious.helpers").wrequire
 
 -- Vicious: widgets for the awesome window manager
 -- vicious.contrib
