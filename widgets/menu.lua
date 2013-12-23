@@ -141,7 +141,7 @@ module.qapp["File Manager"] = { command="krusader",    key="F", icon=path.."/qui
 module.qapp["Web browser"]  = { command="firefox",     key="B", icon=path.."/quick/browser.svg",      tag=2 }
 module.qapp["Editor"]       = { command="emacs",       key="E", icon=path.."/quick/editor.svg",       tag=1 }
 module.qapp["Thunderbird"]  = { command="thunderbird", key="M", icon=path.."/quick/thunderbird.svg",  tag=6 }
-module.qapp["IDE"]          = { command="idea",        key="I", icon=path.."/quick/IDE.svg",          tag=3 }
+module.qapp["IDE"]          = { command="vs",          key="I", icon=path.."/quick/IDE.svg",          tag=3 }
 module.qapp["Irc Client"]   = { command="kvirc4",      key="C", icon=path.."/quick/irc.svg",          tag=5 }
 module.qapp["Task Manager"] = { command="qps",         key="P", icon=path.."/quick/proc.svg",         tag=0 }
 
