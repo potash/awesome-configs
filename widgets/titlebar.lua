@@ -15,7 +15,12 @@ local dbg       = require("extern.dbg")
 local module = {}
 
 local function new(c)
-    -- buttons for the titlebar
+    -- Layouts
+    local left_layout = wibox.layout.fixed.horizontal()
+    local right_layout = wibox.layout.fixed.horizontal()
+    local middle_layout = wibox.layout.flex.horizontal()
+
+    -- Buttons for the titlebar
     local buttons = awful.util.table.join(
         awful.button({ }, 1, function()
             client.focus = c
@@ -28,65 +33,66 @@ local function new(c)
             awful.mouse.client.resize(c)
         end)
     )
-    local wi = wibox.widget.imagebox()
-    local function update_icons()
-        local s=""
-        if c.sticky == true then s = s.."_sticky"  end
-        if c.ontop == true then  s = s.."_ontop"   end
-        if awful.client.floating.get(c) then s = s.."_float" end
-        wi:set_image(beautiful.ICONS .. "/titlebar/status"..s..".png")
+    -- Status images
+    if beautiful.tb["add_status"] then
+        local status_image = wibox.widget.imagebox()
+        local status_layout = wibox.layout.fixed.horizontal()
+
+        local function update_icons()
+            local s=""
+            if c.sticky == true then s = s.."_sticky"  end
+            if c.ontop == true then  s = s.."_ontop"   end
+            if awful.client.floating.get(c) then s = s.."_float" end
+            status_image:set_image(beautiful.ICONS .. "/titlebar/status"..s..".png")
+        end
+        update_icons(c)
+        c:connect_signal("property::floating", update_icons)
+        c:connect_signal("property::ontop", update_icons)
+        c:connect_signal("property::sticky", update_icons)
+        
+        status_layout:add(status_image)
+        status_layout:buttons(buttons)
+        right_layout:add(status_layout)
     end
 
-    --update_icons(c)
-    --c:connect_signal("property::floating", update_icons)
-    --c:connect_signal("property::ontop", update_icons)
-    --c:connect_signal("property::sticky", update_icons)
-
+    -- Client icon
     local clientIcon = wibox.widget.imagebox()
     clientIcon:set_image(c.icon or beautiful.cm["none"])
-    clientIcon:buttons(awful.util.table.join(awful.button({ }, 1, function() end)))
 
-    -- Widgets that are aligned to the left
-    local left_layout = wibox.layout.fixed.horizontal()
+    -- Titlebar title
+    local clientTitle = wibox.widget.textbox()
+    clientTitle:set_valign(beautiful.tb["valign"])
+    clientTitle:set_font(beautiful.tb["font"])
+    local function update_title()
+        local text = awful.util.linewrap(awful.util.escape(c.name) or "N/A", 80)
+        clientTitle:set_markup("<span color='".. beautiful.tb["fg"] .."'>".. text .."</span>")
+    end
+    c:connect_signal("property::name", update_title)
+    update_title()
+
     left_layout:add(clientIcon)
+    left_layout:add(clientTitle)
     left_layout:buttons(buttons)
 
-    -- Widgets that are aligned to the right
-    local right_layout = wibox.layout.fixed.horizontal()
+    -- Empty middle layout (it is required for buttons)
+    middle_layout:buttons(buttons)
+
+    -- Titlebar buttons
     right_layout:add(awful.titlebar.widget.floatingbutton(c))
     right_layout:add(awful.titlebar.widget.maximizedbutton(c))
     right_layout:add(awful.titlebar.widget.stickybutton(c))
     right_layout:add(awful.titlebar.widget.ontopbutton(c))
     right_layout:add(awful.titlebar.widget.closebutton(c))
 
-    -- The title goes in the middle
-    local middle_layout = wibox.layout.flex.horizontal()
-
-    local wt = wibox.widget.textbox()
-
-    local function update()
-        local title = awful.util.linewrap(awful.util.escape(c.name) or "N/A", 80)
-        wt:set_markup("<span color='#1692D0'>".. title .."</span>")
-    end
-
-    c:connect_signal("property::name", update)
-    update()
-
-    wt:set_align("left")
-    wt:set_valign("center")
-    wt:set_font("sans 8")
-    wt.fit = function() return 100,14 end
-
-    middle_layout:add(wt)
-    middle_layout:buttons(buttons)
-
     -- Now bring it all together
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_right(right_layout)
     layout:set_middle(middle_layout)
-
-    awful.titlebar(c, { size = 12 }):set_widget(layout)
+    layout:set_right(right_layout)
+    --  Available "position" values are top, left, right and bottom. 
+    --  Additionally, the foreground and background colors can be configured via e.g. "bg_normal" and "bg_focus". 
+    awful.titlebar(c, { size = beautiful.tb["size"], position = beautiful.tb["position"],
+        bg_normal = beautiful.tb["bg"],bg_focus = beautiful.tb["bg_focus"]}):set_widget(layout)
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

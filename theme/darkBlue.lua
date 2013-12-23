@@ -113,6 +113,21 @@ theme.pr["cmd"]                  = "<span foreground='#1692D0' font='Sci Fied 8'
 theme.pr["run"]                  = "<span foreground='#1692D0' font='Sci Fied 8'>RUN:</span> "
 theme.pr["lua"]                  = "<span foreground='#1692D0' font='Sci Fied 8'>LUA:</span> "
 
+-- Titlebar
+theme.tb={}
+theme.tb["add_all"]              = false
+theme.tb["add_float"]            = true
+theme.tb["add_status"]           = true
+theme.tb["size"]                 = 12
+theme.tb["valign"]               = "top"
+theme.tb["position"]             = "top"
+theme.tb["font"]                 = "sans 8"
+theme.tb["bg_focus"]             = "#0b1e46"
+theme.tb["fg"]                   = "#1692D0"
+theme.tb["bg"]                   = "#001734"
+
+
+
 theme.border_width   = 1
 theme.border_color   = "#1577D3"
 theme.border_normal  = "#000000"
@@ -148,10 +163,6 @@ theme.menu_bg_highlight = "#001026"
 --theme.menu_bg_header    = "#FFFFFF"
 
 
--- bg_normal = "#0A1535", bg_focus = "#0F2766", 
-theme.titlebar_bg_normal = "#001734"
-theme.titlebar_bg_focus = "#0b1e46"
-
 -- widget text
 --theme.widget_text_font = "Sci Fied 8"
 theme.widget_text_font    = "Sans 8"
@@ -170,25 +181,23 @@ theme.taglist_font         = "Sci Fied 10"
 theme.tasklist_font        = "Ticking Timebomb BB 11"
 theme.taglist_disable_icon = true
 
+
+
 -- Title-bar icons
 theme.titlebar_close_button_normal              = ICONS.."/titlebar/close_normal.png"
 theme.titlebar_close_button_focus               = ICONS.."/titlebar/close_focus.png"
-
 theme.titlebar_ontop_button_normal_inactive     = ICONS.."/titlebar/ontop_normal_inactive.png"
 theme.titlebar_ontop_button_focus_inactive      = ICONS.."/titlebar/ontop_focus_inactive.png"
 theme.titlebar_ontop_button_normal_active       = ICONS.."/titlebar/ontop_normal_inactive.png"
 theme.titlebar_ontop_button_focus_active        = ICONS.."/titlebar/ontop_focus_inactive.png"
-
 theme.titlebar_sticky_button_normal_inactive    = ICONS.."/titlebar/sticky_normal_inactive.png"
 theme.titlebar_sticky_button_focus_inactive     = ICONS.."/titlebar/sticky_focus_inactive.png"
 theme.titlebar_sticky_button_normal_active      = ICONS.."/titlebar/sticky_normal_inactive.png"
 theme.titlebar_sticky_button_focus_active       = ICONS.."/titlebar/sticky_focus_inactive.png"
-
 theme.titlebar_floating_button_normal_inactive  = ICONS.."/titlebar/floating_normal_inactive.png"
 theme.titlebar_floating_button_focus_inactive   = ICONS.."/titlebar/floating_focus_inactive.png"
 theme.titlebar_floating_button_normal_active    = ICONS.."/titlebar/floating_normal_inactive.png"
 theme.titlebar_floating_button_focus_active     = ICONS.."/titlebar/floating_focus_inactive.png"
-
 theme.titlebar_maximized_button_focus_active    = ICONS.."/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_focus_inactive  = ICONS.."/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_active   = ICONS.."/titlebar/maximized_normal_inactive.png"

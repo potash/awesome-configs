@@ -59,7 +59,7 @@ layout["wibox"]:set_right(layout["right"])
 main:set_widget(layout["wibox"])
 
 local function spawn(cmd)
-    awful.util.spawn(cmd.." &>/dev/null")
+    awful.util.spawn(cmd.." &>/dev/null", false)
 end
 
 -- Mouse bindings
@@ -176,8 +176,9 @@ client.connect_signal("manage", function(c,startup)
     if c.type == "dialog" or awful.client.floating.get(c) then
         awful.placement.centered(c)
         c.ontop = true
+        if beautiful.tb["add_float"] then widgets.titlebar(c) end
     end
-    --widgets.titlebar(c)
+    if beautiful.tb["all"] then widgets.titlebar(c) end
 end)
 -- when a client gains focus
 client.connect_signal("focus", function(c)
@@ -187,3 +188,4 @@ end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
 end)
+
