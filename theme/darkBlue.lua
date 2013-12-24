@@ -13,20 +13,102 @@ local naughty = require("naughty")
 
 local theme = {}
 
-theme.CONFIG                     = awful.util.getdir("config")
-theme.ICONS                      = theme.CONFIG.."/theme/darkBlue"
-theme.wallpaper                  = theme.CONFIG.."/background.png"
-theme.dbpath                     = theme.CONFIG.."/extern/awfuldb/rules.db"
-theme.arrow                      = theme.ICONS.."/arrow"
-theme.menu_submenu_icon          = theme.ICONS.."/submenu.png"
-theme.path                       = theme.ICONS
-theme.awesome_icon               = "/usr/share/awesome/icons/awesome16.png"
-theme.menu_height                = 20
-theme.popup_time_out             = 6
-theme.icon_theme                 = nil
+theme.CONFIG                          = awful.util.getdir("config")
+theme.ICONS                           = theme.CONFIG.."/theme/darkBlue"
+theme.wallpaper                       = theme.CONFIG.."/theme/darkBlue/background.png"
+theme.dbpath                          = theme.CONFIG.."/extern/awfuldb/rules.db"
+theme.arrow                           = theme.ICONS.."/arrow"
+theme.menu_submenu_icon               = theme.ICONS.."/submenu.png"
+theme.path                            = theme.ICONS
+theme.awesome_icon                    = "/usr/share/awesome/icons/awesome16.png"
+theme.menu_height                     = 20
+theme.popup_time_out                  = 6
+theme.icon_theme                      = nil
 
+-- Main wibox settings
+theme.wibox={}
+theme.wibox["main"]={}
+theme.wibox["main"].enable            = true
+theme.wibox["main"].position          = "bottom"
+theme.wibox["main"].height            = 16
+theme.wibox["main"].bg                = "#0F2766"
+theme.wibox["main"].fg                = "#1692D0"
 
-gears.wallpaper.maximized(theme.wallpaper, 1, true)
+-- Widgets icons
+theme.iw={}
+theme.iw["places"]                    = theme.ICONS.."/widgets/places.svg"
+theme.iw["menu"]                      = theme.ICONS.."/widgets/menu.svg"
+theme.iw["tag"]                       = theme.ICONS.."/widgets/workspace.svg"
+theme.iw["kbd"]                       = theme.ICONS.."/widgets/keyboard.svg"
+theme.iw["sys"]                       = theme.ICONS.."/widgets/system.svg"
+
+-- Client menu
+theme.cm={}
+theme.cm["close"]                     = theme.ICONS.."/client/close.svg"
+theme.cm["save"]                      = theme.ICONS.."/client/save.svg"
+theme.cm["maximize"]                  = theme.ICONS.."/client/maximize.svg"
+theme.cm["floating"]                  = theme.ICONS.."/client/floating.svg"
+theme.cm["sticky"]                    = theme.ICONS.."/client/sticky.svg"
+theme.cm["ontop"]                     = theme.ICONS.."/client/ontop.svg"
+theme.cm["titlebar"]                  = theme.ICONS.."/client/titlebar.svg"
+theme.cm["move"]                      = theme.ICONS.."/client/move.svg"
+theme.cm["none"]                      = theme.ICONS.."/client/none.svg"
+
+-- Layout icons
+theme.li={}
+theme.li["fairh"]                     = theme.ICONS.."/layouts/fairh.png"
+theme.li["fairv"]                     = theme.ICONS.."/layouts/fairv.png"
+theme.li["floating"]                  = theme.ICONS.."/layouts/floating.png"
+theme.li["magnifier"]                 = theme.ICONS.."/layouts/magnifier.png"
+theme.li["max"]                       = theme.ICONS.."/layouts/max.png"
+theme.li["fullscreen"]                = theme.ICONS.."/layouts/fullscreen.png"
+theme.li["tilebottom"]                = theme.ICONS.."/layouts/tilebottom.png"
+theme.li["tileleft"]                  = theme.ICONS.."/layouts/tileleft.png"
+theme.li["tile"]                      = theme.ICONS.."/layouts/tile.png"
+theme.li["tiletop"]                   = theme.ICONS.."/layouts/tiletop.png"
+theme.li["spiral"]                    = theme.ICONS.."/layouts/spiral.png"
+theme.li["dwindle"]                   = theme.ICONS.."/layouts/dwindle.png"
+
+theme.taglist_squares_sel             = theme.ICONS.."/tags/squares_sel.png"
+theme.taglist_squares_unsel           = theme.ICONS.."/tags/squares_unsel.png"
+
+-- Applications menu
+theme.mapp={}
+theme.mapp["work"]                    = theme.ICONS.."/launcher/work.svg"
+theme.mapp["network"]                 = theme.ICONS.."/launcher/network.svg"
+theme.mapp["development"]             = theme.ICONS.."/launcher/development.svg"
+theme.mapp["file_Manager"]            = theme.ICONS.."/launcher/file_manager.svg"
+theme.mapp["messenger"]               = theme.ICONS.."/launcher/messenger.svg"
+theme.mapp["reader"]                  = theme.ICONS.."/launcher/reader.svg"
+theme.mapp["graphics"]                = theme.ICONS.."/launcher/graphics.svg"
+theme.mapp["multimedia"]              = theme.ICONS.."/launcher/multimedia.svg"
+theme.mapp["office"]                  = theme.ICONS.."/launcher/office.svg"
+theme.mapp["system"]                  = theme.ICONS.."/launcher/system.svg"
+theme.mapp["miscellaneous"]           = theme.ICONS.."/launcher/miscellaneous.svg"
+theme.mapp["awesome"]                 = theme.ICONS.."/launcher/awesome.svg"
+
+-- Prompt style 
+theme.pr={}  
+theme.pr["fg_cursor"]                 = "#00B3FF"
+theme.pr["bg_cursor"]                 = "#0F2766"
+theme.pr["ul_cursor"]                 = "single"
+theme.pr["font"]                      = "munospace 10"
+theme.pr["cmd"]                       = "<span foreground='#1692D0' font='Sci Fied 8'>CMD:</span> "
+theme.pr["run"]                       = "<span foreground='#1692D0' font='Sci Fied 8'>RUN:</span> "
+theme.pr["lua"]                       = "<span foreground='#1692D0' font='Sci Fied 8'>LUA:</span> "
+
+-- Titlebar
+theme.tb={}
+theme.tb["add_all"]                   = false
+theme.tb["add_float"]                 = true
+theme.tb["add_status"]                = true
+theme.tb["size"]                      = 12
+theme.tb["valign"]                    = "top"
+theme.tb["position"]                  = "top"
+theme.tb["font"]                      = "sans 8"
+theme.tb["bg_focus"]                  = "#0b1e46"
+theme.tb["fg"]                        = "#1692D0"
+theme.tb["bg"]                        = "#001734"
 
 -- Naughty library settings
 naughty.config.defaults.timeout       = 30
@@ -41,92 +123,6 @@ naughty.config.defaults.bg            = "#F7DD65"
 naughty.config.defaults.border_color  = "#FFB111"
 naughty.config.defaults.border_width  = 1
 naughty.config.defaults.hover_timeout = 3
-
--- Main wibox settings
-theme.wibox={}
-theme.wibox["main"]={}
-theme.wibox["main"].enable       = true
-theme.wibox["main"].position     = "bottom"
-theme.wibox["main"].height       = 16
-theme.wibox["main"].bg           = "#0F2766"
-theme.wibox["main"].fg           = "#1692D0"
-
--- Widgets icons
-theme.iw={}
-theme.iw["places"]               = theme.ICONS.."/widgets/places.svg"
-theme.iw["menu"]                 = theme.ICONS.."/widgets/menu.svg"
-theme.iw["tag"]                  = theme.ICONS.."/widgets/workspace.svg"
-theme.iw["kbd"]                  = theme.ICONS.."/widgets/keyboard.svg"
-theme.iw["sys"]                  = theme.ICONS.."/widgets/system.svg"
-
--- Client menu
-theme.cm={}
-theme.cm["close"]                = theme.ICONS.."/client/close.svg"
-theme.cm["save"]                 = theme.ICONS.."/client/save.svg"
-theme.cm["maximize"]             = theme.ICONS.."/client/maximize.svg"
-theme.cm["floating"]             = theme.ICONS.."/client/floating.svg"
-theme.cm["sticky"]               = theme.ICONS.."/client/sticky.svg"
-theme.cm["ontop"]                = theme.ICONS.."/client/ontop.svg"
-theme.cm["titlebar"]             = theme.ICONS.."/client/titlebar.svg"
-theme.cm["move"]                 = theme.ICONS.."/client/move.svg"
-theme.cm["none"]                 = theme.ICONS.."/client/none.svg"
-
--- Layout icons
-theme.li={}
-theme.li["fairh"]                = theme.ICONS.."/layouts/fairh.png"
-theme.li["fairv"]                = theme.ICONS.."/layouts/fairv.png"
-theme.li["floating"]             = theme.ICONS.."/layouts/floating.png"
-theme.li["magnifier"]            = theme.ICONS.."/layouts/magnifier.png"
-theme.li["max"]                  = theme.ICONS.."/layouts/max.png"
-theme.li["fullscreen"]           = theme.ICONS.."/layouts/fullscreen.png"
-theme.li["tilebottom"]           = theme.ICONS.."/layouts/tilebottom.png"
-theme.li["tileleft"]             = theme.ICONS.."/layouts/tileleft.png"
-theme.li["tile"]                 = theme.ICONS.."/layouts/tile.png"
-theme.li["tiletop"]              = theme.ICONS.."/layouts/tiletop.png"
-theme.li["spiral"]               = theme.ICONS.."/layouts/spiral.png"
-theme.li["dwindle"]              = theme.ICONS.."/layouts/dwindle.png"
-
-theme.taglist_squares_sel        = theme.ICONS.."/tags/squares_sel.png"
-theme.taglist_squares_unsel      = theme.ICONS.."/tags/squares_unsel.png"
-
--- Applications menu
-theme.mapp={}
-theme.mapp["work"]               = theme.ICONS.."/launcher/work.svg"
-theme.mapp["network"]            = theme.ICONS.."/launcher/network.svg"
-theme.mapp["development"]        = theme.ICONS.."/launcher/development.svg"
-theme.mapp["file_Manager"]       = theme.ICONS.."/launcher/file_manager.svg"
-theme.mapp["messenger"]          = theme.ICONS.."/launcher/messenger.svg"
-theme.mapp["reader"]             = theme.ICONS.."/launcher/reader.svg"
-theme.mapp["graphics"]           = theme.ICONS.."/launcher/graphics.svg"
-theme.mapp["multimedia"]         = theme.ICONS.."/launcher/multimedia.svg"
-theme.mapp["office"]             = theme.ICONS.."/launcher/office.svg"
-theme.mapp["system"]             = theme.ICONS.."/launcher/system.svg"
-theme.mapp["miscellaneous"]      = theme.ICONS.."/launcher/miscellaneous.svg"
-theme.mapp["awesome"]            = theme.ICONS.."/launcher/awesome.svg"
-
--- Prompt style
-theme.pr={}
-theme.pr["fg_cursor"]            = "#00B3FF"
-theme.pr["bg_cursor"]            = "#0F2766"
-theme.pr["ul_cursor"]            = "single"
-theme.pr["font"]                 = "munospace 10"
-theme.pr["cmd"]                  = "<span foreground='#1692D0' font='Sci Fied 8'>CMD:</span> "
-theme.pr["run"]                  = "<span foreground='#1692D0' font='Sci Fied 8'>RUN:</span> "
-theme.pr["lua"]                  = "<span foreground='#1692D0' font='Sci Fied 8'>LUA:</span> "
-
--- Titlebar
-theme.tb={}
-theme.tb["add_all"]              = false
-theme.tb["add_float"]            = true
-theme.tb["add_status"]           = true
-theme.tb["size"]                 = 12
-theme.tb["valign"]               = "top"
-theme.tb["position"]             = "top"
-theme.tb["font"]                 = "sans 8"
-theme.tb["bg_focus"]             = "#0b1e46"
-theme.tb["fg"]                   = "#1692D0"
-theme.tb["bg"]                   = "#001734"
-
 
 
 theme.border_width   = 1
@@ -212,5 +208,7 @@ theme.tasklist_floating_focus_icon = theme.ICONS.."/titlebar/floating_focus.png"
 theme.tasklist_ontop_focus_icon    = theme.ICONS.."/titlebar/ontop_focus.png"
 theme.tasklist_sticky_focus_icon   = theme.ICONS.."/titlebar/sticky_focus.png"
 theme.tasklist_plain_task_name     = true
+
+gears.wallpaper.maximized(theme.wallpaper, 1, true)
 
 return theme
