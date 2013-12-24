@@ -72,10 +72,11 @@ keys["buttons"] = awful.util.table.join(
     awful.button({ "Mod4" }, 1, awful.mouse.client.move                    ),
     awful.button({ "Mod4" }, 3, awful.mouse.client.resize                  )
 )
+
 -- Client keys
 keys["client"] = awful.util.table.join(
-    awful.key({ "Mod4"            }, "Insert",       function(c) widgets.titlebar.add(c)                     end),
-    awful.key({ "Mod4"            }, "Delete",       function(c) widgets.titlebar.del(c)                     end),
+    awful.key({ "Mod4"            }, "Insert",       function(c) widgets.titlebar(c)                         end),
+    awful.key({ "Mod4"            }, "Delete",       function(c) awful.titlebar.hide(c)                      end),
     awful.key({ "Mod4"            }, "k",            function(c) c:kill()                                    end),
     awful.key({ "Mod4"            }, "t",            function(c) c.ontop = not c.ontop                       end),
     awful.key({ "Mod4"            }, "s",            function(c) c.sticky = not c.sticky                     end),
