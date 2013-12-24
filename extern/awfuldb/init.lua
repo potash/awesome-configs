@@ -13,24 +13,22 @@ local awful     = require("awful")
 local naughty   = require("naughty")
 local beautiful = require("beautiful")
 
-package.cpath = awful.util.getdir('config')..'/extern/awfuldb/lsqlite3/?.so;' .. package.cpath
+package.cpath = awful.util.getdir("config").."/extern/awfuldb/lsqlite3/?.so;" .. package.cpath
 local sqlite3 = require("lsqlite3")
 
 local module = {}
 
-module.db =  awful.util.getdir('config').."/extern/awfuldb/rules.db"
-
 function module.notify(msg)
-    naughty.notify({ text = "Database: </b> "..msg })
+    naughty.notify({ title = "Database", text = msg })
 end
+
 --- Save the client to a database
 -- @param C Client
 function module.save(C)
     -- SQLite nera boolean datatypes...
     -- todel tenka kurti savo, o gal geriau butu saugoti kaip integers (0/1) ?
-
     local INFO = { }
-    local db = sqlite3.open(module.db)
+    local db = sqlite3.open(beautiful.dbpath)
 
     for k, t in ipairs(awful.tag.gettags(1)) do
         for _, v in ipairs(C:tags()) do
@@ -112,7 +110,7 @@ function module.get(keys)
         },
     }
 
-    local db = sqlite3.open(module.db)
+    local db = sqlite3.open(beautiful.dbpath)
     db:exec[[
     CREATE TABLE IF NOT EXISTS rules(
         id                   INTEGER PRIMARY KEY,
@@ -138,6 +136,7 @@ function module.get(keys)
     local function all_rules()
         return db:nrows("SELECT * FROM rules")
     end
+
     for rule in all_rules() do
         local INFO = { }
         local VAR = { }
