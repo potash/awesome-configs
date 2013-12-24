@@ -13,17 +13,18 @@ local naughty = require("naughty")
 
 local theme = {}
 
-local ICONS = awful.util.getdir("config").."/theme/darkBlue"
-theme.ICONS = ICONS
-
-theme.wallpaper                  = ICONS.."/background.png"
-theme.arrow                      = ICONS.."/arrow"
-theme.menu_submenu_icon          = ICONS.."/submenu.png"
-theme.path                       = ICONS
+theme.CONFIG                     = awful.util.getdir("config")
+theme.ICONS                      = theme.CONFIG.."/theme/darkBlue"
+theme.wallpaper                  = theme.CONFIG.."/background.png"
+theme.dbpath                     = theme.CONFIG.."/extern/awfuldb/rules.db"
+theme.arrow                      = theme.ICONS.."/arrow"
+theme.menu_submenu_icon          = theme.ICONS.."/submenu.png"
+theme.path                       = theme.ICONS
 theme.awesome_icon               = "/usr/share/awesome/icons/awesome16.png"
 theme.menu_height                = 20
 theme.popup_time_out             = 6
 theme.icon_theme                 = nil
+
 
 gears.wallpaper.maximized(theme.wallpaper, 1, true)
 
@@ -52,56 +53,56 @@ theme.wibox["main"].fg           = "#1692D0"
 
 -- Widgets icons
 theme.iw={}
-theme.iw["places"]               = ICONS.."/widgets/places.svg"
-theme.iw["menu"]                 = ICONS.."/widgets/menu.svg"
-theme.iw["tag"]                  = ICONS.."/widgets/workspace.svg"
-theme.iw["kbd"]                  = ICONS.."/widgets/keyboard.svg"
-theme.iw["sys"]                  = ICONS.."/widgets/system.svg"
+theme.iw["places"]               = theme.ICONS.."/widgets/places.svg"
+theme.iw["menu"]                 = theme.ICONS.."/widgets/menu.svg"
+theme.iw["tag"]                  = theme.ICONS.."/widgets/workspace.svg"
+theme.iw["kbd"]                  = theme.ICONS.."/widgets/keyboard.svg"
+theme.iw["sys"]                  = theme.ICONS.."/widgets/system.svg"
 
 -- Client menu
 theme.cm={}
-theme.cm["close"]                = ICONS.."/client/close.svg"
-theme.cm["save"]                 = ICONS.."/client/save.svg"
-theme.cm["maximize"]             = ICONS.."/client/maximize.svg"
-theme.cm["floating"]             = ICONS.."/client/floating.svg"
-theme.cm["sticky"]               = ICONS.."/client/sticky.svg"
-theme.cm["ontop"]                = ICONS.."/client/ontop.svg"
-theme.cm["titlebar"]             = ICONS.."/client/titlebar.svg"
-theme.cm["move"]                 = ICONS.."/client/move.svg"
-theme.cm["none"]                 = ICONS.."/client/none.svg"
+theme.cm["close"]                = theme.ICONS.."/client/close.svg"
+theme.cm["save"]                 = theme.ICONS.."/client/save.svg"
+theme.cm["maximize"]             = theme.ICONS.."/client/maximize.svg"
+theme.cm["floating"]             = theme.ICONS.."/client/floating.svg"
+theme.cm["sticky"]               = theme.ICONS.."/client/sticky.svg"
+theme.cm["ontop"]                = theme.ICONS.."/client/ontop.svg"
+theme.cm["titlebar"]             = theme.ICONS.."/client/titlebar.svg"
+theme.cm["move"]                 = theme.ICONS.."/client/move.svg"
+theme.cm["none"]                 = theme.ICONS.."/client/none.svg"
 
 -- Layout icons
 theme.li={}
-theme.li["fairh"]                = ICONS.."/layouts/fairh.png"
-theme.li["fairv"]                = ICONS.."/layouts/fairv.png"
-theme.li["floating"]             = ICONS.."/layouts/floating.png"
-theme.li["magnifier"]            = ICONS.."/layouts/magnifier.png"
-theme.li["max"]                  = ICONS.."/layouts/max.png"
-theme.li["fullscreen"]           = ICONS.."/layouts/fullscreen.png"
-theme.li["tilebottom"]           = ICONS.."/layouts/tilebottom.png"
-theme.li["tileleft"]             = ICONS.."/layouts/tileleft.png"
-theme.li["tile"]                 = ICONS.."/layouts/tile.png"
-theme.li["tiletop"]              = ICONS.."/layouts/tiletop.png"
-theme.li["spiral"]               = ICONS.."/layouts/spiral.png"
-theme.li["dwindle"]              = ICONS.."/layouts/dwindle.png"
+theme.li["fairh"]                = theme.ICONS.."/layouts/fairh.png"
+theme.li["fairv"]                = theme.ICONS.."/layouts/fairv.png"
+theme.li["floating"]             = theme.ICONS.."/layouts/floating.png"
+theme.li["magnifier"]            = theme.ICONS.."/layouts/magnifier.png"
+theme.li["max"]                  = theme.ICONS.."/layouts/max.png"
+theme.li["fullscreen"]           = theme.ICONS.."/layouts/fullscreen.png"
+theme.li["tilebottom"]           = theme.ICONS.."/layouts/tilebottom.png"
+theme.li["tileleft"]             = theme.ICONS.."/layouts/tileleft.png"
+theme.li["tile"]                 = theme.ICONS.."/layouts/tile.png"
+theme.li["tiletop"]              = theme.ICONS.."/layouts/tiletop.png"
+theme.li["spiral"]               = theme.ICONS.."/layouts/spiral.png"
+theme.li["dwindle"]              = theme.ICONS.."/layouts/dwindle.png"
 
-theme.taglist_squares_sel        = ICONS.."/tags/squares_sel.png"
-theme.taglist_squares_unsel      = ICONS.."/tags/squares_unsel.png"
+theme.taglist_squares_sel        = theme.ICONS.."/tags/squares_sel.png"
+theme.taglist_squares_unsel      = theme.ICONS.."/tags/squares_unsel.png"
 
 -- Applications menu
 theme.mapp={}
-theme.mapp["work"]               = ICONS.."/launcher/work.svg"
-theme.mapp["network"]            = ICONS.."/launcher/network.svg"
-theme.mapp["development"]        = ICONS.."/launcher/development.svg"
-theme.mapp["file_Manager"]       = ICONS.."/launcher/file_manager.svg"
-theme.mapp["messenger"]          = ICONS.."/launcher/messenger.svg"
-theme.mapp["reader"]             = ICONS.."/launcher/reader.svg"
-theme.mapp["graphics"]           = ICONS.."/launcher/graphics.svg"
-theme.mapp["multimedia"]         = ICONS.."/launcher/multimedia.svg"
-theme.mapp["office"]             = ICONS.."/launcher/office.svg"
-theme.mapp["system"]             = ICONS.."/launcher/system.svg"
-theme.mapp["miscellaneous"]      = ICONS.."/launcher/miscellaneous.svg"
-theme.mapp["awesome"]            = ICONS.."/launcher/awesome.svg"
+theme.mapp["work"]               = theme.ICONS.."/launcher/work.svg"
+theme.mapp["network"]            = theme.ICONS.."/launcher/network.svg"
+theme.mapp["development"]        = theme.ICONS.."/launcher/development.svg"
+theme.mapp["file_Manager"]       = theme.ICONS.."/launcher/file_manager.svg"
+theme.mapp["messenger"]          = theme.ICONS.."/launcher/messenger.svg"
+theme.mapp["reader"]             = theme.ICONS.."/launcher/reader.svg"
+theme.mapp["graphics"]           = theme.ICONS.."/launcher/graphics.svg"
+theme.mapp["multimedia"]         = theme.ICONS.."/launcher/multimedia.svg"
+theme.mapp["office"]             = theme.ICONS.."/launcher/office.svg"
+theme.mapp["system"]             = theme.ICONS.."/launcher/system.svg"
+theme.mapp["miscellaneous"]      = theme.ICONS.."/launcher/miscellaneous.svg"
+theme.mapp["awesome"]            = theme.ICONS.."/launcher/awesome.svg"
 
 -- Prompt style
 theme.pr={}
@@ -184,32 +185,32 @@ theme.taglist_disable_icon = true
 
 
 -- Title-bar icons
-theme.titlebar_close_button_normal              = ICONS.."/titlebar/close_normal.png"
-theme.titlebar_close_button_focus               = ICONS.."/titlebar/close_focus.png"
-theme.titlebar_ontop_button_normal_inactive     = ICONS.."/titlebar/ontop_normal_inactive.png"
-theme.titlebar_ontop_button_focus_inactive      = ICONS.."/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_active       = ICONS.."/titlebar/ontop_normal_inactive.png"
-theme.titlebar_ontop_button_focus_active        = ICONS.."/titlebar/ontop_focus_inactive.png"
-theme.titlebar_sticky_button_normal_inactive    = ICONS.."/titlebar/sticky_normal_inactive.png"
-theme.titlebar_sticky_button_focus_inactive     = ICONS.."/titlebar/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_active      = ICONS.."/titlebar/sticky_normal_inactive.png"
-theme.titlebar_sticky_button_focus_active       = ICONS.."/titlebar/sticky_focus_inactive.png"
-theme.titlebar_floating_button_normal_inactive  = ICONS.."/titlebar/floating_normal_inactive.png"
-theme.titlebar_floating_button_focus_inactive   = ICONS.."/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_active    = ICONS.."/titlebar/floating_normal_inactive.png"
-theme.titlebar_floating_button_focus_active     = ICONS.."/titlebar/floating_focus_inactive.png"
-theme.titlebar_maximized_button_focus_active    = ICONS.."/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_focus_inactive  = ICONS.."/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_normal_active   = ICONS.."/titlebar/maximized_normal_inactive.png"
-theme.titlebar_maximized_button_normal_inactive = ICONS.."/titlebar/maximized_normal_inactive.png"
+theme.titlebar_close_button_normal              = theme.ICONS.."/titlebar/close_normal.png"
+theme.titlebar_close_button_focus               = theme.ICONS.."/titlebar/close_focus.png"
+theme.titlebar_ontop_button_normal_inactive     = theme.ICONS.."/titlebar/ontop_normal_inactive.png"
+theme.titlebar_ontop_button_focus_inactive      = theme.ICONS.."/titlebar/ontop_focus_inactive.png"
+theme.titlebar_ontop_button_normal_active       = theme.ICONS.."/titlebar/ontop_normal_inactive.png"
+theme.titlebar_ontop_button_focus_active        = theme.ICONS.."/titlebar/ontop_focus_inactive.png"
+theme.titlebar_sticky_button_normal_inactive    = theme.ICONS.."/titlebar/sticky_normal_inactive.png"
+theme.titlebar_sticky_button_focus_inactive     = theme.ICONS.."/titlebar/sticky_focus_inactive.png"
+theme.titlebar_sticky_button_normal_active      = theme.ICONS.."/titlebar/sticky_normal_inactive.png"
+theme.titlebar_sticky_button_focus_active       = theme.ICONS.."/titlebar/sticky_focus_inactive.png"
+theme.titlebar_floating_button_normal_inactive  = theme.ICONS.."/titlebar/floating_normal_inactive.png"
+theme.titlebar_floating_button_focus_inactive   = theme.ICONS.."/titlebar/floating_focus_inactive.png"
+theme.titlebar_floating_button_normal_active    = theme.ICONS.."/titlebar/floating_normal_inactive.png"
+theme.titlebar_floating_button_focus_active     = theme.ICONS.."/titlebar/floating_focus_inactive.png"
+theme.titlebar_maximized_button_focus_active    = theme.ICONS.."/titlebar/maximized_focus_inactive.png"
+theme.titlebar_maximized_button_focus_inactive  = theme.ICONS.."/titlebar/maximized_focus_inactive.png"
+theme.titlebar_maximized_button_normal_active   = theme.ICONS.."/titlebar/maximized_normal_inactive.png"
+theme.titlebar_maximized_button_normal_inactive = theme.ICONS.."/titlebar/maximized_normal_inactive.png"
 
 
-theme.tasklist_floating_icon       = ICONS.."/titlebar/floating.png"
-theme.tasklist_ontop_icon          = ICONS.."/titlebar/ontop.png"
-theme.tasklist_sticky_icon         = ICONS.."/titlebar/sticky.png"
-theme.tasklist_floating_focus_icon = ICONS.."/titlebar/floating_focus.png"
-theme.tasklist_ontop_focus_icon    = ICONS.."/titlebar/ontop_focus.png"
-theme.tasklist_sticky_focus_icon   = ICONS.."/titlebar/sticky_focus.png"
+theme.tasklist_floating_icon       = theme.ICONS.."/titlebar/floating.png"
+theme.tasklist_ontop_icon          = theme.ICONS.."/titlebar/ontop.png"
+theme.tasklist_sticky_icon         = theme.ICONS.."/titlebar/sticky.png"
+theme.tasklist_floating_focus_icon = theme.ICONS.."/titlebar/floating_focus.png"
+theme.tasklist_ontop_focus_icon    = theme.ICONS.."/titlebar/ontop_focus.png"
+theme.tasklist_sticky_focus_icon   = theme.ICONS.."/titlebar/sticky_focus.png"
 theme.tasklist_plain_task_name     = true
 
 return theme
