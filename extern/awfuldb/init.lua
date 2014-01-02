@@ -1,207 +1,189 @@
 --[[
-        File:      extern/awfulld/init
-        Date:      2013-10-28
+        File:      extern/awfuldb/init.lua
+        Date:      2014-01-02
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
 
 local setmetatable = setmetatable
+local table = table
+local client = client
 
 local awful     = require("awful")
 local naughty   = require("naughty")
 local beautiful = require("beautiful")
 
+-- The path used by require to search for a C loader.
 package.cpath = awful.util.getdir("config").."/extern/awfuldb/lsqlite3/?.so;" .. package.cpath
-local sqlite3 = require("lsqlite3")
+local has_sqlite3, sqlite3 = pcall(require, "lsqlite3")
 
 local module = {}
+local db_path = beautiful.dbpath
 
+--- Displays database notifications.
+-- @param msg Text to display
 function module.notify(msg)
-    naughty.notify({ title = "Database", text = msg })
+    naughty.notify({ title = "Database", text = msg, border_color = "#FFB111", timeout = 5 })
 end
 
---- Save the client to a database
--- @param C Client
-function module.save(C)
-    -- SQLite nera boolean datatypes...
-    -- todel tenka kurti savo, o gal geriau butu saugoti kaip integers (0/1) ?
-    local INFO = { }
-    local db = sqlite3.open(beautiful.dbpath)
+-- Check if required module loaded
+if not has_sqlite3 then
+    module.notify('There is an error loading LuaSQLite3 module')
+end
 
-    for k, t in ipairs(awful.tag.gettags(1)) do
-        for _, v in ipairs(C:tags()) do
-            if v == t then
-                INFO.TAG = k
-            end
-        end
+-- Prepare database
+local function prepare()
+    local db = sqlite3.open(db_path)
+    db:exec[[
+        CREATE TABLE IF NOT EXISTS rules(
+           id                   INTEGER       PRIMARY KEY AUTOINCREMENT UNIQUE,
+           tag                  INTEGER( 2 )  DEFAULT ( 1 ),
+           name                 TEXT,
+           class                TEXT,
+           instance             TEXT,
+           role                 TEXT,
+           type                 TEXT,
+           skip_taskbar         INTEGER( 1 )  DEFAULT ( 0 ),
+           minimized            INTEGER( 1 )  DEFAULT ( 0 ),
+           size_hints_honor     INTEGER( 1 )  DEFAULT ( 0 ),
+           ontop                INTEGER( 1 )  DEFAULT ( 0 ),
+           above                INTEGER( 1 )  DEFAULT ( 0 ),
+           below                INTEGER( 1 )  DEFAULT ( 0 ),
+           fullscreen           INTEGER( 1 )  DEFAULT ( 0 ),
+           maximized_horizontal INTEGER( 1 )  DEFAULT ( 0 ),
+           maximized_vertical   INTEGER( 1 )  DEFAULT ( 0 ),
+           sticky               INTEGER( 1 )  DEFAULT ( 0 ),
+           focusable            INTEGER( 1 )  DEFAULT ( 0 ),
+           float                INTEGER( 1 )  DEFAULT ( 0 ),
+           screen               INTEGER( 1 )  DEFAULT ( 0 ),
+           width                INTEGER( 5 )  DEFAULT ( 0 ),
+           height               INTEGER( 5 )  DEFAULT ( 0 ),
+           x                    INTEGER( 5 )  DEFAULT ( 0 ),
+           y                    INTEGER( 5 )  DEFAULT ( 0 ) 
+    )]]
+    -- CREATE UNIQUE INDEX is its own statement and cannot be used within a CREATE TABLE statement.
+    db:exec[[CREATE UNIQUE INDEX IF NOT EXISTS id ON rules(name, class, instance, role)]]
+
+    return db
+end
+
+--- Save the client.
+-- @param c Client
+-- @param t tag by its taglist index (ex awful.tag.getidx(awful.tag.selected(1)))
+function module.save(c,t)
+    if not has_sqlite3 then return end
+    local db = sqlite3.open(db_path)
+    local function optimize(obj)
+        if type(obj) == "string" then return obj
+        elseif type(obj) == "boolean" and obj then return 1
+        elseif type(obj) == "boolean" and not obj then return 0
+        else return "" end
     end
 
-    INFO.NAME     = C.name     or ""
-    INFO.CLASS    = C.class    or ""
-    INFO.INSTANCE = C.instance or ""
-    INFO.ROLE     = C.role     or ""
+    -- The REPLACE command is an alias for the "INSERT OR REPLACE" variant of the INSERT command
+    -- This only works if you have an unique key on the table
+    local stmt = db:prepare[[ REPLACE INTO rules VALUES (NULL, :tag, :name, :class, 
+                :instance, :role, :type, :skip_taskbar, :minimized, :size_hints_honor, :ontop, 
+                :above, :below, :fullscreen, :maximized_horizontal, :maximized_vertical, :sticky, 
+                :focusable, :float, :screen, :width, :height, :x, :y) ]]
 
-    if C.skip_taskbar               then INFO.ST          = 1 else INFO.ST         = 0 end
-    if C.minimized                  then INFO.MINIMIZED   = 1 else INFO.MINIMIZED  = 0 end
-    if C.size_hints_honor           then INFO.SHH         = 1 else INFO.SHH        = 0 end
-    if C.ontop                      then INFO.ONTOP       = 1 else INFO.ONTOP      = 0 end
-    if C.above                      then INFO.ABOVE       = 1 else INFO.ABOVE      = 0 end
-    if C.below                      then INFO.BELOW       = 1 else INFO.BELOW      = 0 end
-    if C.fullscreen                 then INFO.FULLSCREEN  = 1 else INFO.FULLSCREEN = 0 end
-    if C.maximized_horizontal       then INFO.MHORIZ      = 1 else INFO.MHORIZ     = 0 end
-    if C.maximized_vertical         then INFO.MVERTI      = 1 else INFO.MVERTI     = 0 end
-    if C.sticky                     then INFO.STICKY      = 1 else INFO.STICKY     = 0 end
-    if C.focusable                  then INFO.FOCUSABLE   = 1 else INFO.FOCUSABLE  = 0 end
-    if awful.client.floating.get(C) then INFO.FLOAT       = 1 else INFO.FLOAT      = 0 end
-
-    -- ant loop gauti name, class, instance, role ir patikrinti ar sutampa su esamu client
-    for SN, SC, SI, SR in db:urows("SELECT name, class, instance, role FROM rules") do
-        if INFO.NAME == SN and INFO.CLASS == SC and INFO.INSTANCE == SI and INFO.ROLE == SR then
-            module.notify("Client already exists in current database")
-            db:close()
-            return
-        end
+    -- Shit happens ;-)
+    if db:errcode() ~= 0 then 
+        module.notify(db:error_message())
+        db:close()
+        return
     end
-    module.notify("Saved")
-    local stmt = db:prepare[[ INSERT INTO rules VALUES (NULL,
-                :tag, :name, :class, :instance, :role, :skip_taskbar, :minimized, :size_hints_honor, :ontop,
-                :above, :below, :fullscreen, :maximized_horizontal, :maximized_vertical, :sticky, :focusable, :float) ]]
+
+    -- Table with client coordinates. 
+    local geo = c.geometry(c)
+
+    -- Binds the values to statement parameters
     stmt:bind_names{
-        tag = INFO.TAG,
-        name = INFO.NAME,
-        class = INFO.CLASS,
-        instance = INFO.INSTANCE,
-        role = INFO.ROLE,
-        type = INFO.TYPE,
-        skip_taskbar = INFO.ST,
-        minimized = INFO.MINIMIZED,
-        size_hints_honor = INFO.SHH,
-        ontop = INFO.ONTOP,
-        above = INFO.ABOVE,
-        below = INFO.BELOW,
-        fullscreen = INFO.FULLSCREEN,
-        maximized_horizontal = INFO.MHORIZ,
-        maximized_vertical = INFO.MVERTI,
-        sticky = INFO.STICKY,
-        focusable = INFO.FOCUSABLE,
-        float = INFO.FLOAT
+        tag = t,
+        name = optimize(c.name),
+        class = optimize(c.class),
+        instance = optimize(c.instance),
+        role = optimize(c.role),
+        type = optimize(c.type),
+        skip_taskbar = optimize(c.skip_taskbar),
+        minimized = optimize(c.minimized),
+        size_hints_honor = optimize(c.size_hints_honor),
+        ontop = optimize(c.ontop),
+        above = optimize(c.above),
+        below = optimize(c.below),
+        fullscreen = optimize(c.fullscreen),
+        maximized_horizontal = optimize(c.maximized_horizontal),
+        maximized_vertical = optimize(c.maximized_vertical),
+        sticky = optimize(c.sticky),
+        focusable = optimize(c.focusable),
+        float = optimize(awful.client.floating.get(c)),
+        screen = c.screen,
+        width = geo.width,
+        height = geo.height,
+        x = geo.x,
+        y = geo.y
     }
     stmt:step()
     stmt:finalize()
-    db:close()
+    module.notify("Client saved.")
+    db:close() -- Close database
 end
---- Get windows rules
--- Gave windows rules is sqlite database nustatome kaip langu taisykles.
-function module.get(keys)
-    awful.rules.rules = {
-        -- All clients will match this rule.
-        { rule = { },
-            properties = {
-                border_width = beautiful.border_width,
-                border_color = beautiful.border_normal,
-                focus = awful.client.focus.filter,
-                keys = keys["client"],
-                buttons = keys["buttons"],
-                floating = true,
-                size_hints_honor = true
-            }
-        },
-    }
 
-    local db = sqlite3.open(beautiful.dbpath)
-    db:exec[[
-    CREATE TABLE IF NOT EXISTS rules(
-        id                   INTEGER PRIMARY KEY,
-        tag                  INTEGER,
-        name                 TEXT,
-        class                TEXT,
-        instance             TEXT,
-        role                 TEXT,
-        skip_taskbar         INTEGER,
-        minimized            INTEGER,
-        size_hints_honor     INTEGER,
-        ontop                INTEGER,
-        above                INTEGER,
-        below                INTEGER,
-        fullscreen           INTEGER,
-        maximized_horizontal INTEGER,
-        maximized_vertical   INTEGER,
-        sticky               INTEGER,
-        focusable            INTEGER,
-        float                INTEGER
-    )]]
+--- Load windows rules from the database.
+-- @param rules table (awful.rules.rules)
+-- @param tags tags table (awful.tag.gettags())
+function module.load(rules, tags)
+    if not has_sqlite3 then return end
+    local db = prepare()
 
-    local function all_rules()
-        return db:nrows("SELECT * FROM rules")
+    -- Optimize values
+    local function optimize(obj)
+        if obj == "" then return nil
+        elseif obj == 1 then return true
+        elseif obj == 0 then return false
+        else return obj end
     end
 
-    for rule in all_rules() do
-        local INFO = { }
-        local VAR = { }
-        INFO.TAG = rule.tag
-        VAR.TAGS = awful.tag.gettags(1)
-
-        if rule.name                    == "" then INFO.NAME       = nil  else INFO.NAME       = rule.name     end
-        if rule.class                   == "" then INFO.CLASS      = nil  else INFO.CLASS      = rule.class    end
-        if rule.instance                == "" then INFO.INSTANCE   = nil  else INFO.INSTANCE   = rule.instance end
-        if rule.role                    == "" then INFO.ROLE       = nil  else INFO.ROLE       = rule.role     end
-        if rule.skip_taskbar            == 1  then INFO.ST         = true else INFO.ST         = false         end
-        if rule.minimized               == 1  then INFO.MINIMIZED  = true else INFO.MINIMIZED  = false         end
-        if rule.size_hints_honor        == 1  then INFO.SHH        = true else INFO.SHH        = false         end
-        if rule.ontop                   == 1  then INFO.ONTOP      = true else INFO.ONTOP      = false         end
-        if rule.above                   == 1  then INFO.ABOVE      = true else INFO.ABOVE      = false         end
-        if rule.below                   == 1  then INFO.BELOW      = true else INFO.BELOW      = false         end
-        if rule.fullscreen              == 1  then INFO.FULLSCREEN = true else INFO.FULLSCREEN = false         end
-        if rule.maximized_horizontal    == 1  then INFO.MHORIZ     = true else INFO.MHORIZ     = false         end
-        if rule.maximized_vertical      == 1  then INFO.MVERTI     = true else INFO.MVERTI     = false         end
-        if rule.sticky                  == 1  then INFO.STICKY     = true else INFO.STICKY     = false         end
-        if rule.focusable               == 1  then INFO.FOCUSABLE  = true else INFO.FOCUSABLE  = false         end
-        if rule.float                   == 1  then INFO.FLOAT      = true else INFO.FLOAT      = false         end
-
+    -- Get all items
+    for item in db:nrows("SELECT * FROM rules") do
+        -- Create new table
         local newrule = {
             rule = {
-                name = INFO.NAME,
-                class = INFO.CLASS,
-                instance = INFO.INSTANCE,
-                role = INFO.ROLE
+                name = optimize(item.name), class = optimize(item.class),
+                instance = optimize(item.instance), role = optimize(item.role),
             },
             properties = {
-                floating = INFO.FLOAT,
-                skip_taskbar = INFO.ST,
-                size_hints_honor = INFO.SHH,
-                ontop = INFO.ONTOP,
-                above = INFO.ABOVE,
-                below = INFO.BELOW,
-                fullscreen = INFO.FULLSCREEN,
-                maximized_horizontal = INFO.MHORIZ,
-                maximized_vertical = INFO.MVERTI,
-                sticky = INFO.STICKY,
-                focusable = INFO.FOCUSABLE,
-                tag = VAR.TAGS[INFO.TAG],
+                floating = optimize(item.float),
+                skip_taskbar = optimize(item.skip_taskbar),
+                size_hints_honor = optimize(item.size_hints_honor),
+                ontop = optimize(item.ontop),
+                above = optimize(item.above),
+                below = optimize(item.below),
+                fullscreen = optimize(item.fullscreen),
+                maximized_horizontal = optimize(item.maximized_horizontal),
+                maximized_vertical = optimize(item.maximized_vertical),
+                sticky = optimize(item.sticky),
+                focusable = optimize(item.focusable),
+                tag = tags[item.tag],
             }
         }
-        table.insert(awful.rules.rules, newrule)
+        -- Set coordinates (if x/y isn't 0 and client is floating state)
+        if item.float == 1 and item.x ~= 0 and item.y ~= 0 then
+            newrule.callback = function(_c)
+                _c:geometry({ width = item.width , height = item.height, x = item.x, y = item.y })
+            end
+        end
+        table.insert(rules, newrule)
     end
-    if db then
-        db:close()
-    end
-    -- lame taip nustatyti, bet saugant windows rules i database
-    -- sudetinga nustatyti dialogs pagal rules, tai sita rule uztikrina
-    -- kad dialog tikrai bus floatig ir su titlebar.
-    table.insert(awful.rules.rules, {
-        rule = { type = "dialog" },
-        properties = {
-            border_width = 1,
-            border_color = beautiful.border_normal,
-            floating = true,
-            size_hints_honor = true
-        }
-    })
+
+    -- Close database.
+    if db then db:close() end
 end
 
 local function new()
+
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

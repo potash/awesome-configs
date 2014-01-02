@@ -89,8 +89,7 @@ keys["client"] = awful.util.table.join(
     awful.key({ "Mod4"            }, "b",            function(c) c.below = not c.below                       end),
     awful.key({ "Mod4"            }, "f",            function(c) c.fullscreen = not c.fullscreen             end),
     awful.key({ "Mod4"            }, "v",            awful.client.floating.toggle                               ),
-    awful.key({ "Mod4"            }, "i",            function(c) awfuldb.info(c)                             end),
-    awful.key({ "Mod4"            }, "w",            function(c) awfuldb.save(c)                             end),
+    awful.key({ "Mod4"            }, "w",            function(c) awfuldb.save(c,awful.tag.getidx(awful.tag.selected(1))) end),
     awful.key({ "Mod1"            }, "Menu",         function(c) widgets.tasklist.main(c)                    end),
     awful.key({ "Mod4"            }, "g",            function(c) c:swap(awful.client.getmaster())            end)
 )
@@ -150,6 +149,7 @@ for i,_ in ipairs(tags) do
     local tag = awful.tag.gettags(1)[i]
     keys["global"] = awful.util.table.join(keys["global"], awful.key({ "Mod4" }, "F"..i, function() if tag then awful.tag.viewonly(tag) end end))
 end]]
+
 -- Bind numpad to tag switcher too
 local tags = awful.tag.gettags(1)
 local np_map = { 87, 88, 89, 83, 84, 85, 79, 80, 81 }
@@ -167,14 +167,37 @@ end
 root.keys(keys["global"])
 root.buttons(keys["mouse"])
 
+
+awful.rules.rules = {{ rule = { },
+    properties = {
+        border_width = beautiful.border_width,
+        border_color = beautiful.border_normal,
+        focus = awful.client.focus.filter,
+        keys = keys["client"],
+        buttons = keys["buttons"],
+        floating = true,
+        size_hints_honor = true
+}}}
+
 -- Initializes the windows rules system
-awfuldb.get(keys)
+awfuldb.load(awful.rules.rules, tags)
+
+table.insert(awful.rules.rules, {
+        rule = { type = "dialog" },
+        properties = {
+            border_width = 1,
+            border_color = beautiful.border_normal,
+            floating = true,
+            size_hints_honor = true
+        }
+})
+
 
 --- Signals emitted on client objects
 client.connect_signal("manage", function(c,startup)
     -- Enable sloppy focus
     c:connect_signal("mouse::enter", function(c) client.focus = c end)
-    if c.type == "dialog" or awful.client.floating.get(c) then
+    if c.type == "dialog" then
         awful.placement.centered(c)
         c.ontop = true
         if beautiful.tb["add_float"] then widgets.titlebar(c) end
