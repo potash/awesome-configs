@@ -26,6 +26,8 @@ local function hideMenu()
     end
 end
 
+--- Move client to tag
+-- @param c client
 local function move2tag(c)
     local items = radical.context({enable_keyboard = false, style = style, item_style = item_style})
     local gt = awful.tag.gettags(1)
@@ -42,10 +44,15 @@ local function move2tag(c)
     end
     return items
 end
+
+--- Create items
+-- @param c client
+-- @param m menu
 local function items(c,m)
     -- Move to tag
     m:add_item({ text = "Move to tag", icon=beautiful.cm["move"], sub_menu=move2tag(c) })
     -- Add titlebar
+    -- TODO: get titlebar state
     m:add_item({ text = "Add titlebar", icon = beautiful.cm["titlebar"],
         button1 = function()
             titlebar(c)
@@ -150,6 +157,7 @@ function module.main(c)
 end
 
 local function new()
+    -- Signals to hide menu
     client.connect_signal("list", hideMenu)
     client.connect_signal("focus", hideMenu)
 
