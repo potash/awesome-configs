@@ -123,7 +123,7 @@ local function items(c,m)
     m:add_item({ text = "Save", icon = beautiful.cm["save"],
         underlay = underlay("SQL"),
         button1 = function()
-            awfuldb.save(c)
+            awfuldb.save(c,awful.tag.getidx(awful.tag.selected(1)))
             hideMenu()
         end
     })
