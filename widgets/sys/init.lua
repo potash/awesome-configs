@@ -26,30 +26,7 @@ local sys_serv  = require("widgets.sys.services")
 
 local module = {}
 
--- Header widget
-local function header(args)
-   local args = args or {}
-   local text = args.text or "N/A"
-   local icon = args.icon or ""
-   
-   local t = wibox.widget.textbox()
-   local w = wibox.widget.background()
-   local i = wibox.widget.imagebox()
-   local l = wibox.layout.align.horizontal()
 
-   t:set_markup("<span color='#000000' font='Election Day 8' font_weight='light'> ".. text .."</span>")
-   t:set_valign("bottom")
-
-   i:set_image(beautiful.ICONS .. "/widgets/sys/"..icon)
-   
-   l:set_right(i)
-   l:set_left(t)
-   
-   w:set_widget(l)
-   w:set_bg("#005CB0")
-   
-   return w
-end
 
 module.menu = false
 function module.main()
@@ -61,20 +38,20 @@ function module.main()
             width=120, 
             fg="#005CB0"
         })
-        module.menu:add_widget(header({text="CPU Usage", icon="cpu.svg"}),      { height = 12  })
-        module.menu:add_widget(sys_cpu(module.menu),                            { height = 104 })
-        module.menu:add_widget(header({text="Memory",    icon="mem.svg"}),      { height = 12  })
-        module.menu:add_widget(sys_mem(module.menu),                            { height = 85  })
-        module.menu:add_widget(header({text="Network",   icon="network.svg"}),  { height = 12  })
-        module.menu:add_widget(sys_net(module.menu),                            { height = 65  })
-        module.menu:add_widget(header({text="DISK",      icon="disks.svg"}),    { height = 12  })
-        module.menu:add_widget(sys_hdd(module.menu),                            { height = 85  })
-        module.menu:add_widget(header({text="Sound",     icon="sound.svg"}),    { height = 12  })
-        module.menu:add_widget(sys_snd(module.menu),                            { height = 20  })
-        module.menu:add_widget(header({text="Weather",   icon="weather.svg"}),  { height = 12  })
-        module.menu:add_widget(sys_wea(module.menu),                            { height = 20  })
-        module.menu:add_widget(header({text="Service",   icon="service.svg"}),  { height = 12  })
-        module.menu:add_widget(sys_serv(module.menu),                           { height = 20  })
+        module.menu:add_widget(common.header({ text="CPU Usage", icon="cpu.svg"     }),  { height = 12  })
+        module.menu:add_widget(sys_cpu(module.menu),                                     { height = 104 })
+        module.menu:add_widget(common.header({ text="Memory",    icon="mem.svg"     }),  { height = 12  })
+        module.menu:add_widget(sys_mem(module.menu),                                     { height = 85  })
+        module.menu:add_widget(common.header({ text="Network",   icon="network.svg" }),  { height = 12  })
+        module.menu:add_widget(sys_net(module.menu),                                     { height = 65  })
+        module.menu:add_widget(common.header({ text="DISK",      icon="disks.svg"   }),  { height = 12  })
+        module.menu:add_widget(sys_hdd(module.menu),                                     { height = 85  })
+        --module.menu:add_widget(common.header({ text="Sound",     icon="sound.svg"   }),  { height = 12  })
+        --module.menu:add_widget(sys_snd(module.menu),                                     { height = 20  })
+        --module.menu:add_widget(common.header({ text="Weather",   icon="weather.svg" }),  { height = 12  })
+        --module.menu:add_widget(sys_wea(module.menu),                                     { height = 20  })
+        --module.menu:add_widget(common.header({ text="Service",   icon="service.svg" }),  { height = 12  })
+        --module.menu:add_widget(sys_serv(module.menu),                                    { height = 20  })
         module.menu.visible = true
     elseif module.menu.visible then
         module.menu.visible = false

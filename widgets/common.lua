@@ -15,13 +15,11 @@ local dbg       = require("extern.dbg")
 local module = {}
 module.timer = {}
 
---- Timers
+--- Menu timers
+-- @param m menu
 function module.reg_menu(m)
     module.timer[m] = timer{ timeout = beautiful.popup_time_out }
-    module.timer[m]:connect_signal("timeout", function()
-        module.hide_menu(m)
-    end)
-
+    module.timer[m]:connect_signal("timeout", function() module.hide_menu(m) end)
     module.timer[m]:start()
     m.visible = true
 end
@@ -32,6 +30,32 @@ end
 function module.show_menu(m)
     module.timer[m]:start()
     m.visible = true
+end
+
+--- Header widget
+function module.header(args)
+   local args = args or {}
+   local text = args.text or "N/A"
+   local icon = args.icon or ""
+
+   
+   local t = wibox.widget.textbox()
+   local w = wibox.widget.background()
+   local i = wibox.widget.imagebox()
+   local l = wibox.layout.align.horizontal()
+
+   t:set_markup("<span color='#000000' font='Election Day 8' font_weight='light'> ".. text .."</span>")
+   t:set_valign("bottom")
+
+   i:set_image(beautiful.ICONS .. "/widgets/sys/"..icon)
+   
+   l:set_right(i)
+   l:set_left(t)
+   
+   w:set_widget(l)
+   w:set_bg("#005CB0")
+   
+   return w
 end
 
 --- Create text-box widgets
