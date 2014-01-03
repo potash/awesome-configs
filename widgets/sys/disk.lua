@@ -13,6 +13,8 @@ local vicious    = require("extern.vicious")
 local beautiful  = require("beautiful")
 local wibox      = require("wibox")
 local progress_graph      = require("extern.graph.progress_graph")
+local common     = require("widgets.sys.common")
+
 local dbg = require("extern.dbg")
 
 local module = {}
@@ -47,7 +49,7 @@ local function widget_graph_mem()
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#00259050")
 		       elseif a[1] < 50 then
-			  graph:set_graph_color("#2400B650")			  
+			  graph:set_graph_color("#2400B650") 
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#4100B950")
 		       elseif a[1] < 80 then
@@ -109,34 +111,6 @@ local function widget_graph_swap()
    L.fit = function() return 0,13 end
    return L
 end
---- Create widgets
--- @param: text
-local function new_widget(args)
-   local args = args or {}
-   local text = args.text or "N/A"
-   local width = args.width or 40
-   local height = args.height or 12
-   local valign = args.valign or beautiful.widget_text_valign or "center"
-   local align = args.align or beautiful.widget_text_align or "center"
-
-   local t = wibox.widget.textbox()
-   local w = wibox.widget.background()
-   local b = wibox.widget.background()
-   local m = wibox.layout.margin()
-   
-   t:set_align(align)
-   t:set_valign(valign)
-   t.fit = function() return width,height end
-   t:set_text(text)
-   b:set_bg("#001520")
-   b:set_widget(t)
-   m:set_margins(1)
-   m:set_widget(b)
-   w:set_widget(m)
-   w:set_bg("#000000")
-   
-   return w,t
-end
 
 --- Return widgets layout
 local function new()
@@ -150,14 +124,14 @@ local function new()
    layout["data"] = wibox.layout.align.horizontal()
    layout["cloud"] = wibox.layout.align.horizontal()
 
-   text["root"] = new_widget({text="root:",align="left",width=58})
-   text["data"] = new_widget({text="Data:",align="left",width=58})
-   text["cloud"] = new_widget({text="Cloud:",align="left",width=58})
+   text["root"] = common.new_widget({text="root:",align="left",width=58})
+   text["data"] = common.new_widget({text="Data:",align="left",width=58})
+   text["cloud"] = common.new_widget({text="Cloud:",align="left",width=58})
       
    local r,d,c
-   usage["root"],r = new_widget({align="right",width=57})
-   usage["data"],d = new_widget({align="right",width=57})
-   usage["cloud"],c = new_widget({align="right",width=57})
+   usage["root"],r = common.new_widget({align="right",width=57})
+   usage["data"],d = common.new_widget({align="right",width=57})
+   usage["cloud"],c = common.new_widget({align="right",width=57})
 
    vicious.register(r, vicious.widgets.mem, '$2 MB', 1)
    vicious.register(d, vicious.widgets.mem, '$6 MB', 1)

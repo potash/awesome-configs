@@ -12,6 +12,8 @@ local vicious    = require("extern.vicious")
 local beautiful  = require("beautiful")
 local wibox      = require("wibox")
 local line_graph = require("extern.graph.line_graph")
+local common     = require("widgets.sys.common")
+
 local dbg = require("extern.dbg")
 
 local module = {}
@@ -58,34 +60,6 @@ local function widget_graph_dw()
     L.fit = function() return 60,35 end
     return L
 end
---- Create widgets
--- @param: text
-local function new_widget(args)
-   local args = args or {}
-   local text = args.text or "N/A"
-   local width = args.width or 40
-   local height = args.height or 12
-   local valign = args.valign or beautiful.widget_text_valign or "center"
-   local align = args.align or beautiful.widget_text_align or "center"
-
-   local t = wibox.widget.textbox()
-   local w = wibox.widget.background()
-   local b = wibox.widget.background()
-   local m = wibox.layout.margin()
-   
-   t:set_align(align)
-   t:set_valign(valign)
-   t.fit = function() return width,height end
-   t:set_text(text)
-   b:set_bg("#001520")
-   b:set_widget(t)
-   m:set_margins(1)
-   m:set_widget(b)
-   w:set_widget(m)
-   w:set_bg("#000000")
-   
-   return w,t
-end
 
 --- Return widgets layout
 local function new()
@@ -99,12 +73,12 @@ local function new()
    layout["DW"] = wibox.layout.align.horizontal()
    layout["G"] = wibox.layout.align.horizontal()
    
-   text["UP"] = new_widget({ text="Upload:", align="left", width=65 })
-   text["DW"] = new_widget({ text="Download:", align="left", width=65 })
+   text["UP"] = common.new_widget({ text="Upload:", align="left", width=65 })
+   text["DW"] = common.new_widget({ text="Download:", align="left", width=65 })
    
    local u,d
-   usage["UP"],u = new_widget({ align="right", width=50 })
-   usage["DW"],d = new_widget({ align="right", width=50 })
+   usage["UP"],u = common.new_widget({ align="right", width=50 })
+   usage["DW"],d = common.new_widget({ align="right", width=50 })
    
    vicious.register(u, vicious.widgets.net, '${eth0 up_kb}', 6)
    vicious.register(d, vicious.widgets.net, '${eth0 down_kb}', 6)

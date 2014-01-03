@@ -13,9 +13,17 @@ local vicious    = require("extern.vicious")
 local beautiful  = require("beautiful")
 local wibox      = require("wibox")
 local progress_graph      = require("extern.graph.progress_graph")
-local dbg = require("extern.dbg")
+local common     = require("widgets.sys.common")
 
 local module = {}
+
+-- Update widgets interval in seconds
+module.update = {
+    graph = 5,
+    load = 60,
+    temp = 30,
+    cpu = 6
+}
 
 local function widget_graph_mem()
    local graph = progress_graph()
@@ -47,7 +55,7 @@ local function widget_graph_mem()
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#00259050")
 		       elseif a[1] < 50 then
-			  graph:set_graph_color("#2400B650")			  
+			  graph:set_graph_color("#2400B650")
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#4100B950")
 		       elseif a[1] < 80 then
@@ -56,7 +64,7 @@ local function widget_graph_mem()
 			  graph:set_graph_color("#9A002050")
 		       end
 		       return a[1]
-		    end, 1)
+		    end, 10)
    local L = wibox.layout.margin()
    L:set_widget(base)
    L.fit = function() return 0,13 end
@@ -94,7 +102,7 @@ local function widget_graph_swap()
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#00259050")
 		       elseif a[1] < 50 then
-			  graph:set_graph_color("#2400B650")			  
+			  graph:set_graph_color("#2400B650")
 		       elseif a[1] < 50 then
 			  graph:set_graph_color("#4100B950")
 		       elseif a[1] < 80 then
@@ -103,40 +111,15 @@ local function widget_graph_swap()
 			  graph:set_graph_color("#9A002050")
 		       end
 		       return a[5]
-		    end, 1)
+		    end, 10)
    local L = wibox.layout.margin()
    L:set_widget(base)
    L.fit = function() return 0,13 end
    return L
 end
---- Create widgets
--- @param: text
-local function new_widget(args)
-   local args = args or {}
-   local text = args.text or "N/A"
-   local width = args.width or 40
-   local height = args.height or 12
-   local valign = args.valign or beautiful.widget_text_valign or "center"
-   local align = args.align or beautiful.widget_text_align or "center"
 
-   local t = wibox.widget.textbox()
-   local w = wibox.widget.background()
-   local b = wibox.widget.background()
-   local m = wibox.layout.margin()
-   
-   t:set_align(align)
-   t:set_valign(valign)
-   t.fit = function() return width,height end
-   t:set_text(text)
-   b:set_bg("#001520")
-   b:set_widget(t)
-   m:set_margins(1)
-   m:set_widget(b)
-   w:set_widget(m)
-   w:set_bg("#000000")
-   
-   return w,t
-end
+
+
 
 --- Return widgets layout
 local function new()
@@ -151,16 +134,16 @@ local function new()
    layout["buffers"] = wibox.layout.align.horizontal()
    layout["cached"] = wibox.layout.align.horizontal()
 
-   text["mem"] = new_widget({text="Memory:",align="left",width=58})
-   text["swap"]  = new_widget({text="Swap:",align="left",width=58})
-   text["buffers"] = new_widget({text="Buffers:",align="left",width=58})
-   text["cached"]  = new_widget({text="Cached:",align="left",width=58})
+   text["mem"] = common.new_widget({text="Memory:",align="left",width=58})
+   text["swap"]  = common.new_widget({text="Swap:",align="left",width=58})
+   text["buffers"] = common.new_widget({text="Buffers:",align="left",width=58})
+   text["cached"]  = common.new_widget({text="Cached:",align="left",width=58})
    
    local m,s,b,c
-   usage["mem"],m  = new_widget({align="right",width=57})
-   usage["swap"],s = new_widget({align="right",width=57})
-   usage["buffers"],b = new_widget({align="right",width=57})
-   usage["cached"],c = new_widget({align="right",width=57})
+   usage["mem"],m  = common.new_widget({align="right",width=57})
+   usage["swap"],s = common.new_widget({align="right",width=57})
+   usage["buffers"],b = common.new_widget({align="right",width=57})
+   usage["cached"],c = common.new_widget({align="right",width=57})
    
    vicious.register(m, vicious.widgets.mem, '$2 MB', 60)  -- memory
    vicious.register(s, vicious.widgets.mem, '$6 MB', 60)  -- swap
@@ -184,10 +167,12 @@ local function new()
    layout["main"]:add(layout["swap"])
    layout["main"]:add(layout["buffers"])
    layout["main"]:add(layout["cached"])
+
    layout["main"]:add(widget_graph_swap())
    layout["main"]:add(widget_graph_mem())
 
    return layout["main"]
 end
+
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })
