@@ -12,21 +12,24 @@ local awful      = require("awful")
 local vicious    = require("extern.vicious")
 local beautiful  = require("beautiful")
 local wibox      = require("wibox")
-local progress_graph      = require("extern.graph.progress_graph")
+local pg_graph   = require("extern.graph.progress_graph")
 local common     = require("widgets.sys.common")
 
 local module = {}
 
 -- Update widgets interval in seconds
 module.update = {
-    graph = 5,
-    load = 60,
-    temp = 30,
-    cpu = 6
+    graph_mem  = 60,
+	 graph_swap = 60,
+	 usage   = 30,
+    swap    = 30,
+    buffers = 30,
+    cached  = 30
 }
 
+-- Graph memory
 local function widget_graph_mem()
-   local graph = progress_graph()
+   local graph = pg_graph()
    graph:set_horizontal(true)
    graph:set_height(13)
    graph:set_width(120)
@@ -64,16 +67,15 @@ local function widget_graph_mem()
 			  graph:set_graph_color("#9A002050")
 		       end
 		       return a[1]
-		    end, 10)
+		    end, module.update.graph_mem)
    local L = wibox.layout.margin()
    L:set_widget(base)
    L.fit = function() return 0,13 end
    return L
 end
-
-
+-- Graph swap
 local function widget_graph_swap()
-   local graph = progress_graph()
+   local graph = pg_graph()
    graph:set_horizontal(true)
    graph:set_height(13)
    graph:set_width(120)
@@ -111,67 +113,67 @@ local function widget_graph_swap()
 			  graph:set_graph_color("#9A002050")
 		       end
 		       return a[5]
-		    end, 10)
+		    end, module.update.graph_swap)
    local L = wibox.layout.margin()
    L:set_widget(base)
    L.fit = function() return 0,13 end
    return L
 end
 
-
-
+-- Memory usage
+local function widget_memUsage()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.mem, '$2 MB', module.update.usage)
+    return widget
+end
+-- Swap usage
+local function widget_memSwap()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.mem, '$6 MB', module.update.swap) 
+    return widget
+end
+-- Buffers
+local function widget_memBuffers()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.mem, function(_,a) return a[10].." MB" end, module.update.buffers)
+    return widget
+end
+-- Cached
+local function widget_memCached()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.mem, function(_,a) return a[11].." MB" end, module.update.cached)
+    return widget
+end
 
 --- Return widgets layout
 local function new()
    vicious.cache(vicious.widgets.mem)
-   
-   local layout={}
-   local text={}
-   local usage={}
-   
-   layout["mem"]  = wibox.layout.align.horizontal()
-   layout["swap"] = wibox.layout.align.horizontal()
-   layout["buffers"] = wibox.layout.align.horizontal()
-   layout["cached"] = wibox.layout.align.horizontal()
 
-   text["mem"] = common.new_widget({text="Memory:",align="left",width=58})
-   text["swap"]  = common.new_widget({text="Swap:",align="left",width=58})
-   text["buffers"] = common.new_widget({text="Buffers:",align="left",width=58})
-   text["cached"]  = common.new_widget({text="Cached:",align="left",width=58})
-   
-   local m,s,b,c
-   usage["mem"],m  = common.new_widget({align="right",width=57})
-   usage["swap"],s = common.new_widget({align="right",width=57})
-   usage["buffers"],b = common.new_widget({align="right",width=57})
-   usage["cached"],c = common.new_widget({align="right",width=57})
-   
-   vicious.register(m, vicious.widgets.mem, '$2 MB', 60)  -- memory
-   vicious.register(s, vicious.widgets.mem, '$6 MB', 60)  -- swap
-   vicious.register(b, vicious.widgets.mem, function(_,a) return a[10].." MB" end, 60) -- buffers
-   vicious.register(c, vicious.widgets.mem, function(_,a) return a[11].." MB" end, 60) -- cached
-   
-   layout["mem"]:set_left(text["mem"])
-   layout["mem"]:set_right(usage["mem"])
+   local layout_mem = wibox.layout.align.horizontal()
+   layout_mem:set_left(common.new_widget({text="Memory:",align="left",width=58}))
+   layout_mem:set_right(widget_memUsage())
 
-   layout["swap"]:set_left(text["swap"])
-   layout["swap"]:set_right(usage["swap"])
+   local layout_swap = wibox.layout.align.horizontal()
+   layout_swap:set_left(common.new_widget({text="Swap:",align="left",width=58}))
+   layout_swap:set_right(widget_memSwap())
 
-   layout["buffers"]:set_left(text["buffers"])
-   layout["buffers"]:set_right(usage["buffers"])
+   local layout_buffers = wibox.layout.align.horizontal()
+   layout_buffers:set_left(common.new_widget({text="Buffers:",align="left",width=58}))
+   layout_buffers:set_right(widget_memBuffers())
 
-   layout["cached"]:set_left(text["cached"])
-   layout["cached"]:set_right(usage["cached"])
+   local layout_cached = wibox.layout.align.horizontal()
+   layout_cached:set_left(common.new_widget({text="Cached:",align="left",width=58}))
+   layout_cached:set_right(widget_memCached())
 
-   layout["main"] = wibox.layout.fixed.vertical()
-   layout["main"]:add(layout["mem"])
-   layout["main"]:add(layout["swap"])
-   layout["main"]:add(layout["buffers"])
-   layout["main"]:add(layout["cached"])
+   local layout = wibox.layout.fixed.vertical()
+   layout:add(layout_mem)
+   layout:add(layout_swap)
+   layout:add(layout_buffers)
+   layout:add(layout_cached)
+   layout:add(widget_graph_swap())
+   layout:add(widget_graph_mem())
 
-   layout["main"]:add(widget_graph_swap())
-   layout["main"]:add(widget_graph_mem())
-
-   return layout["main"]
+   return layout
 end
 
 
