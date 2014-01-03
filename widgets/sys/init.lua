@@ -35,7 +35,7 @@ function module.main()
             direction = "bottom",
             width = 120,
             x = screen[1].geometry.width - 125,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - 409,
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - 355 - (#beautiful.sys.fs*15),
             fg="#005CB0"
         })
         module.menu:add_widget(common.header({ text="CPU Usage", icon="cpu.svg"     }),  { height = 12  })
@@ -45,13 +45,15 @@ function module.main()
         module.menu:add_widget(common.header({ text="Network",   icon="network.svg" }),  { height = 12  })
         module.menu:add_widget(sys_net(module.menu),                                     { height = 65  })
         module.menu:add_widget(common.header({ text="DISK",      icon="disks.svg"   }),  { height = 12  })
-        module.menu:add_widget(sys_hdd(module.menu),                                     { height = 85  })
+        module.menu:add_widget(sys_hdd(module.menu),                                     { height = (#beautiful.sys.fs*15)  })
+        module.menu:add_widget(common.header({ text="Services",  icon="service.svg" }),  { height = 12  })
+        module.menu:add_widget(sys_serv(module.menu),                                    { height = 20  })
+        
         --module.menu:add_widget(common.header({ text="Sound",     icon="sound.svg"   }),  { height = 12  })
         --module.menu:add_widget(sys_snd(module.menu),                                     { height = 20  })
         --module.menu:add_widget(common.header({ text="Weather",   icon="weather.svg" }),  { height = 12  })
         --module.menu:add_widget(sys_wea(module.menu),                                     { height = 20  })
-        --module.menu:add_widget(common.header({ text="Service",   icon="service.svg" }),  { height = 12  })
-        --module.menu:add_widget(sys_serv(module.menu),                                    { height = 20  })
+
         module.menu.visible = true
     elseif module.menu.visible then
         module.menu.visible = false

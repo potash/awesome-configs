@@ -22,7 +22,7 @@ theme.menu_submenu_icon               = theme.ICONS.."/submenu.png"
 theme.path                            = theme.ICONS
 theme.awesome_icon                    = "/usr/share/awesome/icons/awesome16.png"
 theme.menu_height                     = 20
-theme.popup_time_out                  = 6
+theme.popup_time_out                  = 5
 theme.icon_theme                      = nil
 
 -- Main wibox settings
@@ -109,6 +109,16 @@ theme.tb["font"]                      = "sans 8"
 theme.tb["bg_focus"]                  = "#0b1e46"
 theme.tb["fg"]                        = "#1692D0"
 theme.tb["bg"]                        = "#001734"
+
+-- sys
+theme.sys={}
+-- Disk usage
+theme.sys.fs = {
+    { "root:",  "/"                              },
+    { "DATA:",  "/mnt/DATA"                      },
+    { "Moz:",   "/home/minde/.cache/mozilla"     },
+    { "eMail:", "/home/minde/.cache/thunderbird" },
+}
 
 -- Naughty library settings
 naughty.config.defaults.timeout       = 30
