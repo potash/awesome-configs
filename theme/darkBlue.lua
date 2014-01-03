@@ -110,14 +110,13 @@ theme.tb["bg_focus"]                  = "#0b1e46"
 theme.tb["fg"]                        = "#1692D0"
 theme.tb["bg"]                        = "#001734"
 
--- sys
+-- sys widgets
 theme.sys={}
+
 -- Disk usage
 theme.sys.fs = {
-    { "root:",  "/"                              },
-    { "DATA:",  "/mnt/DATA"                      },
-    { "Moz:",   "/home/minde/.cache/mozilla"     },
-    { "eMail:", "/home/minde/.cache/thunderbird" },
+    { "root:",  "/"     },
+    { "home:",  "/home" },
 }
 
 -- Naughty library settings
