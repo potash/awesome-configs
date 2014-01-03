@@ -2,7 +2,7 @@
         File:      widgets/sys/cpu.lua
         Date:      2014-01-03
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -20,7 +20,7 @@ local module = {}
 module.update = {
     graph = 5,
     load = 60,
-    temp = 30,
+    temp = 60,
     cpu = 6
 }
 

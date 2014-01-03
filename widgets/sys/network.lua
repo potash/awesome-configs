@@ -1,8 +1,8 @@
 --[[
         File:      widgets/sys/network.lua
-        Date:      2013-12-18
+        Date:      2014-01-03
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -14,10 +14,16 @@ local wibox      = require("wibox")
 local line_graph = require("extern.graph.line_graph")
 local common     = require("widgets.sys.common")
 
-local dbg = require("extern.dbg")
-
 local module = {}
 
+module.update = {
+    graph_up = 60,
+	graph_dw = 60,
+	up = 30,
+    dw = 30,
+}
+
+-- Upload graph
 local function widget_graph_up()
     local graph = line_graph()
     graph:set_height(35)
@@ -33,12 +39,13 @@ local function widget_graph_up()
         wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
         wibox.layout.base.draw_widget(wb, cr, graph, 0, 0, width, height)
     end
-    vicious.register(graph, vicious.widgets.net, '${eth0 up_kb}', 15)
+    vicious.register(graph, vicious.widgets.net, '${eth0 up_kb}', module.update.graph_up)
     local L = wibox.layout.margin()
     L:set_widget(base)
     L.fit = function() return 60,35 end
     return L
 end
+-- Download graph
 local function widget_graph_dw()
     local graph = line_graph()
     graph:set_height(35)
@@ -54,51 +61,48 @@ local function widget_graph_dw()
         wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
         wibox.layout.base.draw_widget(wb, cr, graph, 0, 0, width, height)
     end
-    vicious.register(graph, vicious.widgets.net, '${eth0 down_kb}', 15)
+    vicious.register(graph, vicious.widgets.net, '${eth0 down_kb}', module.update.graph_dw)
     local L = wibox.layout.margin()
     L:set_widget(base)
     L.fit = function() return 60,35 end
     return L
 end
 
---- Return widgets layout
+-- Upload
+local function widget_netUpload()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.net, '${eth0 up_kb}', module.update.up)
+    return widget
+end
+-- Download
+local function widget_netDownload()
+    widget,text = common.new_widget({align="right",width=57})
+    vicious.register(text, vicious.widgets.net, '${eth0 down_kb}', module.update.dw)
+    return widget
+end
+
+-- Return widgets layout
 local function new()
    vicious.cache(vicious.widgets.net)
-   
-   local layout={}
-   local text={}
-   local usage={}
-   
-   layout["UP"] = wibox.layout.align.horizontal()
-   layout["DW"] = wibox.layout.align.horizontal()
-   layout["G"] = wibox.layout.align.horizontal()
-   
-   text["UP"] = common.new_widget({ text="Upload:", align="left", width=65 })
-   text["DW"] = common.new_widget({ text="Download:", align="left", width=65 })
-   
-   local u,d
-   usage["UP"],u = common.new_widget({ align="right", width=50 })
-   usage["DW"],d = common.new_widget({ align="right", width=50 })
-   
-   vicious.register(u, vicious.widgets.net, '${eth0 up_kb}', 6)
-   vicious.register(d, vicious.widgets.net, '${eth0 down_kb}', 6)
-   
-   layout["UP"]:set_left(text["UP"])
-   layout["UP"]:set_right(usage["UP"])
 
-   layout["DW"]:set_left(text["DW"])
-   layout["DW"]:set_right(usage["DW"])
+   layout_up = wibox.layout.align.horizontal()
+   layout_up:set_left(common.new_widget({ text="Upload:", align="left", width=58 }))
+   layout_up:set_right(widget_netUpload())
 
+   layout_dw = wibox.layout.align.horizontal()
+   layout_dw:set_left(common.new_widget({ text="Download:", align="left", width=58 }))
+   layout_dw:set_right(widget_netDownload())
 
-   layout["G"]:set_left(widget_graph_up())
-   layout["G"]:set_right(widget_graph_dw())
+   layout_graph = wibox.layout.align.horizontal()
+   layout_graph:set_left(widget_graph_up())
+   layout_graph:set_right(widget_graph_dw())
 
-   layout["main"] = wibox.layout.fixed.vertical()
-   layout["main"]:add(layout["G"])
-   layout["main"]:add(layout["UP"])
-   layout["main"]:add(layout["DW"])
+   layout = wibox.layout.fixed.vertical()
+   layout:add(layout_graph)
+   layout:add(layout_up)
+   layout:add(layout_dw)
 
-   return layout["main"]
+   return layout
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

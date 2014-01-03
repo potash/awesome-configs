@@ -1,11 +1,13 @@
 --[[
         File:      widgets/sys/memory.lua - provides RAM and Swap usage statistics
-        Date:      2013-12-18
+        Date:      2014-01-03
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
-echo 'return collectgarbage("count")' | awesome-client
+
+TODO: echo 'return collectgarbage("count")' | awesome-client
+
 --]]
 
 local awful      = require("awful")
@@ -20,8 +22,8 @@ local module = {}
 -- Update widgets interval in seconds
 module.update = {
     graph_mem  = 60,
-	 graph_swap = 60,
-	 usage   = 30,
+	graph_swap = 60,
+	usage   = 30,
     swap    = 30,
     buffers = 30,
     cached  = 30
