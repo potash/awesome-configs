@@ -26,8 +26,6 @@ local sys_serv  = require("widgets.sys.services")
 
 local module = {}
 
-
-
 module.menu = false
 function module.main()
     if not module.menu then
@@ -35,7 +33,9 @@ function module.main()
             filer = false,
             enable_keyboard = false,
             direction = "bottom",
-            width=120, 
+            width = 120,
+            x = screen[1].geometry.width - 125,
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - 409,
             fg="#005CB0"
         })
         module.menu:add_widget(common.header({ text="CPU Usage", icon="cpu.svg"     }),  { height = 12  })
