@@ -256,7 +256,7 @@ end
 local function compute_geo(data)
   local w = data.default_width
   if data.auto_resize and data._internal.largest_item_w then
-    w = data._internal.largest_item_w_v+60 > data.default_width and data._internal.largest_item_w_v+60 or data.default_width
+    w = data._internal.largest_item_w_v+80 > data.default_width and data._internal.largest_item_w_v+80 or data.default_width
   end
   local visblerow = data.filter_string == "" and data.rowcount or data._internal.visible_item_count
   if data.max_items and data.max_items < data.rowcount then
