@@ -8,8 +8,8 @@
 --]]
 
 -- Debugging utilities (signails, functions, notifications...)
-local dbg       = require("extern.dbg")
-dbg()
+--local dbg       = require("extern.dbg")
+--dbg()
 
 -- Awesome library
 local awful     = require("awful")
@@ -182,25 +182,32 @@ awful.rules.rules = {{ rule = { },
 -- Initializes the windows rules system
 awfuldb.load(awful.rules.rules, tags)
 
+-- Sometimes dialogs apears to fast...
+table.insert(awful.rules.rules, {rule = { type = "dialog" }, properties = { floating = true }})
+
 -- Signals emitted on client objects
 client.connect_signal("manage", function(c,startup)
     -- Enable sloppy focus
     c:connect_signal("mouse::enter", function(c) client.focus = c end)
     if c.type == "dialog" then
+        awful.client.floating.set(c)
         awful.placement.centered(c)
         c.ontop = true
         if beautiful.tb["dialog"] then  widgets.titlebar(c) end
     elseif awful.client.floating.get(c) then
-        if beautiful.tb["float"] then 
-            widgets.titlebar(c) 
+        if beautiful.tb["float"] then
+            widgets.titlebar(c)
+            c.focus = true
         end
     end
     if beautiful.tb["all"] then widgets.titlebar(c) end
 end)
+
 -- when a client gains focus
 client.connect_signal("focus", function(c)
     c.border_color = beautiful.border_focus
 end)
+
 -- when a client looses focus
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
