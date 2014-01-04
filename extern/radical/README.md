@@ -4,6 +4,8 @@
 This is Radical, one of the largest Awesome extension module. It provide un
 unified interface to generate multiple types of menus.
 
+[![Too many menus](https://raw.github.com/Elv13/radical/master/screenshot/all.png)](https://raw.github.com/Elv13/radical/master/screenshot/all.png)
+
 ## Installation
 
 Installing Radical is simple, just move to ~/.config/awesome and clone the
@@ -123,7 +125,7 @@ Multiple items can have multiple sets of options.
 | icon_size       | Icon size                                          | number                        |
 | auto_resize     | Resize menu if items are too large                 | boolean                       |
 | parent_geometry | Set the menu parent                                | geometry array                |
-| arrow_type      | Set the arrow type when use arrow style            | see "arrow_type"              |
+| arrow_type      | Set the arrow type when use arrow style            | see "arrow_type" enum         |
 | visible         | Show or hide the menu                              | boolean                       |
 | direction       | The direction from which the arrow will point      | "left","right","top","bottom" |
 | row             | Number of row (in grid layout)                     | number                        |
@@ -142,6 +144,7 @@ Multiple items can have multiple sets of options.
 | disable_markup  | Disable pango markup in items text                 | boolean                       |
 | x               | X position (absolute)                              | number                        |
 | y               | Y position (absolute)                              | number                        |
+| sub_menu_on     | Show submenu on selection or when clicking         | see "sub_menu_on" enum        |
 
 ###Item options
 

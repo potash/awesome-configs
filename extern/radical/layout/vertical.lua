@@ -2,7 +2,6 @@ local setmetatable = setmetatable
 local print,pairs  = print,pairs
 local unpack       = unpack
 local util      = require( "awful.util"               )
-local button    = require( "awful.button"             )
 local checkbox  = require( "extern.radical.widgets.checkbox" )
 local scroll    = require( "extern.radical.widgets.scroll"   )
 local filter    = require( "extern.radical.widgets.filter"   )
@@ -104,7 +103,6 @@ function module:setup_item(data,item,args)
   data.item_style(data,item,false,false)
   item.widget:set_fg(item._private_data.fg)
   item._internal.has_changed = true
-  data._internal.layout:emit_signal("widget::updated")
 
   --Event handling
   item.widget:connect_signal("mouse::enter", function() item.selected = true end)
@@ -220,7 +218,6 @@ function module:setup_item(data,item,args)
         data._internal.largest_item_w = item
         data._internal.largest_item_w_v = fit_w
       end
-      data._internal.layout:emit_signal("widget::updated")
       --TODO find new largest is item is smaller
   --     if data._internal.largest_item_h_v < fit_h then
   --       data._internal.largest_item_h =item
@@ -231,7 +228,6 @@ function module:setup_item(data,item,args)
   
   item._internal.set_map.f_key = function(value)
     item._internal.has_changed = true
-    data._internal.layout:emit_signal("widget::updated")
     item._internal.f_key = value
     data:remove_key_hook("F"..value)
     data:add_key_hook({}, "F"..value      , "press", function()
@@ -256,7 +252,7 @@ end
 local function compute_geo(data)
   local w = data.default_width
   if data.auto_resize and data._internal.largest_item_w then
-    w = data._internal.largest_item_w_v+80 > data.default_width and data._internal.largest_item_w_v+80 or data.default_width
+    w = data._internal.largest_item_w_v+60 > data.default_width and data._internal.largest_item_w_v+60 or data.default_width
   end
   local visblerow = data.filter_string == "" and data.rowcount or data._internal.visible_item_count
   if data.max_items and data.max_items < data.rowcount then

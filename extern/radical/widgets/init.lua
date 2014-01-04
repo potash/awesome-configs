@@ -5,4 +5,5 @@ return {
     fkey     = require( "extern.radical.widgets.fkey"     ),
     table    = require( "extern.radical.widgets.table"    ),
     header   = require( "extern.radical.widgets.header"   ),
+    piechart = require( "extern.radical.widgets.piechart" ),
 }

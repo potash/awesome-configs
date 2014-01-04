@@ -9,7 +9,7 @@ local module = {
     TOP    = 2,
     BOTTOM = 2,
     RIGHT  = 0,
-    LEFT   = 2
+    LEFT   = 4
   }
 }
 

@@ -2,6 +2,7 @@ local setmetatable = setmetatable
 local pairs,ipairs = pairs, ipairs
 local type,string  = type,string
 local print,unpack = print, unpack
+
 local beautiful    = require( "beautiful"          )
 local util         = require( "awful.util"         )
 local object       = require( "extern.radical.object"     )
@@ -14,7 +15,15 @@ local module = {
     NONE     = 0,
     PRETTY   = 1,
     CENTERED = 2,
-}}
+  },
+  sub_menu_on ={
+    NEVER    = 0,
+    BUTTON1  = 1,
+    BUTTON2  = 2,
+    BUTTON3  = 3,
+    SELECTED = 100,
+  },
+}
 
 local function filter(data)
   if not data.filter == false then
@@ -38,53 +47,72 @@ local function filter(data)
   end
 end
 
+local function execute_sub_menu(data,item)
+  if (item._private_data.sub_menu_f  or item._private_data.sub_menu_m) then
+    local sub_menu = item._private_data.sub_menu_m or item._private_data.sub_menu_f()
+    if sub_menu and sub_menu.rowcount > 0 then
+      sub_menu.arrow_type = module.arrow_type.NONE
+      sub_menu.parent_item = item
+      sub_menu.parent_geometry = data
+      sub_menu.visible = true
+      item._tmp_menu = sub_menu
+      data._tmp_menu = sub_menu
+    end
+  end
+end
+module._execute_sub_menu = execute_sub_menu
+
 ------------------------------------KEYBOARD HANDLING-----------------------------------
 local function activateKeyboard(data)
   if not data then return end
   if not data or grabKeyboard == true then return end
   if (not (data._internal.private_data.enable_keyboard == false)) and data.visible == true then
     capi.keygrabber.run(function(mod, key, event)
-        for k,v in pairs(data._internal.filter_hooks or {}) do --TODO modkeys
-            if k.key == "Mod4" and (key == "End" or key == "Super_L") then
-                local found = false
-                for k3,v3 in ipairs(mod) do
-                    if v3 == "Mod4" and event == k.event then
-                        local retval,self = v(data,mod)
-                        if self and type(self) == "table" then
-                          data = self
-                        end
-                    end
-                end
+      for k,v in pairs(data._internal.filter_hooks or {}) do --TODO modkeys
+        if k.key == "Mod4" and (key == "End" or key == "Super_L") then
+          local found = false
+          for k3,v3 in ipairs(mod) do
+            if v3 == "Mod4" and event == k.event then
+              local retval,self = v(data,mod)
+              if self and type(self) == "table" then
+                data = self
+              end
             end
-            if k.key == key and k.event == event then
-                local retval, self = v(data,mod)
-                if self and type(self) == "table" then
-                  data = self
-                end
-                return retval
-            end
+          end
         end
-        if event == "release" then
-            return true
+        if k.key == key and k.event == event then
+          local retval, self = v(data,mod)
+          if self and type(self) == "table" then
+            data = self
+          end
+          return retval
         end
+      end
+      if event == "release" then
+          return true
+      end
 
-        if (key == 'Return') and data._current_item and data._current_item.button1 then
-            data._current_item.button1()
-            data.visible = false
-        elseif key == 'Escape' or (key == 'Tab' and data.filter_string == "") then
-            data.visible = false
-            capi.keygrabber.stop()
-        elseif (key == 'BackSpace') and data.filter_string ~= "" and data.filter == true then
-            data.filter_string = data.filter_string:sub(1,-2)
-            filter(data)
-        elseif data.filter == true and key:len() == 1 then
-            data.filter_string = data.filter_string .. key:lower()
-            filter(data)
+      if (key == 'Return') and data._current_item and data._current_item.button1 then
+        if data.sub_menu_on == module.sub_menu_on.BUTTON1 then
+          execute_sub_menu(data,data._current_item)
         else
+          data._current_item.button1()
           data.visible = false
-          capi.keygrabber.stop()
         end
-        return true
+      elseif key == 'Escape' or (key == 'Tab' and data.filter_string == "") then
+        data.visible = false
+        capi.keygrabber.stop()
+      elseif (key == 'BackSpace') and data.filter_string ~= "" and data.filter == true then
+        data.filter_string = data.filter_string:sub(1,-2)
+        filter(data)
+      elseif data.filter == true and key:len() == 1 then
+        data.filter_string = data.filter_string .. key:lower()
+        filter(data)
+      else
+        data.visible = false
+        capi.keygrabber.stop()
+      end
+      return true
     end)
   end
 end
@@ -148,16 +176,8 @@ local function add_item(data,args)
       end
       data._current_item.selected = false
     end
-    if (private_data.sub_menu_f  or private_data.sub_menu_m)and data._current_item ~= item then
-      local sub_menu = private_data.sub_menu_m or private_data.sub_menu_f()
-      if sub_menu then
-        sub_menu.arrow_type = module.arrow_type.NONE
-        sub_menu.parent_item = item
-        sub_menu.parent_geometry = data
-        sub_menu.visible = true
-        item._tmp_menu = sub_menu
-        data._tmp_menu = sub_menu
-      end
+    if data.sub_menu_on == module.sub_menu_on.SELECTED and data._current_item ~= item then
+      execute_sub_menu(data,item)
     end
     data.item_style(data,item,true,false)
     data._current_item = item
@@ -215,6 +235,7 @@ end
 
 local function add_embeded_menu(data,menu)
   add_widget(data,menu._internal.layout)
+  menu._embeded_parent = data
 end
 
 
@@ -267,6 +288,7 @@ local function new(args)
       disable_markup  = args.disable_markup or false,
       x               = args.x or 0,
       y               = args.y or 0,
+      sub_menu_on     = args.sub_menu_on or module.sub_menu_on.SELECTED,
     },
     get_map = {
       is_menu       = function() return true end,
@@ -325,7 +347,7 @@ local function new(args)
     end
     if value and not capi.keygrabber.isrunning() then
       activateKeyboard(data)
-    elseif data.parent_geometry and not data.parent_geometry.is_menu then
+    elseif data.parent_geometry and not data.parent_geometry.is_menu and data.enable_keyboard then
       capi.keygrabber.stop()
     end
   end
@@ -365,7 +387,6 @@ local function new(args)
 --         data.style(data,{arrow_x=20,margin=internal.margin})
       else
         data.has_changed = true
-        internal.layout:emit_signal("widget::updated")
       end
     end)
   end
@@ -401,7 +422,7 @@ local function new(args)
       filter(data)
     end
   end
-  
+
   function data:scroll_down()
     if data.max_items ~= nil and data.rowcount >= data.max_items and (data._start_at or 1)+data.max_items <= data.rowcount then
       data._start_at  = (data._start_at or 1) + 1

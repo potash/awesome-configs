@@ -15,7 +15,7 @@ local layout    = require( "extern.radical.layout"   )
 local checkbox  = require( "extern.radical.widgets.checkbox" )
 local arrow_style = require( "extern.radical.style.arrow" )
 
-local capi,module = { mouse = mouse , screen = screen , keygrabber = keygrabber },{}
+local capi,module = { mouse = mouse , screen = screen, keygrabber = keygrabber },{}
 
 local function get_direction(data)
   local parent_geometry = data.parent_geometry --Local cache to avoid always calling the object hooks
@@ -143,7 +143,8 @@ local function setup_drawable(data)
   set_map.height = function(value)
     local margins = data.margins
     local need_update = (internal.w.height ~= (value + margins.top + margins.bottom))
-    internal.w.height = (value + margins.top + margins.bottom) or 1
+    local new_height = (value + margins.top + margins.bottom) or 1
+    internal.w.height = new_height > 0 and new_height or 1
     if need_update then
       data.style(data)
       internal.set_position(data)
@@ -172,7 +173,14 @@ local function setup_item(data,item,args)
       buttons[#buttons+1] = button({},i,args["button"..i])
     end
   end
-  if not buttons[3] then --Hide on right click
+
+  -- Click to open sub_menu
+  if not buttons[1] and data.sub_menu_on == base.sub_menu_on.BUTTON1 then
+    buttons[#buttons+1] = button({},1,function() base._execute_sub_menu(data,item) end)
+  end
+
+  --Hide on right click
+  if not buttons[3] then
     buttons[#buttons+1] = button({},3,function()
       data.visible = false
       if data.parent_geometry and data.parent_geometry.is_menu then
@@ -180,11 +188,15 @@ local function setup_item(data,item,args)
       end
     end)
   end
+
+  -- Scroll up
   if not buttons[4] then
     buttons[#buttons+1] = button({},4,function()
       data:scroll_up()
     end)
   end
+
+  -- Scroll down
   if not buttons[5] then
     buttons[#buttons+1] = button({},5,function()
       data:scroll_down()
