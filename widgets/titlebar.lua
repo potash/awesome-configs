@@ -34,7 +34,7 @@ local function new(c)
         end)
     )
     -- Status images
-    if beautiful.tb["add_status"] then
+    if beautiful.tb["status"] then
         local status_image = wibox.widget.imagebox()
         local status_layout = wibox.layout.fixed.horizontal()
 

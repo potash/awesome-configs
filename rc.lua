@@ -167,7 +167,7 @@ end
 root.keys(keys["global"])
 root.buttons(keys["mouse"])
 
-
+-- All clients will match this rule.
 awful.rules.rules = {{ rule = { },
     properties = {
         border_width = beautiful.border_width,
@@ -182,25 +182,18 @@ awful.rules.rules = {{ rule = { },
 -- Initializes the windows rules system
 awfuldb.load(awful.rules.rules, tags)
 
-table.insert(awful.rules.rules, {
-        rule = { type = "dialog" },
-        properties = {
-            border_width = 1,
-            border_color = beautiful.border_normal,
-            floating = true,
-            size_hints_honor = true
-        }
-})
-
-
---- Signals emitted on client objects
+-- Signals emitted on client objects
 client.connect_signal("manage", function(c,startup)
     -- Enable sloppy focus
     c:connect_signal("mouse::enter", function(c) client.focus = c end)
     if c.type == "dialog" then
         awful.placement.centered(c)
         c.ontop = true
-        if beautiful.tb["add_float"] then widgets.titlebar(c) end
+        if beautiful.tb["dialog"] then  widgets.titlebar(c) end
+    elseif awful.client.floating.get(c) then
+        if beautiful.tb["float"] then 
+            widgets.titlebar(c) 
+        end
     end
     if beautiful.tb["all"] then widgets.titlebar(c) end
 end)

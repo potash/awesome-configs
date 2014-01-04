@@ -99,9 +99,10 @@ theme.pr["lua"]                       = "<span foreground='#1692D0' font='Sci Fi
 
 -- Titlebar
 theme.tb={}
-theme.tb["add_all"]                   = false
-theme.tb["add_float"]                 = true
-theme.tb["add_status"]                = true
+theme.tb["all"]                       = false
+theme.tb["float"]                     = true
+theme.tb["dialog"]                    = true
+theme.tb["status"]                    = true
 theme.tb["size"]                      = 12
 theme.tb["valign"]                    = "top"
 theme.tb["position"]                  = "top"
@@ -115,8 +116,8 @@ theme.sys={}
 
 -- Disk usage
 theme.sys.fs = {
-    { "root:",  "/"     },
-    { "home:",  "/home" },
+    { "root:", "/" },
+    { "home:", "/home" },
 }
 
 -- Naughty library settings
