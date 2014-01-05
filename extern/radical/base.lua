@@ -2,7 +2,6 @@ local setmetatable = setmetatable
 local pairs,ipairs = pairs, ipairs
 local type,string  = type,string
 local print,unpack = print, unpack
-
 local beautiful    = require( "beautiful"          )
 local util         = require( "awful.util"         )
 local object       = require( "extern.radical.object"     )
@@ -125,19 +124,21 @@ local function add_item(data,args)
     private_data = {
       text       = args.text     or ""                                                                  ,
       height     = args.height   or beautiful.menu_height or 30                                         ,
+      width      = args.width    or nil                                                                 ,
       icon       = args.icon     or nil                                                                 ,
       prefix     = args.prefix   or ""                                                                  ,
       suffix     = args.suffix   or ""                                                                  ,
       bg         = args.bg       or nil                                                                 ,
-      fg         = args.fg       or data.fg       or beautiful.menu_fg_normal or beautiful.fg_normal,
-      fg_focus   = args.fg_focus or data.fg_focus or beautiful.menu_fg_focus  or beautiful.fg_focus ,
-      bg_focus   = args.bg_focus or data.bg_focus or beautiful.menu_bg_focus  or beautiful.bg_focus ,
+      fg         = args.fg       or data.fg       or beautiful.menu_fg_normal or beautiful.fg_normal    ,
+      fg_focus   = args.fg_focus or data.fg_focus or beautiful.menu_fg_focus  or beautiful.fg_focus     ,
+      bg_focus   = args.bg_focus or data.bg_focus or beautiful.menu_bg_focus  or beautiful.bg_focus     ,
       sub_menu_m = (args.sub_menu and type(args.sub_menu) == "table" and args.sub_menu.is_menu) and args.sub_menu or nil,
-      sub_menu_f = (args.sub_menu and type(args.sub_menu) == "function") and args.sub_menu or nil,
+      sub_menu_f = (args.sub_menu and type(args.sub_menu) == "function") and args.sub_menu or nil       ,
       selected   = false,
       checkable  = args.checkable or (args.checked ~= nil) or false,
-      checked    = args.checked or false,
+      checked    = args.checked  or false,
       underlay   = args.underlay or nil,
+      tooltip    = args.tooltip  or nil,
     },
     force_private = {
       visible = true,
@@ -258,6 +259,7 @@ local function new(args)
       bg_header       = args.bg_header    or beautiful.menu_bg_header or beautiful.fg_normal,
       border_color    = args.border_color or beautiful.menu_border_color or beautiful.border_color or "#333333",
       border_width    = args.border_width or beautiful.menu_border_width or beautiful.border_width or 3,
+      separator_color = args.separator_color or beautiful.menu_separator_color or args.border_color or beautiful.menu_border_color or beautiful.border_color or "#333333",
       item_height     = args.item_height  or beautiful.menu_height or 30,
       item_width      = args.item_width or nil,
       width           = args.width or beautiful.menu_width or 130,
@@ -399,7 +401,7 @@ local function new(args)
   end
 
   function data:remove_key_hook(key)
-      for k,v in pairs(internal.filter_hooks) do
+      for k,v in pairs(internal.filter_hooks or {}) do
           if k.key == key then
               internal.filter_hooks[k] = nil
               break

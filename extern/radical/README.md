@@ -40,12 +40,19 @@ The most simple kind of menus, contexts one, can be created like this:
         smenu:add_item({text="item 2"})
         return smenu
     end})
+    
+    -- To add the menu to a widget:
+    local mytextbox = wibox.widget.textbox()
+    mytextbox:set_menu(m,3) -- 3 = right mouse button, 1 = left mouse button
 ```
 
 In this example, a simple 3 item menu is created with a dynamically generated
 submenu. Please note that generating submenus using function will generate it
 every time it is being shown. For static menus, it is faster to simply create
 them once and passing the submenu object to the "sub_menu" item property.
+
+`:set_menu` can also take a lazy-loading function instead of a
+menu. The second parameter is not mandatory, the default is `1`.
 
 ### Menu types
 
@@ -65,9 +72,9 @@ be created by beautiful themes. The current ones are:
 
 Arrow also have a few types:
 
- * radical.base.NONE
- * radical.base.PRETTY
- * radical.base.CENTERED
+ * radical.base.arrow_type.NONE
+ * radical.base.arrow_type.PRETTY
+ * radical.base.arrow_type.CENTERED
 
 ### Item style
 
@@ -95,6 +102,19 @@ On top of each styles, menu can also have different layouts to display items:
         item_style = radical.item_style.classic ,
         layout     = radical.layout.vertical    })
     
+```
+
+
+### Tooltip
+
+Radical also have its own styled tooltip widget. It can be used in menus, but
+also in every widgets using the `set_tooltip` method:
+
+```lua
+
+local mytextbox = wibox.widget.textbox()
+mytextbox:set_tooltip("foo bar")
+
 ```
 
 ## Options
@@ -164,6 +184,7 @@ Multiple items can have multiple sets of options.
 | underlay       | Text to render at the far-right of the item  | string            |
 | prefix_widget  | Widget to append at the begenning of the item| widget            |
 | suffix_widget  | Widget to append at the end of the item      | widget            |
+| tooltip        | A tooltip shown on the side or bottom        | string            |
 | button1        | Left mouse button action                     | function          |
 | button2        | Mid mouse button action                      | function          |
 | button3        | Right mouse button action                    | function          |
@@ -185,3 +206,4 @@ Radical also use the some of the same theme options as awful.menu, plus some:
  * menu_bg_normal
  * menu_bg_highlight
  * menu_submenu_icon
+ * menu_separator_color

@@ -3,8 +3,8 @@ local print = print
 
 local module = {
   margins = {
-    TOP    = 2,
-    BOTTOM = 2,
+    TOP    = 1,
+    BOTTOM = 1,
     RIGHT  = 2,
     LEFT   = 4
   }
