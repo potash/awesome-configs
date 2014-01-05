@@ -37,7 +37,7 @@ theme.wibox["main"].fg                = "#1692D0"
 -- Widgets icons
 theme.iw={}
 theme.iw["places"]                    = theme.ICONS.."/widgets/places.svg"
-theme.iw["menu"]                      = theme.ICONS.."/widgets/menu.svg"
+theme.iw["menu"]                      = theme.ICONS.."/logos/gentoo.svg"
 theme.iw["tag"]                       = theme.ICONS.."/widgets/workspace.svg"
 theme.iw["kbd"]                       = theme.ICONS.."/widgets/keyboard.svg"
 theme.iw["sys"]                       = theme.ICONS.."/widgets/system.svg"
@@ -111,13 +111,15 @@ theme.tb["bg_focus"]                  = "#0b1e46"
 theme.tb["fg"]                        = "#1692D0"
 theme.tb["bg"]                        = "#001734"
 
--- sys widgets
+-- Sys widges
 theme.sys={}
 
 -- Disk usage
 theme.sys.fs = {
-    { "root:", "/" },
-    { "home:", "/home" },
+    { "root:",  "/"                              },
+    { "DATA:",  "/mnt/DATA"                      },
+    { "Moz:",   "/home/minde/.cache/mozilla"     },
+    { "eMail:", "/home/minde/.cache/thunderbird" },
 }
 
 -- Naughty library settings
