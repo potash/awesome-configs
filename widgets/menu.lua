@@ -79,7 +79,7 @@ module.mapp["Graphics"] = {
         { name="showFoto",                 command="showfoto",             icon=path.."/app/showfoto.png"    },
         { name="5up",                      command="5up",                  icon=path.."/app/5up.png"         },
         { name="Color Chooser",            command="ccolor",               icon=path.."/app/ccolor.png"      },
-        { name="Geegie",                   command="geegie",               icon=path.."/app/geeqie.png"      }
+        { name="XnView",                   command="xnview",               icon=path.."/app/xnview.png"      }
     }
 }
 module.mapp["Multimedia"] = {
