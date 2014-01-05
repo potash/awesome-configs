@@ -16,7 +16,7 @@ local naughty   = require("naughty")
 local beautiful = require("beautiful")
 
 -- The path used by require to search for a C loader.
-package.cpath = awful.util.getdir("config").."/extern/awfuldb/lsqlite3/?.so;" .. package.cpath
+package.cpath = awful.util.getdir("config").."/extern/awfuldb/?.so;" .. package.cpath
 local has_sqlite3, sqlite3 = pcall(require, "lsqlite3")
 
 local module = {}
