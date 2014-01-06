@@ -1,8 +1,8 @@
 --[[
         File:      widgets/menu.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -21,7 +21,7 @@ local path = beautiful.ICONS.."/launcher"
 -- Main menu table
 module.mapp = {}
 module.mapp["Network"] = {
-    icon = beautiful.mapp["network"],
+    icon = path.."/network.svg",
     items = {
         { name="Firefox",                  command="firefox",              icon=path.."/app/firefox.png"     },
         { name="Wireshark",                command="wireshark",            icon=path.."/app/wireshark.png"   },
@@ -36,7 +36,7 @@ module.mapp["Network"] = {
     }
 }
 module.mapp["Development"] = {
-    icon = beautiful.mapp["development"],
+    icon = path.."/development.svg",
     items = {
         { name="gdb promp",                command="prompt_gdb",           icon=path.."/app/gdb.png"         },
         { name="Python shell",             command="prompt_python",        icon=path.."/app/python.png"      },
@@ -55,7 +55,7 @@ module.mapp["Development"] = {
     }
 }
 module.mapp["Messenger"] = {
-    icon = beautiful.mapp["messenger"],
+    icon = path.."/messenger.svg",
     items = {
         { name="Kvirc",                    command="kvirc4",               icon=path.."/app/kvirc.png"       },
         { name="Kopete",                   command="kopete",               icon=path.."/app/kopete.png"      },
@@ -63,7 +63,7 @@ module.mapp["Messenger"] = {
     }
 }
 module.mapp["Reader"] = {
-    icon = beautiful.mapp["reader"],
+    icon = path.."/reader.svg",
     items = {
         { name="QuiteRSS",                 command="quiterss",             icon=path.."/app/quiterss.png"    },
         { name="Ebook Reader",             command="qpdf",                 icon=path.."/app/ebook.png"       },
@@ -72,7 +72,7 @@ module.mapp["Reader"] = {
     }
 }
 module.mapp["Graphics"] = {
-    icon = beautiful.mapp["graphics"],
+    icon = path.."/graphics.svg",
     items = {
         { name="digiKam",                  command="digikam",              icon=path.."/app/digikam.png"     },
         { name="Gimp",                     command="gimp-2.8",             icon=path.."/app/gimp.png"        },
@@ -83,7 +83,7 @@ module.mapp["Graphics"] = {
     }
 }
 module.mapp["Multimedia"] = {
-    icon = beautiful.mapp["multimedia"],
+    icon = path.."/multimedia.svg",
     items = {
         { name="Kdenlive",                 command="kdenlive",             icon=path.."/app/kdenlive.png"    },
         { name="Youtube Player",           command="minitube",             icon=path.."/app/youtube.png"     },
@@ -97,7 +97,7 @@ module.mapp["Multimedia"] = {
     }
 }
 module.mapp["Office"] = {
-    icon = beautiful.mapp["office"],
+    icon = path.."/office.svg",
     items = {
         { name="yEd",                      command="yEd",                  icon=path.."/app/yEd.png"         },
         { name="Qpdf",                     command="qpdf",                 icon=path.."/app/ebook.png"       },
@@ -105,7 +105,7 @@ module.mapp["Office"] = {
     }
 }
 module.mapp["System"] = {
-    icon = beautiful.mapp["system"],
+    icon = path.."/system.svg",
     items = {
         { name="Nvidia Settings",          command="nvidia-settings",      icon=path.."/app/nvidia.png"      },
         { name="VirtualBox",               command="virtualbox",           icon=path.."/app/virtualbox.png"  },
@@ -121,7 +121,7 @@ module.mapp["System"] = {
     }
 }
 module.mapp["Miscellaneous"] = {
-    icon = beautiful.mapp["miscellaneous"],
+    icon = path.."/miscellaneous.svg",
     items = {
         { name="Terminal",                 command="urxvt",                icon=path.."/app/terminal.svg"    },
         { name="speedcrunch",              command="speedcrunch",          icon=path.."/app/speedcrunch.svg" },
@@ -168,7 +168,7 @@ function module.main_app()
         for k,v in pairs(module.mapp) do
             table.insert(menu_items, {k, submenu(v.items), v.icon})
         end
-        module.menu_app = awful.menu.new({items=menu_items,theme={height=16,width=120}})
+        module.menu_app = awful.menu.new({items=menu_items,theme={height=18,width=140}})
     end
     module.menu_app:show()
     module.menu_visible = true
@@ -206,8 +206,8 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    layout:add(common.cwi({icon=beautiful.iw["menu"]}))
-    layout:add(common.cwt({text="MENU", width=50, b1=module.main_qapp, b3=module.main_app, font="Sci Fied 8"}))
+    layout:add(common.imagebox({icon=beautiful.iw["menu"]}))
+    layout:add(common.textbox({text="MENU", width=50, b1=module.main_qapp, b3=module.main_app }))
     layout:add(common.arrow(6))
     return layout
 end

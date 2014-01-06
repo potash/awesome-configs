@@ -1,8 +1,8 @@
 --[[
         File:      widgets/clock.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -15,14 +15,14 @@ local beautiful = require("beautiful")
 local module = {}
 
 local function new()
-    local widget = awful.widget.textclock("<span font='Crashed Scoreboard 17' color='"..beautiful.widget_text_fg.."'>%H %M</span> ", 60)
-    local clock = wibox.widget.background(widget, beautiful.widget_text_bg)
-    widget:set_align("center")
-    widget:set_valign("center")
-    widget.fit = function() return 62,10 end
+    local clock = awful.widget.textclock("<span font='Crashed Scoreboard 17' color='"..beautiful.widget_text_fg.."'>%H %M</span> ", 60)
+    clock:set_align("center")
+    clock:set_valign("center")
+    clock.fit = function() return 62,10 end
+    local widget = wibox.widget.background(clock, beautiful.widget_text_bg)
     local layout = wibox.layout.fixed.horizontal()
     layout:add(common.arrow(5))
-    layout:add(clock)
+    layout:add(widget)
     return layout
 end
 

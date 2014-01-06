@@ -1,8 +1,8 @@
 --[[
         File:      widgets/layout.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -15,6 +15,8 @@ local radical   = require("extern.radical")
 local common    = require("widgets.common")
 
 local module = {}
+
+local path = beautiful.ICONS.."/layouts/"
 
 -- Layouts table
 module.layouts = {
@@ -32,6 +34,22 @@ module.layouts = {
     awful.layout.suit.magnifier,         -- 12
 }
 
+-- Layouts icons
+module.icons = {
+    fairh      = path.."fairh.png",
+    fairv      = path.."fairv.png",
+    floating   = path.."floating.png",
+    magnifier  = path.."magnifier.png",
+    max        = path.."max.png",
+    fullscreen = path.."fullscreen.png",
+    tilebottom = path.."tilebottom.png",
+    tileleft   = path.."tileleft.png",
+    tile       = path.."tile.png",
+    tiletop    = path.."tiletop.png",
+    spiral     = path.."spiral.png",
+    dwindle    = path.."dwindle.png"
+}
+
 module.menu = false
 function module.main()
     if not module.menu then
@@ -44,7 +62,8 @@ function module.main()
             local layout_name = awful.layout.getname(layout_real)
             if layout_name then
                 module.menu:add_item({
-                    icon = beautiful.li[layout_name] or beautiful.cm["none"], text = layout_name,
+                    icon = module.icons[layout_name] or beautiful.cm["none"], 
+                    text = layout_name,
                     button1 = function()
                         awful.layout.set(module.layouts[module.menu.current_index] or module.layouts[1], awful.tag.selected())
                         common.hide_menu(module.menu)
@@ -64,17 +83,17 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local widget = common.cwi({icon=beautiful.li[awful.layout.getname(awful.layout.get(1))]})
+    local widget = common.imagebox({icon=module.icons[awful.layout.getname(awful.layout.get(1))]})
 
     local function update()
-        widget:set_image(beautiful.li[awful.layout.getname(awful.layout.get(1))])
+        widget:set_image(module.icons[awful.layout.getname(awful.layout.get(1))])
     end
 
     awful.tag.attached_connect_signal(1, "property::selected", update)
     awful.tag.attached_connect_signal(1, "property::layout",   update)
 
     layout:add(widget)
-    layout:add(common.cwt({ text="LAYOUT", width=60, b1=module.main, font="Sci Fied 8" }))
+    layout:add(common.textbox({ text="LAYOUT", width=60, b1=module.main }))
     layout:add(common.arrow(6))
     return layout
 end

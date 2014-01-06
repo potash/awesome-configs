@@ -1,8 +1,8 @@
 --[[
         File:      widgets/places.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -17,10 +17,10 @@ local common    = require("widgets.common")
 local module = {}
 
 local HOME = os.getenv("HOME")
-local OPEN = "krusader --left"
 local path = beautiful.ICONS.."/places/"
 
-local PATHS = {
+module.OPEN = "krusader --left"
+module.PATHS = {
     { "Home",        HOME,                 path.."home.svg",        "N" },
     { "Cloud",       HOME.."/Cloud",       path.."remote.svg",      "R" },
     { "Development", HOME.."/Development", path.."development.svg", "D" },
@@ -40,13 +40,13 @@ function module.main()
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom",
             x = screen[1].geometry.width - 210,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#PATHS*beautiful.menu_height) - 22,
+            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#module.PATHS*beautiful.menu_height) - 22,
         })
         local tags = awful.tag.gettags(1)
-        for _,t in ipairs(PATHS) do
+        for _,t in ipairs(module.PATHS) do
             module.menu:add_item({
                 button1 = function()
-                    awful.util.spawn(OPEN.." "..t[2])
+                    awful.util.spawn(module.OPEN.." "..t[2])
                     awful.tag.viewonly(tags[4])
                     common.hide_menu(module.menu)
                 end,
@@ -61,12 +61,12 @@ function module.main()
     end
 end
 
---- Return widgets layout
+-- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
     layout:add(common.arrow(5))
-    layout:add(common.cwi({ icon=beautiful.iw["places"] }))
-    layout:add(common.cwt({ text="PLACES", width=60, b1=module.main, font="Sci Fied 8" }))
+    layout:add(common.imagebox({ icon=beautiful.iw["places"] }))
+    layout:add(common.textbox({ text="PLACES", width=60, b1=module.main }))
     return layout
 end
 

@@ -1,8 +1,8 @@
 --[[
         File:      widgets/kbd.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -17,24 +17,24 @@ local common    = require("widgets.common")
 local module = {}
 
 module.lang={}
-module.lang["lt"]="Lithuanian"
 module.lang["us"]="English"
---module.lang["ru"]="Russian" -- FIXME: RU keybindings are corrupted (#982)
+module.lang["lt"]="Lithuanian"
+--module.lang["ru"]="Russian" -- BUG: RU keybindings are corrupted (#982)
 module.current = "us" -- default.
 function module.set(lang_layout)
     if module.widget and lang_layout ~= module.current then
-        awful.util.spawn("setxkbmap "..lang_layout)
+        awful.util.spawn("setxkbmap "..lang_layout, false)
         module.widget:set_markup("<b>"..string.upper(lang_layout).."</b>")
         module.current = lang_layout
     end
 end
 
-local k = {}
-k.layout = awful.util.table.keys(module.lang)
-k.current = 1  -- us is our default layout
+local kbd = {}
+kbd.layout = awful.util.table.keys(module.lang)
+kbd.current = 1  -- US is our default layout
 function module.switch()
-    k.current = k.current % #(k.layout) + 1
-    module.set(k.layout[k.current])
+    kbd.current = kbd.current % #(kbd.layout) + 1
+    module.set(kbd.layout[kbd.current])
 end
 
 module.menu = false
@@ -64,10 +64,15 @@ end
 
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local w,c  = common.cwu({ text=string.upper(module.current), width=35, b1=module.main, b3=module.switch, font="Sci Fied 8", align="bottom", bg=beautiful.widget_text_bg })
+    local w,c  = common.textbox({
+        text=string.upper(module.current),
+        width=35,
+        b1=module.main,
+        b3=module.switch,
+    })
     module.widget = c
     layout:add(common.arrow(5))
-    layout:add(common.cwi({ icon=beautiful.iw["kbd"] }))
+    layout:add(common.imagebox({ icon=beautiful.iw["kbd"] }))
     layout:add(w)
     return layout
 end

@@ -54,38 +54,8 @@ theme.cm["titlebar"]                  = theme.ICONS.."/client/titlebar.svg"
 theme.cm["move"]                      = theme.ICONS.."/client/move.svg"
 theme.cm["none"]                      = theme.ICONS.."/client/none.svg"
 
--- Layout icons
-theme.li={}
-theme.li["fairh"]                     = theme.ICONS.."/layouts/fairh.png"
-theme.li["fairv"]                     = theme.ICONS.."/layouts/fairv.png"
-theme.li["floating"]                  = theme.ICONS.."/layouts/floating.png"
-theme.li["magnifier"]                 = theme.ICONS.."/layouts/magnifier.png"
-theme.li["max"]                       = theme.ICONS.."/layouts/max.png"
-theme.li["fullscreen"]                = theme.ICONS.."/layouts/fullscreen.png"
-theme.li["tilebottom"]                = theme.ICONS.."/layouts/tilebottom.png"
-theme.li["tileleft"]                  = theme.ICONS.."/layouts/tileleft.png"
-theme.li["tile"]                      = theme.ICONS.."/layouts/tile.png"
-theme.li["tiletop"]                   = theme.ICONS.."/layouts/tiletop.png"
-theme.li["spiral"]                    = theme.ICONS.."/layouts/spiral.png"
-theme.li["dwindle"]                   = theme.ICONS.."/layouts/dwindle.png"
-
 theme.taglist_squares_sel             = theme.ICONS.."/tags/squares_sel.png"
 theme.taglist_squares_unsel           = theme.ICONS.."/tags/squares_unsel.png"
-
--- Applications menu
-theme.mapp={}
-theme.mapp["work"]                    = theme.ICONS.."/launcher/work.svg"
-theme.mapp["network"]                 = theme.ICONS.."/launcher/network.svg"
-theme.mapp["development"]             = theme.ICONS.."/launcher/development.svg"
-theme.mapp["file_Manager"]            = theme.ICONS.."/launcher/file_manager.svg"
-theme.mapp["messenger"]               = theme.ICONS.."/launcher/messenger.svg"
-theme.mapp["reader"]                  = theme.ICONS.."/launcher/reader.svg"
-theme.mapp["graphics"]                = theme.ICONS.."/launcher/graphics.svg"
-theme.mapp["multimedia"]              = theme.ICONS.."/launcher/multimedia.svg"
-theme.mapp["office"]                  = theme.ICONS.."/launcher/office.svg"
-theme.mapp["system"]                  = theme.ICONS.."/launcher/system.svg"
-theme.mapp["miscellaneous"]           = theme.ICONS.."/launcher/miscellaneous.svg"
-theme.mapp["awesome"]                 = theme.ICONS.."/launcher/awesome.svg"
 
 -- Prompt style 
 theme.pr={}  
@@ -174,7 +144,7 @@ theme.menu_bg_highlight = "#001026"
 
 -- widget text
 --theme.widget_text_font = "Sci Fied 8"
-theme.widget_text_font    = "Sans 8"
+theme.widget_text_font    = "Sci Fied 8"
 theme.widget_text_fg      = "#1692D0"
 theme.widget_text_bg      = "#0F2766"
 theme.widget_text_align   = "center"

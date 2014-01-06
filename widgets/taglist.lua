@@ -1,8 +1,8 @@
 --[[
         File:      widgets/taglist.lua
-        Date:      2013-10-28
+        Date:      2014-01-06
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -13,10 +13,8 @@ local beautiful = require("beautiful")
 local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local common    = require("widgets.common")
-local dbg       = require("extern.dbg")
 
 local module = {}
-
 local path = beautiful.ICONS .. "/tags/"
 
 -- Tags table.
@@ -33,6 +31,7 @@ module.tag = {
     { name="System",        sname="S", icon=path.."system.svg",      layout=awful.layout.suit.floating }, -- 10
     { name="Miscellaneous", sname="X", icon=path.."misc.svg",        layout=awful.layout.suit.floating }  -- 11
 }
+
 -- Create tags
 for _,t in ipairs(module.tag) do
     awful.tag.add(t.sname, { icon=t.icon, layout=t.layout })
@@ -41,7 +40,8 @@ end
 -- Setup tags
 local tags = awful.tag.gettags(1)
 --awful.tag.setproperty(tags[1], "mwfact", 0.60)
-tags[1].selected = true
+tags[1].selected = false
+tags[3].selected = true
 
 -- Main menu
 module.menu=false
@@ -57,7 +57,8 @@ function module.main()
             module.menu:add_item({
                 button1 = function() awful.tag.viewonly(t) common.hide_menu(module.menu) end,
                 selected = (t == awful.tag.selected(1)),
-                text = module.tag[i].name, icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
+                text = module.tag[i].name,
+                icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
             })
         end
         common.reg_menu(module.menu)
@@ -85,13 +86,11 @@ local function new()
         awful.button({        }, 3, awful.tag.viewtoggle),
         awful.button({ "Mod4" }, 3, awful.client.toggletag)
     )
-    layout:add(common.cwi({ icon=beautiful.iw["tag"] }))
-    layout:add(common.cwt({ text="TAG", width=35, b1=module.main, font="Sci Fied 8" }))
+    layout:add(common.imagebox({ icon=beautiful.iw["tag"] }))
+    layout:add(common.textbox({ text="TAG", width=35, b1=module.main, font="Sci Fied 8" }))
     layout:add(awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons))
     layout:add(common.arrow(6))
     return layout
 end
-
-
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })
