@@ -13,14 +13,13 @@ local client = client
 
 local awful     = require("awful")
 local naughty   = require("naughty")
-local beautiful = require("beautiful")
 
 -- The path used by require to search for a C loader.
 package.cpath = awful.util.getdir("config").."/extern/awfuldb/?.so;" .. package.cpath
 local has_sqlite3, sqlite3 = pcall(require, "lsqlite3")
 
 local module = {}
-local db_path = beautiful.dbpath
+module.db = awful.util.getdir("config").."/extern/awfuldb/rules.db"
 
 --- Displays database notifications.
 -- @param msg Text to display
@@ -35,7 +34,7 @@ end
 
 -- Prepare database
 local function prepare()
-    local db = sqlite3.open(db_path)
+    local db = sqlite3.open(module.db)
     db:exec[[
         CREATE TABLE IF NOT EXISTS rules(
            id                   INTEGER       PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -71,10 +70,10 @@ end
 
 --- Save the client.
 -- @param c Client
--- @param t tag by its taglist index (ex awful.tag.getidx(awful.tag.selected(1)))
-function module.save(c,t)
+function module.save(c)
     if not has_sqlite3 then return end
-    local db = sqlite3.open(db_path)
+    local db = sqlite3.open(module.db)
+    local tag = awful.tag.getidx(awful.tag.selected(1))
     local function optimize(obj)
         if type(obj) == "string" then return obj
         elseif type(obj) == "boolean" and obj then return 1
@@ -101,7 +100,7 @@ function module.save(c,t)
 
     -- Binds the values to statement parameters
     stmt:bind_names{
-        tag = t,
+        tag = tag,
         name = optimize(c.name),
         class = optimize(c.class),
         instance = optimize(c.instance),

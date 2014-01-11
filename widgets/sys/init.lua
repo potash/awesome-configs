@@ -15,6 +15,7 @@ local beautiful = require("beautiful")
 local radical   = require("extern.radical")
 local awful     = require("awful")
 local common    = require("widgets.common")
+local dbg       = require("extern.dbg")
 
 local sys_cpu   = require("widgets.sys.cpu")
 local sys_mem   = require("widgets.sys.memory")
@@ -26,33 +27,47 @@ local sys_serv  = require("widgets.sys.services")
 
 local module = {}
 
+--- Header widget
+function module.header(args)
+   local args = args or {}
+   local text = args.text or "N/A"
+   local icon = args.icon or ""
+
+   local t = wibox.widget.textbox()
+   local w = wibox.widget.background()
+   local i = wibox.widget.imagebox()
+   local l = wibox.layout.align.horizontal()
+
+   t:set_markup("<span color='#000000' font='Election Day 8' font_weight='light'> ".. text .."</span>")
+   t:set_valign("bottom")
+
+   i:set_image(beautiful.path .. "/widgets/sys/"..icon)
+   
+   l:set_right(i)
+   l:set_left(t)
+   
+   w:set_widget(l)
+   w:set_bg("#005CB0")
+
+   return w
+end
+
 module.menu = false
 function module.main()
     if not module.menu then
-        module.menu = radical.context({
-            filer = false,
-            enable_keyboard = false,
-            direction = "bottom",
-            width = 120,
-            x = screen[1].geometry.width - 125,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - 325 - (#beautiful.sys.fs*15),
+        module.menu = radical.context({ direction = "bottom",
+            width = 120, x = screen[1].geometry.width - 125, enable_keyboard=false,
+            y = screen[1].geometry.height - beautiful.wibox.height - 325 - 60,
             fg="#005CB0"
         })
-        module.menu:add_widget(common.header({ text="CPU Usage", icon="cpu.svg"     }),  { height = 12  })
+        module.menu:add_widget(module.header({text="CPU Usage", icon="cpu.svg"      }),  { height = 12  })
         module.menu:add_widget(sys_cpu(module.menu),                                     { height = 104 })
-        module.menu:add_widget(common.header({ text="Memory",    icon="mem.svg"     }),  { height = 12  })
+        module.menu:add_widget(module.header({ text="Memory",    icon="mem.svg"     }),  { height = 12  })
         module.menu:add_widget(sys_mem(module.menu),                                     { height = 85  })
-        module.menu:add_widget(common.header({ text="Network",   icon="network.svg" }),  { height = 12  })
+        module.menu:add_widget(module.header({ text="Network",   icon="network.svg" }),  { height = 12  })
         module.menu:add_widget(sys_net(module.menu),                                     { height = 65  })
-        module.menu:add_widget(common.header({ text="DISK",      icon="disks.svg"   }),  { height = 12  })
-        module.menu:add_widget(sys_hdd(module.menu),                                     { height = (#beautiful.sys.fs*15)  })
-
-        --module.menu:add_widget(common.header({ text="Services",  icon="service.svg" }),  { height = 12  })
-        --module.menu:add_widget(sys_serv(module.menu),                                    { height = 20  })
-        --module.menu:add_widget(common.header({ text="Sound",     icon="sound.svg"   }),  { height = 12  })
-        --module.menu:add_widget(sys_snd(module.menu),                                     { height = 20  })
-        --module.menu:add_widget(common.header({ text="Weather",   icon="weather.svg" }),  { height = 12  })
-        --module.menu:add_widget(sys_wea(module.menu),                                     { height = 20  })
+        module.menu:add_widget(module.header({ text="DISK",      icon="disks.svg"   }),  { height = 12  })
+        module.menu:add_widget(sys_hdd(module.menu),                                     { height = 60  })
 
         module.menu.visible = true
     elseif module.menu.visible then
@@ -64,11 +79,11 @@ end
 
 --- Return widgets layout
 local function new()
-   local layout = wibox.layout.fixed.horizontal()
-   layout:add(common.arrow(5))
-   layout:add(common.cwi({ icon=beautiful.iw["sys"] }))
-   layout:add(common.cwt({ text="SYS", width=35, b1=module.main, font="Sci Fied 8" }))
-   return layout
+    local layout = wibox.layout.fixed.horizontal()
+    layout:add(common.arrow(5))
+    layout:add(common.imagebox({ icon=beautiful.path.."/widgets/system.svg" }))
+    layout:add(common.textbox({ text="SYS", width=35, b1=module.main }))
+    return layout
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

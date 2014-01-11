@@ -1,6 +1,6 @@
 --[[
         File:      widgets/altTab.lua
-        Date:      2014-01-06
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -8,16 +8,16 @@
 --]]
 
 local awful     = require("awful")
-local radical   = require("extern.radical")
-local underlay  = require("extern.graph.underlay")
 local beautiful = require("beautiful")
+local radical   = require("extern.radical")
+local common    = require("widgets.common")
 
 local module = {}
 
 module.menu = {}
 module.timer = {}
 
-module.timer[1] = timer{timeout = beautiful.popup_time_out}
+module.timer[1] = timer{timeout = beautiful.popup_time_out or 60}
 module.timer[1]:connect_signal("timeout", function()
     if module.menu.visible then
         module.menu.visible = false
@@ -46,7 +46,7 @@ local function new()
         end)
         for _,v in pairs(cls) do
             module.menu:add_item({
-                text = awful.util.linewrap((awful.util.escape(v.name).."\t\t" or "N/A"), 80,0), -- FIXME: TAB nera butinas.
+                text = awful.util.escape(v.name),
                 button1 = function()
                     module.timer_restart()
                     if v:tags()[1] and v:tags()[1].selected == false then
@@ -54,9 +54,9 @@ local function new()
                     end
                     client.focus = v
                 end,
-                icon = v.icon or beautiful.cm["none"],
+                icon = v.icon or beautiful.unknown,
                 selected = client.focus == v,
-                underlay = underlay(v:tags()[1].name)
+                suffix_widget = common.textbox({text = v:tags()[1].name, width=16, font="Sci Fied 10", bg="#00121E00", fg="#1577D3"})
             })
         end
         module.menu.visible = true

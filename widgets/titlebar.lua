@@ -1,8 +1,8 @@
 --[[
         File:      widgets/titlebar.lua
-        Date:      2013-10-28
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -34,7 +34,7 @@ local function new(c)
         end)
     )
     -- Status images
-    if beautiful.tb["status"] then
+    if beautiful.titlebar["status"] then
         local status_image = wibox.widget.imagebox()
         local status_layout = wibox.layout.fixed.horizontal()
 
@@ -43,7 +43,7 @@ local function new(c)
             if c.sticky == true then s = s.."_sticky"  end
             if c.ontop == true then  s = s.."_ontop"   end
             if awful.client.floating.get(c) then s = s.."_float" end
-            status_image:set_image(beautiful.ICONS .. "/titlebar/status"..s..".png")
+            status_image:set_image(beautiful.path .. "/titlebar/status"..s..".png")
         end
         update_icons(c)
         c:connect_signal("property::floating", update_icons)
@@ -57,15 +57,15 @@ local function new(c)
 
     -- Client icon
     local clientIcon = wibox.widget.imagebox()
-    clientIcon:set_image(c.icon or beautiful.cm["none"])
+    clientIcon:set_image(c.icon or beautiful.unknown)
 
     -- Titlebar title
     local clientTitle = wibox.widget.textbox()
-    clientTitle:set_valign(beautiful.tb["valign"])
-    clientTitle:set_font(beautiful.tb["font"])
+    clientTitle:set_valign(beautiful.titlebar["valign"])
+    clientTitle:set_font(beautiful.titlebar["font"])
     local function update_title()
         local text = awful.util.linewrap(awful.util.escape(c.name) or "N/A", 80)
-        clientTitle:set_markup("<span color='".. beautiful.tb["fg"] .."'>".. text .."</span>")
+        clientTitle:set_markup("<span color='".. beautiful.titlebar["fg"] .."'>".. text .."</span>")
     end
     c:connect_signal("property::name", update_title)
     update_title()
@@ -89,10 +89,8 @@ local function new(c)
     layout:set_left(left_layout)
     layout:set_middle(middle_layout)
     layout:set_right(right_layout)
-    --  Available "position" values are top, left, right and bottom. 
-    --  Additionally, the foreground and background colors can be configured via e.g. "bg_normal" and "bg_focus". 
-    awful.titlebar(c, { size = beautiful.tb["size"], position = beautiful.tb["position"],
-        bg_normal = beautiful.tb["bg"],bg_focus = beautiful.tb["bg_focus"]}):set_widget(layout)
+    awful.titlebar(c, { size = beautiful.titlebar["size"], position = beautiful.titlebar["position"],
+        bg_normal = beautiful.titlebar["bg"],bg_focus = beautiful.titlebar["bg_focus"]}):set_widget(layout)
 end
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

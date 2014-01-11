@@ -9,6 +9,6 @@ return {
     places        = require("widgets.places"),
     altTab        = require("widgets.altTab"),
     titlebar      = require("widgets.titlebar"), -- TODO
-    common        = require("widgets.common"),   -- TODO
-    sys           = require("widgets.sys")       -- TODO
+    common        = require("widgets.common"),
+    sys           = require("widgets.sys"),      -- TODO
 }

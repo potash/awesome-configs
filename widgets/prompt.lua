@@ -1,8 +1,8 @@
 --[[
         File:      widgets/prompt.lua
-        Date:      2013-10-28
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -17,11 +17,11 @@ module.prompt = awful.widget.prompt()
 -- Command prompt
 function module.run()
     awful.prompt.run({
-        fg_cursor = beautiful.pr["fg_cursor"],
-        bg_cursor = beautiful.pr["bg_cursor"],
-        ul_cursor = beautiful.pr["ul_cursor"],
-        font = beautiful.pr["font"],
-        prompt = beautiful.pr["cmd"]
+        fg_cursor = beautiful.prompt["fg_cursor"],
+        bg_cursor = beautiful.prompt["bg_cursor"],
+        ul_cursor = beautiful.prompt["ul_cursor"],
+        font = beautiful.prompt["font"],
+        prompt = beautiful.prompt["cmd"]
     },
         module.prompt.widget,
         function(...) awful.util.spawn(...) end,
@@ -29,14 +29,15 @@ function module.run()
         awful.util.getdir("cache").. "/history_run", 50
     )
 end
+
 -- Run in terminal
 function module.cmd()
     awful.prompt.run({
-        fg_cursor = beautiful.pr["fg_cursor"],
-        bg_cursor = beautiful.pr["bg_cursor"],
-        ul_cursor = beautiful.pr["ul_cursor"],
-        font = beautiful.pr["font"],
-        prompt = beautiful.pr["run"]
+        fg_cursor = beautiful.prompt["fg_cursor"],
+        bg_cursor = beautiful.prompt["bg_cursor"],
+        ul_cursor = beautiful.prompt["ul_cursor"],
+        font = beautiful.prompt["font"],
+        prompt = beautiful.prompt["run"]
     },
         module.prompt.widget,
         function(...) awful.util.spawn("urxvt-aw ".. ...) end,
@@ -44,14 +45,15 @@ function module.cmd()
         awful.util.getdir("cache").. "/history_cmd", 50
     )
 end
+
 -- Lua prompt
 function module.lua()
     awful.prompt.run({
-        fg_cursor = beautiful.pr["fg_cursor"],
-        bg_cursor = beautiful.pr["bg_cursor"],
-        ul_cursor = beautiful.pr["ul_cursor"],
-        font = beautiful.pr["font"],
-        prompt = beautiful.pr["lua"]
+        fg_cursor = beautiful.prompt["fg_cursor"],
+        bg_cursor = beautiful.prompt["bg_cursor"],
+        ul_cursor = beautiful.prompt["ul_cursor"],
+        font = beautiful.prompt["font"],
+        prompt = beautiful.prompt["lua"]
     },
         module.prompt.widget,
         awful.util.eval,

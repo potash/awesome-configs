@@ -1,65 +1,79 @@
 --[[
         File:      rc.lua
-        Date:      2013-10-28
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
 
--- Debugging utilities (signails, functions, notifications...)
---local dbg       = require("extern.dbg")
---dbg()
-
--- Awesome library
+local dbg       = require("extern.dbg")
 local awful     = require("awful")
 awful.rules     = require("awful.rules")
 awful.wibox     = require("awful.wibox")
-local wibox     = require("wibox")
+local layout    = require("wibox.layout")
+local systray   = require("wibox.widget.systray")
 local beautiful = require("beautiful")
+
+-- When loaded, this module makes sure that there's always a client that will have focus
 require("awful.autofocus")
+
 -- Initializes the theme system
 beautiful.init(awful.util.getdir('config').."/theme/darkBlue.lua")
 
-local awfuldb   = require("extern.awfuldb")
-local widgets   = require("widgets")
-local layout    = {}
-local keys      = {}
+-- Initialize debugging utilities
+dbg()
 
--- Wibox layouts
-layout["right"] = wibox.layout.fixed.horizontal()
-layout["left"]  = wibox.layout.fixed.horizontal()
-layout["wibox"] = wibox.layout.align.horizontal()
+-- External libraries
+local awfuldb = require("extern.awfuldb")
+local focuser = require("extern.indicator.focus")
 
-local main = awful.wibox({
-    position = beautiful.wibox["main"].position,
-    height = beautiful.wibox["main"].height
-})
+-- Widgets
+local widgets = require("widgets")
 
-main:set_bg(beautiful.wibox["main"].bg)
+-- ddd
+local bar  = {}
+local keys = {}
+
+-- create dock
+--widgets.dock()
+
+-- Create wibox 'main'
+bar["main"] = awful.wibox({ position = beautiful.wibox.position, height = beautiful.wibox.height })
+bar["main"]:set_bg(beautiful.wibox.bg)
 
 -- Widgets that are aligned to the left
-layout["left"]:add(widgets.layout())
-layout["left"]:add(widgets.menu())
-layout["left"]:add(widgets.taglist())
-layout["left"]:add(widgets.prompt())
+bar["left"] = layout.fixed.horizontal()
+bar["left"]:add(widgets.layout())
+bar["left"]:add(widgets.menu())
+bar["left"]:add(widgets.taglist())
+bar["left"]:add(widgets.prompt())
 
 -- Widgets that are aligned to the right
-layout["right"]:add(wibox.widget.systray())
-layout["right"]:add(widgets.kbd())
-layout["right"]:add(widgets.places())
-layout["right"]:add(widgets.sys())
-layout["right"]:add(widgets.clock())
+bar["right"] = layout.fixed.horizontal()
+bar["right"]:add(systray())
+bar["right"]:add(widgets.kbd())
+bar["right"]:add(widgets.places())
+bar["right"]:add(widgets.sys())
+bar["right"]:add(widgets.clock())
 
 -- Now bring it all together (with the tasklist in the middle)
-layout["wibox"]:set_left(layout["left"])
-layout["wibox"]:set_middle(widgets.tasklist())
-layout["wibox"]:set_right(layout["right"])
+bar["wibox"] = layout.align.horizontal()
+bar["wibox"]:set_left(bar["left"])
+bar["wibox"]:set_middle(widgets.tasklist())
+bar["wibox"]:set_right(bar["right"])
 
-main:set_widget(layout["wibox"])
+bar["main"]:set_widget(bar["wibox"])
 
+-- Spawn a program.
 local function spawn(cmd)
-    awful.util.spawn(cmd.." &>/dev/null", false)
+    awful.util.spawn(cmd, false)
+end
+
+-- Kill window
+local function killClient()
+    dbg.info("Select the window whose client you wish to kill with button 1....")
+    awful.util.spawn("xkill")
 end
 
 -- Mouse bindings
@@ -89,21 +103,20 @@ keys["client"] = awful.util.table.join(
     awful.key({ "Mod4"            }, "b",            function(c) c.below = not c.below                       end),
     awful.key({ "Mod4"            }, "f",            function(c) c.fullscreen = not c.fullscreen             end),
     awful.key({ "Mod4"            }, "v",            awful.client.floating.toggle                               ),
-    awful.key({ "Mod4"            }, "w",            function(c) awfuldb.save(c,awful.tag.getidx(awful.tag.selected(1))) end),
-    awful.key({ "Mod1"            }, "Menu",         function(c) widgets.tasklist.main(c)                    end),
-    awful.key({ "Mod4"            }, "g",            function(c) c:swap(awful.client.getmaster())            end)
+    awful.key({ "Mod4"            }, "w",            function(c) awfuldb.save(c)                             end)
 )
 --  Key bindings
 keys["global"] = awful.util.table.join(
     awful.key({ "Mod4"            }, "r",            function() widgets.prompt.run()                         end),
-    awful.key({ "Mod4"            }, "x",            function() widgets.prompt.lua()                         end),
     awful.key({ "Mod4"            }, "c",            function() widgets.prompt.cmd()                         end),
     awful.key({ "Mod4"            }, "space",        function() widgets.layout.main()                        end),
     awful.key({ "Mod4"            }, "q",            function() widgets.menu.main_qapp()                     end),
     awful.key({ "Mod4", "Shift"   }, "q",            function() widgets.menu.main_app()                      end),
     awful.key({                   }, "Menu",         function() widgets.menu.main_app()                      end),
-    awful.key({ "Mod4"            }, "Up",           function() widgets.taglist.main()                       end),
-    awful.key({ "Mod4"            }, "Down",         function() widgets.taglist.main()                       end),
+    awful.key({ "Mod4", "Mod1"    }, "Left",         awful.tag.viewprev                                         ),
+    awful.key({ "Mod4", "Mod1"    }, "Right",        awful.tag.viewnext                                         ),
+    awful.key({ "Mod4", "Mod1"    }, "Up",           function() widgets.taglist.main()                       end),
+    awful.key({ "Mod4", "Mod1"    }, "Down",         function() widgets.taglist.main()                       end),
     awful.key({ "Mod4"            }, "p",            function() widgets.places.main()                        end),
     awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
     awful.key({ "Control"         }, "Tab",          awful.tag.history.restore                                  ),
@@ -112,16 +125,15 @@ keys["global"] = awful.util.table.join(
         awful.client.focus.history.previous()
         if client.focus then client.focus:raise() end
     end),
-    awful.key({ "Mod4", "Shift"   }, "Left",         awful.tag.viewprev                                         ),
-    awful.key({ "Mod4", "Shift"   }, "Right",        awful.tag.viewnext                                         ),
-    awful.key({ "Mod4",           }, "Left",         function()
-        awful.client.focus.byidx( 1)
-        if client.focus then client.focus:raise() end
-    end),
-    awful.key({ "Mod4",           }, "Right",        function()
-        awful.client.focus.byidx( -1)
-        if client.focus then client.focus:raise() end
-    end),
+    awful.key({ "Mod4",           }, "Left",         function() focuser.global_bydirection("left")           end),
+    awful.key({ "Mod4",           }, "Right",        function() focuser.global_bydirection("down")           end),
+    awful.key({ "Mod4",           }, "Up",           function() focuser.global_bydirection("up")             end),
+    awful.key({ "Mod4",           }, "Down",         function() focuser.global_bydirection("down")           end),
+    awful.key({ "Mod4", "Shift"   }, "Left",         function() focuser.global_bydirection("left",nil,true)  end),
+    awful.key({ "Mod4", "Shift"   }, "Right",        function() focuser.global_bydirection("down",nil,true)  end),
+    awful.key({ "Mod4", "Shift"   }, "Up",           function() focuser.global_bydirection("up",nil,true)    end),
+    awful.key({ "Mod4", "Shift"   }, "Down",         function() focuser.global_bydirection("down",nil,true)  end),
+    awful.key({ "Control"         }, "Escape",       function() killClient()                                 end),
     awful.key({ "Mod4"            }, "KP_Add",       function() spawn("amixer -c 0 set Master 1+ unmute")    end),
     awful.key({ "Mod4"            }, "KP_Subtract",  function() spawn("amixer -c 0 set Master 1- unmute")    end),
     awful.key({ "Mod4", "Shift"   }, "KP_Add",       function() spawn("/usr/bin/mpc volume +5")              end),
@@ -132,7 +144,7 @@ keys["global"] = awful.util.table.join(
     awful.key({ "Mod4", "Mod1"    }, "KP_Subtract",  function() spawn("amixer -c 0 set Surround 1- unmute")  end),
     awful.key({ "Mod4"            }, "Prior",        function() spawn("/usr/bin/mpc prev")                   end),
     awful.key({ "Mod4"            }, "Next",         function() spawn("/usr/bin/mpc next")                   end),
-    awful.key({ "Mod4", "Control" }, "r",            awful.util.restart                                         ),
+    awful.key({ "Mod4", "Control" }, "r",            awesome.restart                                            ),
     awful.key({ "Mod4", "Control" }, "q",            awesome.quit                                               ),
     awful.key({ "Mod1",           }, "bracketright", function() awful.client.swap.byidx(  1)                 end),
     awful.key({ "Mod1",           }, "bracketleft",  function() awful.client.swap.byidx( -1)                 end),
@@ -143,14 +155,8 @@ keys["global"] = awful.util.table.join(
     awful.key({ "Mod4", "Control" }, "bracketright", function() awful.tag.incncol( 1)                        end),
     awful.key({ "Mod4", "Control" }, "bracketleft",  function() awful.tag.incncol(-1)                        end)
 )
---[[-- Bind all F1-12 keys to tags.
-local tags = awful.tag.gettags(1)
-for i,_ in ipairs(tags) do
-    local tag = awful.tag.gettags(1)[i]
-    keys["global"] = awful.util.table.join(keys["global"], awful.key({ "Mod4" }, "F"..i, function() if tag then awful.tag.viewonly(tag) end end))
-end]]
 
--- Bind numpad to tag switcher too
+-- Bind numpad to tag switcher
 local tags = awful.tag.gettags(1)
 local np_map = { 87, 88, 89, 83, 84, 85, 79, 80, 81 }
 for i,_ in ipairs(tags) do
@@ -193,14 +199,11 @@ client.connect_signal("manage", function(c,startup)
         awful.client.floating.set(c)
         awful.placement.centered(c)
         c.ontop = true
-        if beautiful.tb["dialog"] then  widgets.titlebar(c) end
+        if beautiful.titlebar["dialog"] then  widgets.titlebar(c) end
     elseif awful.client.floating.get(c) then
-        if beautiful.tb["float"] then
-            widgets.titlebar(c)
-            c.focus = true
-        end
+        if beautiful.titlebar["float"] then widgets.titlebar(c) end
     end
-    if beautiful.tb["all"] then widgets.titlebar(c) end
+    if beautiful.titlebar["all"] then widgets.titlebar(c) end
 end)
 
 -- when a client gains focus

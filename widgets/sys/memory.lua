@@ -21,12 +21,12 @@ local module = {}
 
 -- Update widgets interval in seconds
 module.update = {
-    graph_mem  = 60,
-	graph_swap = 60,
-	usage   = 30,
-    swap    = 30,
-    buffers = 30,
-    cached  = 30
+   graph_mem  = 60,
+   graph_swap = 60,
+   usage   = 30,
+   swap    = 30,
+   buffers = 30,
+   cached  = 30
 }
 
 -- Graph memory
@@ -47,7 +47,7 @@ local function widget_graph_mem()
    
    local base = wibox.widget.base.make_widget()
    local img = wibox.widget.imagebox()
-   img:set_image(beautiful.ICONS .. "/widgets/background/progress_graph.png")
+   img:set_image(beautiful.path .. "/widgets/background/progress_graph.png")
    base.fit = function(_, width, height) return width, height end
    base.draw = function(_, wb, cr, width, height)
       wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
@@ -55,6 +55,7 @@ local function widget_graph_mem()
    end
    vicious.register(graph, vicious.widgets.mem,
 		    function(_,a)
+		       --a[1] = a[1] / 4
 		       if a[1] < 10 then
 			  graph:set_graph_color("#00276E60")
 		       elseif a[1] < 50 then
@@ -93,7 +94,7 @@ local function widget_graph_swap()
    
    local base = wibox.widget.base.make_widget()
    local img = wibox.widget.imagebox()
-   img:set_image(beautiful.ICONS .. "/widgets/background/progress_graph.png")
+   img:set_image(beautiful.path .. "/widgets/background/progress_graph.png")
    base.fit = function(_, width, height) return width, height end
    base.draw = function(_, wb, cr, width, height)
       wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
@@ -124,27 +125,27 @@ end
 
 -- Memory usage
 local function widget_memUsage()
-    widget,text = common.new_widget({align="right",width=57})
-    vicious.register(text, vicious.widgets.mem, '$2 MB', module.update.usage)
-    return widget
+   local widget,text = common.new_widget({align="right",width=57})
+   vicious.register(text, vicious.widgets.mem, '$2 MB', module.update.usage)
+   return widget
 end
 -- Swap usage
 local function widget_memSwap()
-    widget,text = common.new_widget({align="right",width=57})
-    vicious.register(text, vicious.widgets.mem, '$6 MB', module.update.swap) 
-    return widget
+   local widget,text = common.new_widget({align="right",width=57})
+   vicious.register(text, vicious.widgets.mem, '$6 MB', module.update.swap) 
+   return widget
 end
 -- Buffers
 local function widget_memBuffers()
-    widget,text = common.new_widget({align="right",width=57})
-    vicious.register(text, vicious.widgets.mem, function(_,a) return a[10].." MB" end, module.update.buffers)
-    return widget
+   local widget,text = common.new_widget({align="right",width=57})
+   vicious.register(text, vicious.widgets.mem, function(_,a) return a[10].." MB" end, module.update.buffers)
+   return widget
 end
 -- Cached
 local function widget_memCached()
-    widget,text = common.new_widget({align="right",width=57})
-    vicious.register(text, vicious.widgets.mem, function(_,a) return a[11].." MB" end, module.update.cached)
-    return widget
+   local widget,text = common.new_widget({align="right",width=57})
+   vicious.register(text, vicious.widgets.mem, function(_,a) return a[11].." MB" end, module.update.cached)
+   return widget
 end
 
 --- Return widgets layout

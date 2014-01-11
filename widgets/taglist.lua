@@ -1,6 +1,6 @@
 --[[
         File:      widgets/taglist.lua
-        Date:      2014-01-06
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -15,33 +15,47 @@ local underlay  = require("extern.graph.underlay")
 local common    = require("widgets.common")
 
 local module = {}
-local path = beautiful.ICONS .. "/tags/"
+
+-- /dev/shm is a temporary file storage filesystem, i.e. tmpfs, that uses RAM for the backing store.
+--module.history = "/dev/shm/history_tag"
+module.history = awful.util.getdir("cache").."/history_tag"
 
 -- Tags table.
 module.tag = {
-    { name="Work",          sname="w", icon=path.."work.svg",        layout=awful.layout.suit.fair     }, -- 1
-    { name="Network",       sname="N", icon=path.."network.svg",     layout=awful.layout.suit.max      }, -- 2
-    { name="Development",   sname="D", icon=path.."development.svg", layout=awful.layout.suit.max      }, -- 3
-    { name="File Manager",  sname="F", icon=path.."files.svg",       layout=awful.layout.suit.max      }, -- 4
-    { name="Messenger",     sname="M", icon=path.."messenger.svg",   layout=awful.layout.suit.max      }, -- 5
-    { name="Reader",        sname="R", icon=path.."reader.svg",      layout=awful.layout.suit.max      }, -- 6
-    { name="Graphics",      sname="G", icon=path.."graphics.svg",    layout=awful.layout.suit.floating }, -- 7
-    { name="Multimedia",    sname="V", icon=path.."multimedia.svg",  layout=awful.layout.suit.max      }, -- 8
-    { name="Office",        sname="O", icon=path.."office.svg",      layout=awful.layout.suit.max      }, -- 9
-    { name="System",        sname="S", icon=path.."system.svg",      layout=awful.layout.suit.floating }, -- 10
-    { name="Miscellaneous", sname="X", icon=path.."misc.svg",        layout=awful.layout.suit.floating }  -- 11
+    { name="Work",          sname="w", icon="work.svg",        layout=awful.layout.suit.fair     }, -- 1
+    { name="Network",       sname="N", icon="network.svg",     layout=awful.layout.suit.max      }, -- 2
+    { name="Development",   sname="D", icon="development.svg", layout=awful.layout.suit.max      }, -- 3
+    { name="File Manager",  sname="F", icon="files.svg",       layout=awful.layout.suit.max      }, -- 4
+    { name="Messenger",     sname="M", icon="messenger.svg",   layout=awful.layout.suit.max      }, -- 5
+    { name="Reader",        sname="R", icon="reader.svg",      layout=awful.layout.suit.max      }, -- 6
+    { name="Graphics",      sname="G", icon="graphics.svg",    layout=awful.layout.suit.floating }, -- 7
+    { name="Multimedia",    sname="V", icon="multimedia.svg",  layout=awful.layout.suit.max      }, -- 8
+    { name="Office",        sname="O", icon="office.svg",      layout=awful.layout.suit.max      }, -- 9
+    { name="System",        sname="S", icon="system.svg",      layout=awful.layout.suit.floating }, -- 10
+    { name="Miscellaneous", sname="X", icon="misc.svg",        layout=awful.layout.suit.floating }  -- 11
 }
 
 -- Create tags
 for _,t in ipairs(module.tag) do
-    awful.tag.add(t.sname, { icon=t.icon, layout=t.layout })
+    awful.tag.add(t.sname, { icon=beautiful.path.."/tags/"..t.icon, layout=t.layout })
 end
 
 -- Setup tags
 local tags = awful.tag.gettags(1)
 --awful.tag.setproperty(tags[1], "mwfact", 0.60)
-tags[1].selected = false
-tags[3].selected = true
+
+-- Read tag history file
+function module.selected()
+    local f = io.open(module.history, "r")
+    if f ~= nil then
+        local idx = f:read("*all")
+        f:close()
+        tags[1].selected = false
+        tags[tonumber(idx)].selected = true
+    end
+end
+-- Try to restore last visible tag
+module.selected()
 
 -- Main menu
 module.menu=false
@@ -50,7 +64,7 @@ function module.main()
         local tags = awful.tag.gettags(1)
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom", x = 180,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#tags*beautiful.menu_height) - 22,
+            y = screen[1].geometry.height - beautiful.wibox.height - (#tags*beautiful.menu_height) - 22,
         })
         local i,t
         for i,t in ipairs(tags) do
@@ -58,7 +72,8 @@ function module.main()
                 button1 = function() awful.tag.viewonly(t) common.hide_menu(module.menu) end,
                 selected = (t == awful.tag.selected(1)),
                 text = module.tag[i].name,
-                icon = module.tag[i].icon, underlay = underlay(module.tag[i].sname)
+                icon = beautiful.path.."/tags/"..module.tag[i].icon, 
+                underlay = underlay(module.tag[i].sname)
             })
         end
         common.reg_menu(module.menu)
@@ -77,18 +92,32 @@ client.connect_signal("untagged", function(c, t)
     end
 end)
 
+-- Signal just before awesome exits 
+-- Perform some actions before restarting/exiting awesome wm.
+awesome.connect_signal("exit", function(restarting)
+    if restarting then
+        local t = awful.tag.selected(1)
+        -- Save last visible tag
+        local f = io.open(module.history, "w")
+        f:write(awful.tag.getidx(t))
+        f:close()
+        -- Now restart!
+        awful.util.restart()
+    end
+end)
+
 -- Return widget layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
+    local style = beautiful.tag or {}
     local buttons = awful.util.table.join(
         awful.button({        }, 1, awful.tag.viewonly),
         awful.button({ "Mod4" }, 1, awful.client.movetotag),
         awful.button({        }, 3, awful.tag.viewtoggle),
-        awful.button({ "Mod4" }, 3, awful.client.toggletag)
-    )
-    layout:add(common.imagebox({ icon=beautiful.iw["tag"] }))
-    layout:add(common.textbox({ text="TAG", width=35, b1=module.main, font="Sci Fied 8" }))
-    layout:add(awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons))
+        awful.button({ "Mod4" }, 3, awful.client.toggletag))
+    layout:add(common.imagebox({icon=beautiful.path.."/widgets/workspace.svg"}))
+    layout:add(common.textbox({text="TAG", width=35, b1=module.main}))
+    layout:add(awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons, style))
     layout:add(common.arrow(6))
     return layout
 end

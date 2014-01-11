@@ -34,7 +34,7 @@ local function widget_graph()
     
     local base = wibox.widget.base.make_widget()
     local img = wibox.widget.imagebox()
-    img:set_image(beautiful.ICONS .. "/widgets/background/sys.png")
+    img:set_image(beautiful.path .. "/widgets/background/sys.png")
     base.fit = function(_, width, height) return width, height end
     base.draw = function(_, wb, cr, width, height)
         wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
@@ -46,21 +46,22 @@ local function widget_graph()
     layout.fit = function() return 0,61 end
     return layout
 end
+
 -- CPU Load
 local function widget_cpuLoad()
-    widget,text  = common.new_widget({ align="right", width=57 })
+    local widget,text  = common.new_widget({ align="right", width=57 })
     vicious.register(text, vicious.widgets.uptime, '$4',  module.update.load)
     return widget
 end
 -- CPU temp
 local function widget_cpuTemp()
-    widget,text = common.new_widget({ align="right", width=57 })
+    local widget,text = common.new_widget({ align="right", width=57 })
     vicious.register(text, vicious.contrib.sensors, '$1℃', module.update.temp, 'Core0 Temp')
     return widget
 end
 -- CPU usage
 local function widget_cpuUsage()
-    widget,text  = common.new_widget({ align="right", width=57 })
+    local widget,text  = common.new_widget({ align="right", width=57 })
     vicious.register(text, vicious.widgets.cpu, '$1%', module.update.cpu)
     return widget
 end

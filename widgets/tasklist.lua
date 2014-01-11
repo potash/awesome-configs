@@ -1,8 +1,8 @@
 --[[
         File:      widgets/tasklist.lua
-        Date:      2013-10-28
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
-   Copyright:      Copyright (C) 2013 Free Software Foundation, Inc.
+   Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
 --]]
@@ -17,8 +17,8 @@ local titlebar  = require("widgets.titlebar")
 
 local module = {}
 
-local style=radical.style.classic
-local item_style=radical.item_style.classic
+module.style = radical.style.classic
+module.item_style = radical.item_style.classic
 
 local function hideMenu()
     if module.menu then
@@ -29,16 +29,13 @@ end
 --- Move client to tag
 -- @param c client
 local function move2tag(c)
-    local items = radical.context({enable_keyboard = false, style = style, item_style = item_style})
+    local items = radical.context({enable_keyboard = false, style = module.style, item_style = module.item_style})
     local gt = awful.tag.gettags(1)
     for i, _ in ipairs(gt) do
         items:add_item({
             text = tags.tag[i].name,
-            button1 = function()
-                awful.client.movetotag(gt[i], c)
-                hideMenu()
-            end,
-            icon = tags.tag[i].icon,
+            button1 = function() awful.client.movetotag(gt[i], c) hideMenu() end,
+            icon = beautiful.path.."/tags/"..tags.tag[i].icon,
             underlay = underlay(tags.tag[i].sname)
         })
     end
@@ -50,52 +47,31 @@ end
 -- @param m menu
 local function items(c,m)
     -- Move to tag
-    m:add_item({ text = "Move to tag", icon=beautiful.cm["move"], sub_menu=move2tag(c) })
+    m:add_item({ text = "Move to tag", icon = beautiful.path.."/client/move.svg", sub_menu=move2tag(c) })
     -- Add titlebar
     -- TODO: get titlebar state
-    m:add_item({ text = "Add titlebar", icon = beautiful.cm["titlebar"],
-        button1 = function()
-            titlebar(c)
-            hideMenu()
-        end
+    m:add_item({ text = "Add titlebar", icon = beautiful.path.."/client/titlebar.svg",
+        button1 = function() titlebar(c) hideMenu() end
     })
     -- Ontop
-    m:add_item({ text = "Ontop", icon = beautiful.cm["ontop"],
-        checked = function()
-            if c.ontop then
-                return true
-            else
-                return false
-            end
-        end,
-        button1 = function()
-            c.ontop = not c.ontop
-            hideMenu()
-        end
+    m:add_item({ text = "Ontop", icon = beautiful.path.."/client/ontop.svg",
+        checked = c.ontop, button1 = function() c.ontop = not c.ontop hideMenu() end
     })
     -- Sticky
-    m:add_item({ text = "Sticky", icon = beautiful.cm["sticky"],
-        checked = function()
-            if c.sticky then
-                return true
-            else
-                return false
-            end
-        end,
-        button1 = function()
-            c.sticky = not c.sticky
-            hideMenu()
-        end
+    m:add_item({ text = "Sticky", icon = beautiful.path.."/client/sticky.svg",
+        checked = c.sticky, button1 = function() c.sticky = not c.sticky hideMenu() end
     })
+    -- -- Above
+    -- m:add_item({ text = "Above", icon = beautiful.path.."/client/above.svg",
+    --     checked = c.above, button1 = function() c.above = not c.above hideMenu() end
+    -- })
+    -- -- Below
+    -- m:add_item({ text = "Below", icon = beautiful.path.."/client/below.svg",
+    --     checked = c.below, button1 = function() c.below = not c.below hideMenu() end
+    -- })
     -- Floating
-    m:add_item({ text = "Floating", icon = beautiful.cm["floating"],
-        checked = function()
-            if awful.client.floating.get(c) then
-                return true
-            else
-                return false
-            end
-        end,
+    m:add_item({ text = "Floating", icon = beautiful.path.."/client/floating.svg",
+        checked = awful.client.floating.get(c),
         button1 = function()
             if awful.client.floating.get(c) then
                 awful.client.floating.delete(c)
@@ -105,13 +81,17 @@ local function items(c,m)
             hideMenu()
         end
     })
+    -- fullscreen
+    m:add_item({ text = "Fullscreen", icon = beautiful.path.."/client/fullscreen.svg",
+        checked = c.fullscreen, button1 = function() c.fullscreen = not c.fullscreen hideMenu() end
+    })
     -- Maximize
-    m:add_item({ text = "Maximize", icon = beautiful.cm["maximize"],
+    m:add_item({ text = "Maximize", icon = beautiful.path.."/client/maximize.svg",
         checked = function()
             if c.maximized_horizontal or c.maximized_vertical then
                 return true
             else
-                return false
+                return false 
             end
         end,
         button1 = function()
@@ -127,20 +107,12 @@ local function items(c,m)
         end
     })
     -- Save
-    m:add_item({ text = "Save", icon = beautiful.cm["save"],
-        underlay = underlay("SQL"),
-        button1 = function()
-            awfuldb.save(c,awful.tag.getidx(awful.tag.selected(1)))
-            hideMenu()
-        end
+    m:add_item({ text = "Save", icon = beautiful.path.."/client/save.svg",
+        underlay = underlay("SQL"), button1 = function() awfuldb.save(c) hideMenu() end
     })
     -- Close
-    m:add_item({ text = "Close", icon = beautiful.cm["close"],
-        underlay = underlay(c.pid),
-        button1 = function()
-            c:kill()
-            hideMenu()
-        end
+    m:add_item({ text = "Close", icon = beautiful.path.."/client/close.svg",
+        underlay = underlay(c.pid), button1 = function() c:kill() hideMenu() end
     })
 end
 
@@ -150,13 +122,14 @@ function module.main(c)
         hideMenu()
         keygrabber.stop()
     else
-        module.menu = radical.context({ enable_keyboard = true, style = style, item_style = item_style })
+        module.menu = radical.context({ enable_keyboard = true, style = module.style, item_style = module.item_style })
         items(c, module.menu)
         module.menu.visible = true
     end
 end
 
 local function new()
+    local style = beautiful.task or {}
     -- Signals to hide menu
     client.connect_signal("list", hideMenu)
     client.connect_signal("focus", hideMenu)
@@ -174,8 +147,8 @@ local function new()
             end
         end),
         awful.button({ }, 3, function(c) module.main(c) end)
-    )
-    local widget = awful.widget.tasklist(1, awful.widget.tasklist.filter.currenttags, buttons)
+    )	
+    local widget = awful.widget.tasklist(1, awful.widget.tasklist.filter.currenttags, buttons, style)
     return widget
 end
 

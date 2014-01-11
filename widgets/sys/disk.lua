@@ -20,6 +20,14 @@ module.update = {
     fs = 120
 }
 
+-- Disk usage
+module.fs = {
+    { "root:",  "/"                              },
+    { "DATA:",  "/mnt/DATA"                      },
+    { "Moz:",   "/home/minde/.cache/mozilla"     },
+    { "eMail:", "/home/minde/.cache/thunderbird" },
+}
+
 local function draw(fs)
     local layout = wibox.layout.align.horizontal()
 	 local progressbar = awful.widget.progressbar()
@@ -32,8 +40,8 @@ local function draw(fs)
 	 progressbar:set_width(50)
 	 progressbar:set_height(5)
 	 vicious.register(progressbar, vicious.widgets.fs, '${'..fs[2]..' used_p}', module.update.fs)
-	 local usage,avail  = common.new_widget({ align="right", width=55 })
-    vicious.register(avail, vicious.widgets.fs, '${'..fs[2]..' used_p} %', module.update.fs)
+	 local usage,avail = common.new_widget({ align="right", width=55 })
+     vicious.register(avail, vicious.widgets.fs, '${'..fs[2]..' used_p} %', module.update.fs)
 	 layout:set_left(common.new_widget({ text=fs[1],  align="left", width=60 }))
 	 layout:set_middle(progressbar)
 	 layout:set_right(usage)
@@ -45,7 +53,7 @@ end
 local function new()
 	 vicious.cache(vicious.widgets.fs)
 	 local layout = wibox.layout.fixed.vertical()
-	 for _,k in ipairs(beautiful.sys.fs) do
+	 for _,k in ipairs(module.fs) do
 		  layout:add(draw(k))
 	 end
 	 return layout

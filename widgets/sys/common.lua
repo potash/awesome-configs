@@ -1,12 +1,8 @@
 local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
-local dbg       = require("extern.dbg")
-
 
 local module = {}
-module.timer = {}
-
 
 --- Create widgets
 -- @param: text
@@ -34,7 +30,7 @@ function module.new_widget(args)
    m:set_widget(b)
    w:set_widget(m)
    w:set_bg("#000000")
-   
+
    return w,t
 end
 

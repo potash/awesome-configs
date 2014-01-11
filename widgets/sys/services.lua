@@ -14,6 +14,10 @@ local wibox     = require("wibox")
 
 local module = {}
 
+module.list = {
+
+}
+
 local function new()
     local base = wibox.widget.textbox()
     base:set_markup("Service widgets")

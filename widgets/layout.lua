@@ -1,6 +1,6 @@
 --[[
         File:      widgets/layout.lua
-        Date:      2014-01-06
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -15,8 +15,6 @@ local radical   = require("extern.radical")
 local common    = require("widgets.common")
 
 local module = {}
-
-local path = beautiful.ICONS.."/layouts/"
 
 -- Layouts table
 module.layouts = {
@@ -34,36 +32,20 @@ module.layouts = {
     awful.layout.suit.magnifier,         -- 12
 }
 
--- Layouts icons
-module.icons = {
-    fairh      = path.."fairh.png",
-    fairv      = path.."fairv.png",
-    floating   = path.."floating.png",
-    magnifier  = path.."magnifier.png",
-    max        = path.."max.png",
-    fullscreen = path.."fullscreen.png",
-    tilebottom = path.."tilebottom.png",
-    tileleft   = path.."tileleft.png",
-    tile       = path.."tile.png",
-    tiletop    = path.."tiletop.png",
-    spiral     = path.."spiral.png",
-    dwindle    = path.."dwindle.png"
-}
-
+-- Menu
 module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom",
-            x = 15,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#module.layouts*beautiful.menu_height) - 22})
+            filer = false, enable_keyboard = true, direction = "bottom", x = 15,
+            y = screen[1].geometry.height - beautiful.wibox.height - (#module.layouts*beautiful.menu_height) - 22})
         local current = awful.layout.get(awful.tag.getscreen(awful.tag.selected()))
         for i, layout_real in ipairs(module.layouts) do
             local layout_name = awful.layout.getname(layout_real)
             if layout_name then
                 module.menu:add_item({
-                    icon = module.icons[layout_name] or beautiful.cm["none"], 
-                    text = layout_name,
+                    icon = beautiful.path.."/layouts/"..layout_name..".png" or beautiful.unknown, 
+                    text = layout_name:gsub("^%l", string.upper), -- Change the first character of a word to upper case
                     button1 = function()
                         awful.layout.set(module.layouts[module.menu.current_index] or module.layouts[1], awful.tag.selected())
                         common.hide_menu(module.menu)
@@ -83,10 +65,9 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local widget = common.imagebox({icon=module.icons[awful.layout.getname(awful.layout.get(1))]})
-
+    local widget = common.imagebox({icon=beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png" })
     local function update()
-        widget:set_image(module.icons[awful.layout.getname(awful.layout.get(1))])
+        widget:set_image(beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png")
     end
 
     awful.tag.attached_connect_signal(1, "property::selected", update)

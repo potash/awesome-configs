@@ -18,8 +18,8 @@ local module = {}
 
 module.update = {
     graph_up = 60,
-	graph_dw = 60,
-	up = 30,
+    graph_dw = 60,
+    up = 30,
     dw = 30,
 }
 
@@ -33,7 +33,7 @@ local function widget_graph_up()
     
     local base = wibox.widget.base.make_widget()
     local img = wibox.widget.imagebox()
-    img:set_image(beautiful.ICONS .. "/widgets/background/graph2.png")
+    img:set_image(beautiful.path .. "/widgets/background/graph2.png")
     base.fit = function(_, width, height) return width, height end
     base.draw = function(_, wb, cr, width, height)
         wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
@@ -55,7 +55,7 @@ local function widget_graph_dw()
     
     local base = wibox.widget.base.make_widget()
     local img = wibox.widget.imagebox()
-    img:set_image(beautiful.ICONS .. "/widgets/background/graph2.png")
+    img:set_image(beautiful.path .. "/widgets/background/graph2.png")
     base.fit = function(_, width, height) return width, height end
     base.draw = function(_, wb, cr, width, height)
         wibox.layout.base.draw_widget(wb, cr, img, 0, 0, width, height)
@@ -70,13 +70,13 @@ end
 
 -- Upload
 local function widget_netUpload()
-    widget,text = common.new_widget({align="right",width=57})
+    local widget,text = common.new_widget({align="right",width=57})
     vicious.register(text, vicious.widgets.net, '${eth0 up_kb}', module.update.up)
     return widget
 end
 -- Download
 local function widget_netDownload()
-    widget,text = common.new_widget({align="right",width=57})
+    local widget,text = common.new_widget({align="right",width=57})
     vicious.register(text, vicious.widgets.net, '${eth0 down_kb}', module.update.dw)
     return widget
 end
@@ -85,19 +85,19 @@ end
 local function new()
    vicious.cache(vicious.widgets.net)
 
-   layout_up = wibox.layout.align.horizontal()
-   layout_up:set_left(common.new_widget({ text="Upload:", align="left", width=58 }))
+   local layout_up = wibox.layout.align.horizontal()
+   layout_up:set_left(common.new_widget({ text="Upload", align="left", width=58 }))
    layout_up:set_right(widget_netUpload())
 
-   layout_dw = wibox.layout.align.horizontal()
-   layout_dw:set_left(common.new_widget({ text="Download:", align="left", width=58 }))
+   local layout_dw = wibox.layout.align.horizontal()
+   layout_dw:set_left(common.new_widget({ text="Download", align="left", width=58 }))
    layout_dw:set_right(widget_netDownload())
 
-   layout_graph = wibox.layout.align.horizontal()
+   local layout_graph = wibox.layout.align.horizontal()
    layout_graph:set_left(widget_graph_up())
    layout_graph:set_right(widget_graph_dw())
 
-   layout = wibox.layout.fixed.vertical()
+   local layout = wibox.layout.fixed.vertical()
    layout:add(layout_graph)
    layout:add(layout_up)
    layout:add(layout_dw)

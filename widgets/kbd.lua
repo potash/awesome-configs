@@ -1,6 +1,6 @@
 --[[
         File:      widgets/kbd.lua
-        Date:      2014-01-06
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -41,16 +41,12 @@ module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom",
-            x = screen[1].geometry.width - 285,
-            y = screen[1].geometry.height - beautiful.wibox["main"].height - (#awful.util.table.keys(module.lang)*beautiful.menu_height) - 22,
+            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 285,
+            y = screen[1].geometry.height - beautiful.wibox.height - (#awful.util.table.keys(module.lang)*beautiful.menu_height) - 22,
         })
         for k,v in pairs(module.lang) do
             module.menu:add_item({text = v,
-                button1 = function()
-                    module.set(k)
-                    common.hide_menu(module.menu)
-                end,
+                button1 = function() module.set(k) common.hide_menu(module.menu) end,
                 icon = beautiful.path.."/flags/"..k..".png", underlay = underlay(string.upper(k))
             })
         end
@@ -64,17 +60,14 @@ end
 
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local w,c  = common.textbox({
-        text=string.upper(module.current),
-        width=35,
-        b1=module.main,
-        b3=module.switch,
-    })
+    local w,c  = common.textbox({text=string.upper(module.current),width=35,b1=module.main,b3=module.switch})
     module.widget = c
     layout:add(common.arrow(5))
-    layout:add(common.imagebox({ icon=beautiful.iw["kbd"] }))
+    layout:add(common.imagebox({ icon=beautiful.path.."/widgets/keyboard.svg" }))
     layout:add(w)
     return layout
 end
+
+
 
 return setmetatable(module, { __call = function(_, ...) return new(...) end })

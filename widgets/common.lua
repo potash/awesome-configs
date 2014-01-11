@@ -1,6 +1,6 @@
 --[[
         File:      widgets/common.lua
-        Date:      2014-01-06
+        Date:      2014-01-12
       Author:      Mindaugas <mindeunix@gmail.com> http://minde.gnubox.com
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -10,29 +10,50 @@
 local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
+local gears     = require("gears")
+local dbg       = require("extern.dbg")
+
+
+local cairo = require("lgi").cairo
 
 local module = {}
 module.timer = {}
-module.menus = {} -- TODO: kad butu matomas tik vienas radical menu
 
---- Menu timers
--- @param m menu
+--- Register new menu timer
+-- @param m menu to register
 function module.reg_menu(m)
     module.timer[m] = timer{ timeout = beautiful.popup_time_out }
     module.timer[m]:connect_signal("timeout", function() module.hide_menu(m) end)
     module.timer[m]:start()
     m.visible = true
 end
+
+--- Hide menu and stop timer
+-- @param m menu to hide
 function module.hide_menu(m)
     module.timer[m]:stop()
     m.visible = false
 end
+
+--- Show menu and start timer
+-- @param m menu to show
 function module.show_menu(m)
     module.timer[m]:start()
     m.visible = true
 end
 
+-- Apply color mask
+function module.apply_color_mask(img,mask)
+    img = gears.surface(img)
+    local cr = cairo.Context(img)
+    cr:set_source(gears.color(mask or beautiful.icon_grad or beautiful.fg_normal))
+    cr:set_operator(cairo.Operator.IN)
+    cr:paint()
+    return img
+end
+
 --- Create new imagebox widget
+-- @param table with arguments
 function module.imagebox(args)
     local args = args or {}
     local w = wibox.widget.imagebox()
@@ -49,8 +70,8 @@ function module.imagebox(args)
         elseif awful.util.file_readable(beautiful.ICONS .. args.icon) then
             w:set_image(beautiful.ICONS .. args.icon)
         else
-            adebug("File "..args.icon.." is not readable or does not exist.")
-            w:set_image(beautiful.ICONS .. "/bg/warning.svg")
+            dbg.error("File "..args.icon.." is not readable or does not exist.")
+            w:set_image(beautiful.path .. "/bg/warning.svg")
         end
     end
 
@@ -66,17 +87,17 @@ function module.imagebox(args)
 end
 
 --- Create new textbox widget
--- @param text textas
+-- @param table with arguments
 function module.textbox(args)
     local args = args or {}
     local text = args.text or "N/A"
     local width = args.width or 40
     local height = args.height or 16
-    local font = args.font or beautiful.widget_text_font or "sans 8"
-    local valign = args.valign or beautiful.widget_text_valign or "center"
-    local align = args.valign or beautiful.widget_text_align or "center"
-    local bg = args.bg or beautiful.widget_text_bg or "#00121E"
-    local fg = args.fg or beautiful.widget_text_fg or "#1692D0"
+    local font = args.font or beautiful.widget["font"] or "sans 8"
+    local valign = args.valign or beautiful.widget["valign"] or "center"
+    local align = args.valign or beautiful.widget["align"] or "center"
+    local bg = args.bg or beautiful.widget["bg"] or "#00121E"
+    local fg = args.fg or beautiful.widget["fg"] or "#1692D0"
 
     local b1 = args.b1 or nil
     local b2 = args.b2 or nil
@@ -111,15 +132,14 @@ function module.textbox(args)
 end
 
 --- Arrow widget
--- @n: arrow type number
--- returns: arrow image widget
+-- @n: arrow number
 local HASH={}
 function module.arrow(n)
     if HASH[n] then
         return HASH[n]
     else
         local img = wibox.widget.imagebox()
-        img:set_image(beautiful.arrow.."/"..n..".png")
+        img:set_image(beautiful.path.."/arrow/"..n..".png")
         HASH[n] = img
         return HASH[n]
     end
