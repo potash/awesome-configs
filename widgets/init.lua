@@ -11,4 +11,5 @@ return {
     titlebar      = require("widgets.titlebar"), -- TODO
     common        = require("widgets.common"),
     sys           = require("widgets.sys"),      -- TODO
+    systray       = require("widgets.systray")
 }

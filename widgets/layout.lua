@@ -65,13 +65,13 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    local widget = common.imagebox({icon=beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png" })
-    local function update()
-        widget:set_image(beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png")
+    local widget,img = common.imagebox({icon=beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png" })
+    local function update_layout_icon()
+        img:set_image(beautiful.path.."/layouts/"..awful.layout.getname(awful.layout.get(1))..".png")
     end
 
-    awful.tag.attached_connect_signal(1, "property::selected", update)
-    awful.tag.attached_connect_signal(1, "property::layout",   update)
+    awful.tag.attached_connect_signal(1, "property::selected", update_layout_icon)
+    awful.tag.attached_connect_signal(1, "property::layout",   update_layout_icon)
 
     layout:add(widget)
     layout:add(common.textbox({ text="LAYOUT", width=60, b1=module.main }))
