@@ -1,20 +1,25 @@
 local setmetatable = setmetatable
 local print = print
+local pairs=pairs
+local base      = require( "extern.radical.base"     )
 
 local module = {
   margins = {
-    TOP    = 1,
-    BOTTOM = 1,
+    TOP    = 2,
+    BOTTOM = 2,
     RIGHT  = 2,
     LEFT   = 4
   }
 }
 
-local function draw(data,item,is_focussed,is_pressed,col)
-  if is_focussed or (item._tmp_menu) then
-    item.widget:set_bg(col or data.bg_focus)
+local function draw(data,item,args)
+  local args,flags = args or {},{}
+  for _,v in pairs(args) do print("ici",v);flags[v] = true end
+
+  if flags[base.item_flags.SELECTED] or (item._tmp_menu) then
+    item.widget:set_bg(args.color or data.bg_focus)
   else
-    item.widget:set_bg(col or nil)
+    item.widget:set_bg(args.color or nil)
   end
 end
 

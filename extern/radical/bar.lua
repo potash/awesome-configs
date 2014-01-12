@@ -93,7 +93,6 @@ local function create_item(item,data,args)
   vertical:setup_fkey(item,data)
   if data.fkeys_prefix == true then
     layout:add(fkey(data,item))
-    m:set_left  ( 0 )
   end
 
   -- Icon
@@ -135,7 +134,7 @@ local function create_item(item,data,args)
   item.widget:set_tooltip(item.tooltip)
 
   -- Draw
-  data.item_style(data,item,false,false)
+  data.item_style(data,item,{})
   item.widget:set_fg(item._private_data.fg)
 
   return bg

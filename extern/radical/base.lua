@@ -5,7 +5,6 @@ local print,unpack = print, unpack
 local beautiful    = require( "beautiful"          )
 local util         = require( "awful.util"         )
 local object       = require( "extern.radical.object"     )
-local item_style   = require( "extern.radical.item_style" )
 
 local capi = { mouse = mouse, screen = screen , keygrabber = keygrabber }
 
@@ -22,6 +21,13 @@ local module = {
     BUTTON3  = 3,
     SELECTED = 100,
   },
+  item_flags     = {
+    SELECTED = 1,
+    HOVERED  = 2,
+    PRESSED  = 3,
+    URGENT   = 4,
+    USED     = 5,
+  }
 }
 
 local function filter(data)
@@ -157,15 +163,28 @@ local function add_item(data,args)
   for i=1,10 do
     item["button"..i] = args["button"..i]
   end
-  
+
   if data.max_items ~= nil and data.rowcount >= data.max_items then-- and (data._start_at or 0)
     item._hidden = true
   end
 
+  -- Use _internal to avoid the radical.object trigger
+  data._internal.visible_item_count = (data._internal.visible_item_count or 0) + 1
+  item._internal.f_key = data._internal.visible_item_count
+
+  -- Need to be done before painting
+  data._internal.items[#data._internal.items+1] = {}
+  data._internal.items[#data._internal.items][1] = item
+  data._internal.setup_item(data,item,args)
+  if args.selected == true then
+    item.selected = true
+  end
+
+  -- Setters
   set_map.selected = function(value)
     private_data.selected = value
     if value == false then
-      data.item_style(data,item,false,false)
+      data.item_style(data,item,{})
       return
     end
     if data._current_item and data._current_item ~= item then
@@ -173,25 +192,17 @@ local function add_item(data,args)
         data._current_item._tmp_menu.visible = false
         data._current_item._tmp_menu = nil
         data._tmp_menu = nil
-        data.item_style(data,data._current_item,false,false)
+        data.item_style(data,data._current_item,{})
       end
       data._current_item.selected = false
     end
     if data.sub_menu_on == module.sub_menu_on.SELECTED and data._current_item ~= item then
       execute_sub_menu(data,item)
     end
-    data.item_style(data,item,true,false)
+    data.item_style(data,item,{module.item_flags.SELECTED})
     data._current_item = item
   end
 
-  data._internal.items[#data._internal.items+1] = {}
-  data._internal.items[#data._internal.items][1] = item
-  data._internal.setup_item(data,item,args)
-  if args.selected == true then
-    item.selected = true
-  end
-  data._internal.visible_item_count = (data._internal.visible_item_count or 0) + 1
-  item.f_key = data._internal.visible_item_count
   return item
 end
 
@@ -276,7 +287,7 @@ local function new(args)
       layout          = args.layout or nil,
       screen          = args.screen or nil,
       style           = args.style  or nil,
-      item_style      = args.item_style or item_style.basic,
+      item_style      = args.item_style or require("extern.radical.item_style.basic"),
       filter          = args.filter ~= false,
       show_filter     = args.show_filter or false,
       filter_string   = args.filter_string or "",
@@ -336,7 +347,7 @@ local function new(args)
 --       data._tmp_menu = nil
       data._current_item._tmp_menu = nil
 --       data._current_item.selected = false
-      data.item_style(data,data._current_item,false,false)
+      data.item_style(data,data._current_item,{})
     end
     if internal.has_changed and data.style then
       data.style(data,{arrow_x=20,margin=internal.margin})
