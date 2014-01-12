@@ -75,7 +75,7 @@ local function new()
 
     layout:add(widget)
     layout:add(common.textbox({ text="LAYOUT", width=60, b1=module.main }))
-    layout:add(common.arrow(6))
+    layout:add(common.arrow(1))
     return layout
 end
 

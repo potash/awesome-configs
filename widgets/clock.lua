@@ -21,7 +21,7 @@ local function new()
     clock.fit = function() return 62,10 end
     local widget = wibox.widget.background(clock, beautiful.widget["bg"])
     local layout = wibox.layout.fixed.horizontal()
-    layout:add(common.arrow(5))
+    layout:add(common.arrow(3))
     layout:add(widget)
     return layout
 end

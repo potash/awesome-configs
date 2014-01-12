@@ -141,6 +141,7 @@ module.qapp["Editor"]       = { command="emacs",       key="E", icon="editor.svg
 module.qapp["Thunderbird"]  = { command="thunderbird", key="M", icon="thunderbird.svg",  tag=6 }
 module.qapp["IDE"]          = { command="vs",          key="I", icon="IDE.svg",          tag=3 }
 module.qapp["Irc Client"]   = { command="kvirc4",      key="C", icon="irc.svg",          tag=5 }
+module.qapp["Calculator"]   = { command="speedcrunch", key="K", icon="calculator.svg",   tag=0 }
 module.qapp["Task Manager"] = { command="qps",         key="P", icon="proc.svg",         tag=0 }
 
 local function spawn(cmd)
@@ -207,7 +208,7 @@ local function new()
     local layout = wibox.layout.fixed.horizontal()
     layout:add(common.imagebox({icon=beautiful.dist_icon}))
     layout:add(common.textbox({text="MENU", width=50, b1=module.main_qapp, b3=module.main_app }))
-    layout:add(common.arrow(6))
+    layout:add(common.arrow(1))
     return layout
 end
 

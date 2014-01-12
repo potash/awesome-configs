@@ -62,7 +62,7 @@ local function new()
     local layout = wibox.layout.fixed.horizontal()
     local w,c  = common.textbox({text=string.upper(module.current),width=35,b1=module.main,b3=module.switch})
     module.widget = c
-    layout:add(common.arrow(5))
+    layout:add(common.arrow(4))
     layout:add(common.imagebox({ icon=beautiful.path.."/widgets/keyboard.svg" }))
     layout:add(w)
     return layout

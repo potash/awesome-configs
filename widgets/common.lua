@@ -56,7 +56,10 @@ end
 -- @param table with arguments
 function module.imagebox(args)
     local args = args or {}
-    local w = wibox.widget.imagebox()
+    local w  = wibox.widget.imagebox()
+    local wbg = wibox.widget.background()
+
+    local bg = args.bg or beautiful.widget["bg"] or "#00121E"
 
     local b1 = args.b1 or nil
     local b2 = args.b2 or nil
@@ -83,7 +86,10 @@ function module.imagebox(args)
         awful.button({ }, 5, b5)
     ))
 
-    return w
+    wbg:set_widget(w)
+    wbg:set_bg(bg)
+
+    return wbg
 end
 
 --- Create new textbox widget

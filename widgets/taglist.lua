@@ -17,8 +17,8 @@ local common    = require("widgets.common")
 local module = {}
 
 -- /dev/shm is a temporary file storage filesystem, i.e. tmpfs, that uses RAM for the backing store.
---module.history = "/dev/shm/history_tag"
-module.history = awful.util.getdir("cache").."/history_tag"
+module.history = "/dev/shm/history_tag"
+--module.history = awful.util.getdir("cache").."/history_tag"
 
 -- Tags table.
 module.tag = {
@@ -118,7 +118,7 @@ local function new()
     layout:add(common.imagebox({icon=beautiful.path.."/widgets/workspace.svg"}))
     layout:add(common.textbox({text="TAG", width=35, b1=module.main}))
     layout:add(awful.widget.taglist(1, awful.widget.taglist.filter.noempty, buttons, style))
-    layout:add(common.arrow(6))
+    layout:add(common.arrow(2))
     return layout
 end
 

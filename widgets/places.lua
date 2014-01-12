@@ -62,7 +62,7 @@ end
 -- Return widgets layout
 local function new()
     local layout = wibox.layout.fixed.horizontal()
-    layout:add(common.arrow(5))
+    layout:add(common.arrow(3))
     layout:add(common.imagebox({ icon=beautiful.path.."/widgets/places.svg" }))
     layout:add(common.textbox({ text="PLACES", width=60, b1=module.main }))
     return layout
