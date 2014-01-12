@@ -28,7 +28,7 @@ theme.awesome_icon                    = theme.path.."/logos/awesome.png"
 theme.dist_icon                       = theme.path.."/logos/gentoo.svg"
 theme.wallpaper                       = theme.path.."/background.png"
 theme.unknown                         = theme.path.."/logos/unknown.svg"
-
+theme.bg_systray                      = "#00184800"
 theme.menu_height                     = 20
 theme.popup_time_out                  = 5
 theme.icon_theme                      = nil
