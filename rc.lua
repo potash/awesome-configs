@@ -7,13 +7,14 @@
         NOTE:      -------
 --]]
 
-local dbg       = require("extern.dbg")
+--local dbg       = require("extern.dbg")
 local awful     = require("awful")
 awful.rules     = require("awful.rules")
 awful.wibox     = require("awful.wibox")
 local layout    = require("wibox.layout")
 local systray   = require("wibox.widget.systray")
 local beautiful = require("beautiful")
+local alttab    = require("extern.radical.impl.alttab")
 
 -- When loaded, this module makes sure that there's always a client that will have focus
 require("awful.autofocus")
@@ -22,7 +23,7 @@ require("awful.autofocus")
 beautiful.init(awful.util.getdir('config').."/theme/darkBlue.lua")
 
 -- Initialize debugging utilities
-dbg()
+--dbg()
 
 -- External libraries
 local awfuldb = require("extern.awfuldb")
@@ -31,12 +32,17 @@ local focuser = require("extern.indicator.focus")
 -- Widgets
 local widgets = require("widgets")
 
--- ddd
+-- Wibox table
 local bar  = {}
+-- Keybindings table
 local keys = {}
 
 -- create dock
 --widgets.dock()
+
+-- Radical 
+alttab.default_icon = beautiful.path .. "/titlebar2/other.png"
+alttab.titlebar_path = beautiful.path.. "/titlebar2/"
 
 -- Create wibox 'main'
 bar["main"] = awful.wibox({ position = beautiful.wibox.position, height = beautiful.wibox.height })
@@ -118,7 +124,9 @@ keys["global"] = awful.util.table.join(
     awful.key({ "Mod4", "Mod1"    }, "Up",           function() widgets.taglist.main()                       end),
     awful.key({ "Mod4", "Mod1"    }, "Down",         function() widgets.taglist.main()                       end),
     awful.key({ "Mod4"            }, "p",            function() widgets.places.main()                        end),
-    awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
+    --awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
+    awful.key({ "Mod1"            }, "Tab",          function() alttab.altTab()                              end),
+    awful.key({ "Mod1", "Shift"   }, "Tab",          function() alttab.altTabBack()                          end),
     awful.key({ "Control"         }, "Tab",          awful.tag.history.restore                                  ),
     awful.key({ "Mod4"            }, "`",            function() widgets.kbd.switch()                         end),
     awful.key({ "Mod4"            }, "Tab",          function()
