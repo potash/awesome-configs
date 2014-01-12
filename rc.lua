@@ -10,7 +10,7 @@
 --local dbg       = require("extern.dbg")
 local awful     = require("awful")
 awful.rules     = require("awful.rules")
-awful.wibox     = require("awful.wibox")
+local wibox     = require("wibox")
 local layout    = require("wibox.layout")
 local beautiful = require("beautiful")
 local alttab    = require("extern.radical.impl.alttab")
@@ -56,7 +56,7 @@ bar["left"]:add(widgets.prompt())
 
 -- Widgets that are aligned to the right
 bar["right"] = layout.fixed.horizontal()
-bar["right"]:add(widgets.systray())
+bar["right"]:add(wibox.widget.systray())
 bar["right"]:add(widgets.kbd())
 bar["right"]:add(widgets.places())
 bar["right"]:add(widgets.sys())
