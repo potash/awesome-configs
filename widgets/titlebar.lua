@@ -38,17 +38,17 @@ local function new(c)
         local status_image = wibox.widget.imagebox()
         local status_layout = wibox.layout.fixed.horizontal()
 
-        local function update_icons()
+        local function update_titlebar_status_icons()
             local s=""
             if c.sticky == true then s = s.."_sticky"  end
             if c.ontop == true then  s = s.."_ontop"   end
             if awful.client.floating.get(c) then s = s.."_float" end
             status_image:set_image(beautiful.path .. "/titlebar/status"..s..".png")
         end
-        update_icons(c)
-        c:connect_signal("property::floating", update_icons)
-        c:connect_signal("property::ontop", update_icons)
-        c:connect_signal("property::sticky", update_icons)
+        update_titlebar_status_icons(c)
+        c:connect_signal("property::floating", update_titlebar_status_icons)
+        c:connect_signal("property::ontop", update_titlebar_status_icons)
+        c:connect_signal("property::sticky", update_titlebar_status_icons)
         
         status_layout:add(status_image)
         status_layout:buttons(buttons)
@@ -63,12 +63,12 @@ local function new(c)
     local clientTitle = wibox.widget.textbox()
     clientTitle:set_valign(beautiful.titlebar["valign"])
     clientTitle:set_font(beautiful.titlebar["font"])
-    local function update_title()
+    local function update_titlebar_text()
         local text = awful.util.linewrap(awful.util.escape(c.name) or "N/A", 80)
         clientTitle:set_markup("<span color='".. beautiful.titlebar["fg"] .."'>".. text .."</span>")
     end
-    c:connect_signal("property::name", update_title)
-    update_title()
+    c:connect_signal("property::name", update_titlebar_text)
+    update_titlebar_text()
 
     left_layout:add(clientIcon)
     left_layout:add(clientTitle)
