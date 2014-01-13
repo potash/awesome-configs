@@ -173,24 +173,26 @@ function module.main_app()
     module.menu_visible = true
 end
 
+-- Action
+local function run(data)
+    local tags = awful.tag.gettags(1)
+    awful.util.spawn(data.command)
+    if tags[data.tag] then awful.tag.viewonly(tags[data.tag]) end
+    common.hide_menu(module.menu_qapp)
+end
+
 -- Quick menu builder
 module.menu_qapp = false
 function module.main_qapp()
     if not module.menu_qapp then
-        local tags = awful.tag.gettags(1)
         module.menu_qapp = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom", x = 105,
             y = screen[1].geometry.height - beautiful.wibox.height - ((#awful.util.table.keys(module.qapp))*beautiful.menu_height) - 22
         })
         for i,v in pairs(module.qapp) do
+            module.menu_qapp:add_key_hook({}, string.lower(v.key), "press", function() run(v) end)
             module.menu_qapp:add_item({
-                button1 = function()
-                    spawn(v.command)
-                    if tags[v.tag] and tags[v.tag] ~= 0 then
-                        awful.tag.viewonly(tags[v.tag])
-                    end
-                    common.hide_menu(module.menu_qapp)
-                end,
+                button1 = function() run(v) end,
                 text = i or "N/A", underlay = underlay(v.key),
                 icon = beautiful.path.."/launcher/quick/"..v.icon or beautiful.unknown
             })
