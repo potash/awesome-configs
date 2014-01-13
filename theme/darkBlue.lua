@@ -58,7 +58,7 @@ theme.taglist_disable_icon            = true
 
 -- Tasklist widget
 theme.task={}
-theme.task["font"]                    = "Ticking Timebomb BB 11"
+theme.task["font"]                    = "Liberation sans 9"
 theme.task["fg_normal"]               = "#155898"
 theme.task["bg_normal"]               = pattern(theme.path.."/background/tasklist_normal.png")
 theme.task["fg_focus"]                = "#1692D0"
@@ -67,8 +67,6 @@ theme.task["fg_urgent"]               = "#1692D0"
 theme.task["bg_urgent"]               = pattern(theme.path.."/background/tasklist_urgent.png")
 theme.task["fg_minimize"]             = "#1692D0"
 theme.task["bg_minimize"]             = pattern(theme.path.."/background/tasklist_minimize.png")
-
-
 theme.task["sticky"]                  = "▪"
 theme.task["ontop"]                   = '⌃'
 theme.task["floating"]                = '✈'
@@ -83,10 +81,10 @@ theme.titlebar["all"]                 = false
 theme.titlebar["float"]               = true
 theme.titlebar["dialog"]              = true
 theme.titlebar["status"]              = true
-theme.titlebar["size"]                = 12
-theme.titlebar["valign"]              = "top"
+theme.titlebar["size"]                = 13
+theme.titlebar["valign"]              = "center"
 theme.titlebar["position"]            = "top"
-theme.titlebar["font"]                = "sans 8"
+theme.titlebar["font"]                = "Liberation Mono 8"
 theme.titlebar["bg_focus"]            = pattern(theme.path.."/background/titlebar_focus.png")
 theme.titlebar["fg"]                  = "#1692D0"
 theme.titlebar["bg"]                  = pattern(theme.path.."/background/titlebar.png")
@@ -133,7 +131,7 @@ naughty.config.defaults.border_color  = "#FFB111"
 naughty.config.defaults.border_width  = 1
 naughty.config.defaults.hover_timeout = 3
 
--- Awesome defaults
+-- Awesome
 theme.border_width                    = 1
 theme.border_color                    = "#1577D3"
 theme.border_normal                   = "#000000"
