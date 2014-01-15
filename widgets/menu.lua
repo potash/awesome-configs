@@ -134,19 +134,15 @@ module.mapp["Miscellaneous"] = {
 
 -- Quick menu table.
 module.qapp = {}
-module.qapp["Terminal"]     = { command="urxvt",       key="T", icon="terminal.svg",     tag=1 }
-module.qapp["File Manager"] = { command="krusader",    key="F", icon="file-manager.svg", tag=4 }
-module.qapp["Web browser"]  = { command="firefox",     key="B", icon="browser.svg",      tag=2 }
-module.qapp["Editor"]       = { command="emacs",       key="E", icon="editor.svg",       tag=1 }
-module.qapp["Thunderbird"]  = { command="thunderbird", key="M", icon="thunderbird.svg",  tag=6 }
-module.qapp["IDE"]          = { command="vs",          key="I", icon="IDE.svg",          tag=3 }
-module.qapp["Irc Client"]   = { command="kvirc4",      key="C", icon="irc.svg",          tag=5 }
-module.qapp["Calculator"]   = { command="speedcrunch", key="K", icon="calculator.svg",   tag=0 }
-module.qapp["Task Manager"] = { command="qps",         key="P", icon="proc.svg",         tag=0 }
-
-local function spawn(cmd)
-    awful.util.spawn(cmd)
-end
+module.qapp["Terminal"]     = { command="urxvt",       key="t", icon="terminal.svg",         tag=1 }
+module.qapp["File Manager"] = { command="krusader",    key="f", icon="file-manager.svg",     tag=4 }
+module.qapp["Web browser"]  = { command="firefox",     key="w", icon="browser.svg",          tag=2 }
+module.qapp["Editor"]       = { command="emacs",       key="e", icon="editor.svg",           tag=1 }
+module.qapp["Thunderbird"]  = { command="thunderbird", key="q", icon="thunderbird.svg",      tag=6 }
+module.qapp["IDE"]          = { command="vs",          key="d", icon="IDE.svg",              tag=3 }
+module.qapp["Irc Client"]   = { command="kvirc4",      key="c", icon="irc.svg",              tag=5 }
+module.qapp["Calculator"]   = { command="speedcrunch", key="k", icon="calculator.svg",       tag=0 }
+module.qapp["Task Manager"] = { command="qps",         key="p", icon="proc.svg",             tag=0 }
 
 -- Main menu builder
 module.menu_visible = false
@@ -191,9 +187,10 @@ function module.main_qapp()
         })
         for i,v in pairs(module.qapp) do
             module.menu_qapp:add_key_hook({}, string.lower(v.key), "press", function() run(v) end)
+            --module.menu_qapp:add_key_binding({}, string.lower(v.key), function() dbg.dump(v.key) end)
             module.menu_qapp:add_item({
                 button1 = function() run(v) end,
-                text = i or "N/A", underlay = underlay(v.key),
+                text = i or "N/A", underlay = underlay(string.upper(v.key)),
                 icon = beautiful.path.."/launcher/quick/"..v.icon or beautiful.unknown
             })
         end
