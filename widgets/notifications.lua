@@ -17,7 +17,7 @@ local radical   = require("extern.radical")
 local underlay  = require("extern.graph.underlay")
 local awful     = require("awful")
 local common    = require("widgets.common")
-local naughty    = require("naughty")
+local naughty   = require("naughty")
 
 local module = {}
 module.items = {}
@@ -37,23 +37,15 @@ local function update_icon()
 end
 -- Format notifications
 local function update_notifications(data)
-    local text,icon,count = data.text or "N/A", data.icon or beautiful.unknown,1
-
-    if data.title and data.title ~= "" then
-        text = "<b>"..data.title.."</b> - "..text
-    end
-
+    local text,icon,count,limit,bg,time = data.text or "N/A", data.icon or beautiful.unknown,1,80
+    if data.title and data.title ~= "" then text = "<b>"..data.title.."</b> - "..text end
+    local text = string.sub(text, 0, limit)
     for k,v in ipairs(module.items) do
-        if text == v.text then
-            v.count = v.count + 1
-            count = count + 1
-        end
+        if text == v.text then count, v.count = count + 1, v.count + 1 end
     end
-
-    if count == 1 then 
-        table.insert(module.items, {text=text,icon=icon,count=count})
-    end
-
+    time=os.date("%H:%M:%S")
+    if data.preset and data.preset.bg then bg=data.preset.bg end -- TODO: presets
+    if count == 1 then table.insert(module.items, {text=text,icon=icon,count=count,bg=bg,time=time}) end
     update_icon()
 end
 
@@ -79,8 +71,7 @@ function module.main()
                     table.remove(module.items, k)
                     update_icon()
                 end,
-                text=v.text, icon=v.icon,
-                underlay = underlay(v.count),
+                text=v.text, icon=v.icon,underlay = underlay(v.count),tooltip = v.time,
             })
         end
         module.menu.visible = true
