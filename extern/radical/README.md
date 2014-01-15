@@ -44,6 +44,9 @@ The most simple kind of menus, contexts one, can be created like this:
     -- To add the menu to a widget:
     local mytextbox = wibox.widget.textbox()
     mytextbox:set_menu(menu,3) -- 3 = right mouse button, 1 = left mouse button
+    
+    -- To add a key binding on a "box" menu (and every other types)
+    menu:add_key_binding({"Mod4"},",")
 ```
 
 In this example, a simple 3 item menu is created with a dynamically generated
@@ -53,6 +56,10 @@ them once and passing the submenu object to the "sub_menu" item property.
 
 `:set_menu` can also take a lazy-loading function instead of a
 menu. The second parameter is not mandatory, the default is `1`.
+
+`:add_key_binding` will add a key binding. It can also take a function as 3rd
+parameter. However, it wont correctly place "context" menu as it have no idea
+where you expect them. It work better with "box" menus.
 
 ### Menu types
 
@@ -191,6 +198,23 @@ Multiple items can have multiple sets of options.
 | button4        | Scroll up action                             | function          |
 | button5        | Scroll down action                           | function          |
 
+###Common methods
+
+All menus provide a bunch of methods. Most of them have been coverred above, but
+here is the list:
+
+|       Name       |                 Description                  |       Arguments       | Return |
+| ---------------- | -------------------------------------------- | --------------------- | ------ |
+| add_item         | Add new item to a menu                       | array of options      | item   |
+| add_widget       | Add a new widget instead of an item          | a widget, args        |  ---   |
+| add_embeded_menu | Add an inline menu to another menu           | an "embed" menu       |  ---   |
+| add_key_binding  | Add a global key binding to a menu           | mod array, key        |  ---   |
+| add_key_hook     | Add a callback when a key is pressed         | mod, key, event, func |  ---   |
+| clear            | Remove all items                             |           ---         |  ---   |
+| scroll_down      | If the menu is cropped, scroll down          |           ---         |  ---   |
+| scroll_up        | If the menu is cropped, scroll up            |           ---         |  ---   |
+
+
 ###Beautiful options
 
 Radical also use the some of the same theme options as awful.menu, plus some:
@@ -198,12 +222,15 @@ Radical also use the some of the same theme options as awful.menu, plus some:
  * menu_height
  * menu_width
  * menu_border_width
+ * menu_border_color
  * border_width
  * border_color
  * menu_fg_normal
  * menu_bg_focus
  * menu_bg_header
+ * menu_bg_alternate
  * menu_bg_normal
  * menu_bg_highlight
  * menu_submenu_icon
  * menu_separator_color
+ * menu_submenu_icon

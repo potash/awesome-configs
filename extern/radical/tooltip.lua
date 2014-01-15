@@ -99,7 +99,7 @@ local function new(widget,text, args)
       l:add(m)
       l:fill_space(true)
       w:set_widget(l)
-      w:set_fg(beautiful.fg_normal)
+      w:set_fg(beautiful.tooltip_fg or beautiful.fg_normal)
 
       if args.direction == "left" or args.direction == "top" then --Mirror
         local matrix,pattern = cairo.Matrix(),cairo.Pattern.create_for_surface(img)
