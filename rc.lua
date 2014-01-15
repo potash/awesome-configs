@@ -7,13 +7,12 @@
         NOTE:      -------
 --]]
 
---local dbg       = require("extern.dbg")
+dbg             = require("extern.dbg")
 local awful     = require("awful")
 awful.rules     = require("awful.rules")
 local wibox     = require("wibox")
 local layout    = require("wibox.layout")
 local beautiful = require("beautiful")
-local alttab    = require("extern.radical.impl.alttab")
 
 -- When loaded, this module makes sure that there's always a client that will have focus
 require("awful.autofocus")
@@ -22,14 +21,14 @@ require("awful.autofocus")
 beautiful.init(awful.util.getdir('config').."/theme/darkBlue.lua")
 
 -- Initialize debugging utilities
---dbg()
+if os.getenv("USER") == "minde" then dbg() end
 
 -- External libraries
 local awfuldb = require("extern.awfuldb")
 local focuser = require("extern.indicator.focus")
 
 -- Widgets
-local widgets = require("widgets")
+widgets = require("widgets")
 
 -- Wibox table
 local bar  = {}
@@ -38,10 +37,6 @@ local keys = {}
 
 -- create dock
 --widgets.dock()
-
--- Radical 
-alttab.default_icon = beautiful.path .. "/titlebar2/other.png"
-alttab.titlebar_path = beautiful.path.. "/titlebar2/"
 
 -- Create wibox 'main'
 bar["main"] = awful.wibox({ position = beautiful.wibox.position, height = beautiful.wibox.height })
@@ -56,6 +51,7 @@ bar["left"]:add(widgets.prompt())
 
 -- Widgets that are aligned to the right
 bar["right"] = layout.fixed.horizontal()
+bar["right"]:add(widgets.notifications())
 bar["right"]:add(wibox.widget.systray())
 bar["right"]:add(widgets.kbd())
 bar["right"]:add(widgets.places())
@@ -112,20 +108,20 @@ keys["client"] = awful.util.table.join(
 )
 --  Key bindings
 keys["global"] = awful.util.table.join(
+    awful.key({ "Mod4"            }, "x",            function() widgets.prompt.lua()                         end),
     awful.key({ "Mod4"            }, "r",            function() widgets.prompt.run()                         end),
     awful.key({ "Mod4"            }, "c",            function() widgets.prompt.cmd()                         end),
     awful.key({ "Mod4"            }, "space",        function() widgets.layout.main()                        end),
     awful.key({ "Mod4"            }, "q",            function() widgets.menu.main_qapp()                     end),
     awful.key({ "Mod4", "Shift"   }, "q",            function() widgets.menu.main_app()                      end),
-    awful.key({                   }, "Menu",         function() widgets.menu.main_app()                      end),
+    awful.key({                   }, "Menu",         function() widgets.menu.main_qapp()                     end),
+    awful.key({         "Shift"   }, "Menu",         function() widgets.menu.main_app()                      end),
     awful.key({ "Mod4", "Mod1"    }, "Left",         awful.tag.viewprev                                         ),
     awful.key({ "Mod4", "Mod1"    }, "Right",        awful.tag.viewnext                                         ),
     awful.key({ "Mod4", "Mod1"    }, "Up",           function() widgets.taglist.main()                       end),
     awful.key({ "Mod4", "Mod1"    }, "Down",         function() widgets.taglist.main()                       end),
     awful.key({ "Mod4"            }, "p",            function() widgets.places.main()                        end),
-    --awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
-    awful.key({ "Mod1"            }, "Tab",          function() alttab.altTab()                              end),
-    awful.key({ "Mod1", "Shift"   }, "Tab",          function() alttab.altTabBack()                          end),
+    awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
     awful.key({ "Control"         }, "Tab",          awful.tag.history.restore                                  ),
     awful.key({ "Mod4"            }, "`",            function() widgets.kbd.switch()                         end),
     awful.key({ "Mod4"            }, "Tab",          function()
