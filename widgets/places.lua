@@ -43,6 +43,7 @@ function module.main()
         local tags = awful.tag.gettags(1)
         for _,t in ipairs(module.PATHS) do
             module.menu:add_item({
+                tooltip = t[2],
                 button1 = function()
                     awful.util.spawn(module.OPEN.." "..t[2])
                     awful.tag.viewonly(tags[4])
