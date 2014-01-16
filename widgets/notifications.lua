@@ -22,7 +22,6 @@ local naughty   = require("naughty")
 local module = {}
 module.items = {}
 
-
 -- Update notifications icon
 local function update_icon()
     if #module.items >= 1 then
@@ -37,7 +36,7 @@ local function update_icon()
 end
 -- Format notifications
 local function update_notifications(data)
-    local text,icon,count,limit,bg,time = data.text or "N/A", data.icon or beautiful.unknown,1,80
+    local text,icon,count,limit,bg,time = data.text or "N/A", data.icon or beautiful.unknown,1,100
     if data.title and data.title ~= "" then text = "<b>"..data.title.."</b> - "..text end
     local text = string.sub(text, 0, limit)
     for k,v in ipairs(module.items) do
@@ -70,6 +69,7 @@ function module.main()
                 button1 = function() 
                     table.remove(module.items, k)
                     update_icon()
+                    module.main() -- display the menu again
                 end,
                 text=v.text, icon=v.icon,underlay = underlay(v.count),tooltip = v.time,
             })
