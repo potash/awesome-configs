@@ -56,40 +56,34 @@ end
 -- @param table with arguments
 function module.imagebox(args)
     local args = args or {}
-    local img  = wibox.widget.imagebox()
+    local imagewidget  = wibox.widget.imagebox()
     local background = wibox.widget.background()
 
     local bg = args.bg or beautiful.widget["bg"] or "#00121E"
 
     local b1 = args.b1 or nil
-    local b2 = args.b2 or nil
     local b3 = args.b3 or nil
-    local b4 = args.b4 or nil
-    local b5 = args.b5 or nil
 
     if args.icon then
         if awful.util.file_readable(args.icon) then
-            img:set_image(args.icon)
+            imagewidget:set_image(args.icon)
         elseif awful.util.file_readable(beautiful.path .. args.icon) then
-            img:set_image(beautiful.path .. args.icon)
+            imagewidget:set_image(beautiful.path .. args.icon)
         else
             dbg.error("File "..args.icon.." is not readable or does not exist.")
-            img:set_image(beautiful.path .. "/bg/warning.svg")
+            imagewidget:set_image(beautiful.path .. "/bg/warning.svg")
         end
     end
 
-    img:buttons(awful.util.table.join(
+    imagewidget:buttons(awful.util.table.join(
         awful.button({ }, 1, b1),
-        awful.button({ }, 2, b2),
-        awful.button({ }, 3, b3),
-        awful.button({ }, 4, b4),
-        awful.button({ }, 5, b5)
+        awful.button({ }, 3, b3)
     ))
 
-    background:set_widget(img)
+    background:set_widget(imagewidget)
     background:set_bg(bg)
 
-    return background,img
+    return background,imagewidget
 end
 
 --- Create new textbox widget
@@ -105,49 +99,48 @@ function module.textbox(args)
     local bg = args.bg or beautiful.widget["bg"] or "#00121E"
     local fg = args.fg or beautiful.widget["fg"] or "#1692D0"
 
+    -- Mouse buttons
     local b1 = args.b1 or nil
-    local b2 = args.b2 or nil
     local b3 = args.b3 or nil
-    local b4 = args.b4 or nil
-    local b5 = args.b5 or nil
 
-    local w  = wibox.widget.background()
-    local wt = wibox.widget.textbox()
+    local background  = wibox.widget.background()
+    local textwidget = wibox.widget.textbox()
 
-    wt:set_markup("<span color='"..fg.."'>"..text.."</span>")
-    wt:set_align(align)
-    wt:set_valign(valign)
-    wt:set_font(font)
-    wt.fit = function() return width,height end
+    textwidget:set_markup("<span color='"..fg.."'>"..text.."</span>")
+    textwidget:set_align(align)
+    textwidget:set_valign(valign)
+    textwidget:set_font(font)
+    textwidget.fit = function() return width,height end
 
-    wt:buttons(awful.util.table.join(
+    textwidget:buttons(awful.util.table.join(
         awful.button({ }, 1, b1),
-        awful.button({ }, 2, b2),
-        awful.button({ }, 3, b3),
-        awful.button({ }, 4, b4),
-        awful.button({ }, 5, b5)
+        awful.button({ }, 3, b3)
     ))
 
-    w:set_widget(wt)
-    w:set_bg(bg)
+    background:set_widget(textwidget)
+    background:set_bg(bg)
 
-    w:connect_signal("mouse::enter", function() wt:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>") end)
-    w:connect_signal("mouse::leave", function() wt:set_markup("<span color='"..fg.."'>"..text.."</span>") end)
+    background:connect_signal("mouse::enter", function() 
+        textwidget:set_markup("<span color='"..fg.."'><b>"..text.."</b></span>") 
+    end)
+    background:connect_signal("mouse::leave", function() 
+        textwidget:set_markup("<span color='"..fg.."'>"..text.."</span>") 
+    end)
 
-    return w,wt
+    return background,textwidget
 end
 
 --- Arrow widget
--- @n: arrow number
-local HASH={}
+-- @param n arrow number
+local arrowWidget = {}
 function module.arrow(n)
-    if HASH[n] then
-        return HASH[n]
+    if arrowWidget[n] then
+        return arrowWidget[n]
     else
-        local img = wibox.widget.imagebox()
-        img:set_image(beautiful.path.."/arrow/"..n..".png")
-        HASH[n] = img
-        return HASH[n]
+        local imagewidget = wibox.widget.imagebox()
+        imagewidget:set_image(beautiful.path.."/arrow/"..n..".png")
+        arrowWidget[n] = imagewidget
+        return arrowWidget[n]
     end
 end
 
