@@ -103,7 +103,7 @@ theme.prompt["lua"]                   = "<span foreground='#1692D0' font='Sci Fi
 theme.widget={}
 theme.widget["font"]                  = "Sci Fied 8"
 theme.widget["fg"]                    = "#1692D0"
-theme.widget["bg"]                    = "#0F2766"
+theme.widget["bg"]                    = pattern(theme.path.."/background/tasklist.png")
 theme.widget["align"]                 = "center"
 theme.widget["valign"]                = "center"
 
@@ -116,6 +116,8 @@ theme.menu_bg_focus                   = pattern(theme.path.."/background/radical
 theme.menu_bg_header                  = pattern(theme.path.."/background/radical_header.png")
 theme.menu_bg_highlight               = pattern(theme.path.."/background/radical_highlight.png")
 theme.menu_bg_alternate               = "#004FFF"
+theme.tooltip_bg                      = pattern(theme.path.."/background/tooltip.png")
+theme.tooltip_fg                      = "#2666FF"
 
 -- Naughty settings
 naughty.config.defaults.timeout       = 30
