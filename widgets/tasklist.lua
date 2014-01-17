@@ -8,10 +8,8 @@
 --]]
 
 local awful     = require("awful")
-local radical   = require("extern.radical")
-local underlay  = require("extern.graph.underlay")
+local radical   = require("radical")
 local beautiful = require("beautiful")
-local awfuldb   = require("extern.awfuldb")
 local tags      = require("widgets.taglist")
 local titlebar  = require("widgets.titlebar")
 
@@ -36,7 +34,7 @@ local function move2tag(c)
             text = tags.tag[i].name,
             button1 = function() awful.client.movetotag(gt[i], c) hideMenu() end,
             icon = beautiful.path.."/tags/"..tags.tag[i].icon,
-            underlay = underlay(tags.tag[i].sname)
+            underlay = string.upper(tags.tag[i].sname)
         })
     end
     return items
@@ -82,9 +80,9 @@ local function items(c,m)
         end
     })
     -- fullscreen
-    m:add_item({ text = "Fullscreen", icon = beautiful.path.."/client/fullscreen.svg",
-        checked = c.fullscreen, button1 = function() c.fullscreen = not c.fullscreen hideMenu() end
-    })
+    --m:add_item({ text = "Fullscreen", icon = beautiful.path.."/client/fullscreen.svg",
+    --    checked = c.fullscreen, button1 = function() c.fullscreen = not c.fullscreen hideMenu() end
+    --})
     -- Maximize
     m:add_item({ text = "Maximize", icon = beautiful.path.."/client/maximize.svg",
         checked = function()
@@ -108,11 +106,11 @@ local function items(c,m)
     })
     -- Save
     m:add_item({ text = "Save", icon = beautiful.path.."/client/save.svg",
-        underlay = underlay("SQL"), button1 = function() awfuldb.save(c) hideMenu() end
+        underlay = "SQL", button1 = function() awful.clientdb.save(c) hideMenu() end
     })
     -- Close
     m:add_item({ text = "Close", icon = beautiful.path.."/client/close.svg",
-        underlay = underlay(c.pid), button1 = function() c:kill() hideMenu() end
+        underlay = c.pid, button1 = function() c:kill() hideMenu() end
     })
 end
 

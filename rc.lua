@@ -7,25 +7,22 @@
         NOTE:      -------
 --]]
 
-dbg             = require("extern.dbg")
 local awful     = require("awful")
 awful.rules     = require("awful.rules")
+awful.clientdb  = require("awful.clientdb")
+awful.dbg       = require("awful.dbg")
+awful.indicator = require("awful.indicator.focus")
 local wibox     = require("wibox")
-local layout    = require("wibox.layout")
 local beautiful = require("beautiful")
 
 -- When loaded, this module makes sure that there's always a client that will have focus
 require("awful.autofocus")
 
 -- Initializes the theme system
-beautiful.init(awful.util.getdir('config').."/theme/darkBlue.lua")
+beautiful.init(awful.util.getdir("config").."/theme/darkBlue.lua")
 
 -- Initialize debugging utilities
-if os.getenv("USER") == "minde" then dbg() end
-
--- External libraries
-local awfuldb = require("extern.awfuldb")
-local focuser = require("extern.indicator.focus")
+if os.getenv("USER") == "minde" then awful.dbg() end
 
 -- Widgets
 widgets = require("widgets")
@@ -35,31 +32,27 @@ local bar  = {}
 -- Keybindings table
 local keys = {}
 
--- create dock
---widgets.dock()
-
 -- Create wibox 'main'
 bar["main"] = awful.wibox({ position = beautiful.wibox.position, height = beautiful.wibox.height })
 bar["main"]:set_bg(beautiful.wibox.bg)
 
 -- Widgets that are aligned to the left
-bar["left"] = layout.fixed.horizontal()
+bar["left"] = wibox.layout.fixed.horizontal()
 bar["left"]:add(widgets.layout())
 bar["left"]:add(widgets.menu())
 bar["left"]:add(widgets.taglist())
 bar["left"]:add(widgets.prompt())
 
 -- Widgets that are aligned to the right
-bar["right"] = layout.fixed.horizontal()
+bar["right"] = wibox.layout.fixed.horizontal()
 bar["right"]:add(widgets.notifications())
 bar["right"]:add(wibox.widget.systray())
 bar["right"]:add(widgets.kbd())
 bar["right"]:add(widgets.places())
-bar["right"]:add(widgets.sys())
 bar["right"]:add(widgets.clock())
 
 -- Now bring it all together (with the tasklist in the middle)
-bar["wibox"] = layout.align.horizontal()
+bar["wibox"] = wibox.layout.align.horizontal()
 bar["wibox"]:set_left(bar["left"])
 bar["wibox"]:set_middle(widgets.tasklist())
 bar["wibox"]:set_right(bar["right"])
@@ -73,7 +66,7 @@ end
 
 -- Kill window
 local function killClient()
-    dbg.info("Select the window whose client you wish to kill with button 1....")
+    awful.dbg.info("Select the window whose client you wish to kill with button 1....")
     awful.util.spawn("xkill")
 end
 
@@ -104,7 +97,7 @@ keys["client"] = awful.util.table.join(
     awful.key({ "Mod4"            }, "b",            function(c) c.below = not c.below                       end),
     awful.key({ "Mod4"            }, "f",            function(c) c.fullscreen = not c.fullscreen             end),
     awful.key({ "Mod4"            }, "v",            awful.client.floating.toggle                               ),
-    awful.key({ "Mod4"            }, "w",            function(c) awfuldb.save(c)                             end)
+    awful.key({ "Mod4"            }, "w",            function(c) awful.clientdb.save(c)                      end)
 )
 --  Key bindings
 keys["global"] = awful.util.table.join(
@@ -128,14 +121,14 @@ keys["global"] = awful.util.table.join(
         awful.client.focus.history.previous()
         if client.focus then client.focus:raise() end
     end),
-    awful.key({ "Mod4",           }, "Left",         function() focuser.global_bydirection("left")           end),
-    awful.key({ "Mod4",           }, "Right",        function() focuser.global_bydirection("down")           end),
-    awful.key({ "Mod4",           }, "Up",           function() focuser.global_bydirection("up")             end),
-    awful.key({ "Mod4",           }, "Down",         function() focuser.global_bydirection("down")           end),
-    awful.key({ "Mod4", "Shift"   }, "Left",         function() focuser.global_bydirection("left",nil,true)  end),
-    awful.key({ "Mod4", "Shift"   }, "Right",        function() focuser.global_bydirection("down",nil,true)  end),
-    awful.key({ "Mod4", "Shift"   }, "Up",           function() focuser.global_bydirection("up",nil,true)    end),
-    awful.key({ "Mod4", "Shift"   }, "Down",         function() focuser.global_bydirection("down",nil,true)  end),
+    awful.key({ "Mod4",           }, "Left",         function() awful.indicator.bd("left")                   end),
+    awful.key({ "Mod4",           }, "Right",        function() awful.indicator.bd("down")                   end),
+    awful.key({ "Mod4",           }, "Up",           function() awful.indicator.bd("up")                     end),
+    awful.key({ "Mod4",           }, "Down",         function() awful.indicator.bd("down")                   end),
+    awful.key({ "Mod4", "Shift"   }, "Left",         function() awful.indicator.bd("left",nil,true)          end),
+    awful.key({ "Mod4", "Shift"   }, "Right",        function() awful.indicator.bd("down",nil,true)          end),
+    awful.key({ "Mod4", "Shift"   }, "Up",           function() awful.indicator.bd("up",nil,true)            end),
+    awful.key({ "Mod4", "Shift"   }, "Down",         function() awful.indicator.bd("down",nil,true)          end),
     awful.key({ "Control"         }, "Escape",       function() killClient()                                 end),
     awful.key({ "Mod4"            }, "KP_Add",       function() spawn("amixer -c 0 set Master 1+ unmute")    end),
     awful.key({ "Mod4"            }, "KP_Subtract",  function() spawn("amixer -c 0 set Master 1- unmute")    end),
@@ -178,18 +171,15 @@ root.buttons(keys["mouse"])
 
 -- All clients will match this rule.
 awful.rules.rules = {{ rule = { },
-    properties = {
-        border_width = beautiful.border_width,
-        border_color = beautiful.border_normal,
+    properties = { border_width = beautiful.border_width, border_color = beautiful.border_normal,
         focus = awful.client.focus.filter,
-        keys = keys["client"],
-        buttons = keys["buttons"],
-        floating = true,
-        size_hints_honor = true
-}}}
+        keys = keys["client"], buttons = keys["buttons"],
+        floating = true, size_hints_honor = true
+    }
+}}
 
 -- Initializes the windows rules system
-awfuldb.load(awful.rules.rules, tags)
+awful.clientdb.load(awful.rules.rules, tags)
 
 -- Sometimes dialogs apears to fast...
 table.insert(awful.rules.rules, {rule = { type = "dialog" }, properties = { floating = true }})

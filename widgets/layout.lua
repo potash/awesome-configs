@@ -10,8 +10,7 @@
 local awful     = require("awful")
 local beautiful = require("beautiful")
 local wibox     = require("wibox")
-local underlay  = require("extern.graph.underlay")
-local radical   = require("extern.radical")
+local radical   = require("radical")
 local common    = require("widgets.common")
 
 local module = {}
@@ -38,19 +37,21 @@ function module.main()
     if not module.menu then
         module.menu = radical.context({
             filer = false, enable_keyboard = true, direction = "bottom", x = 15,
-            y = screen[1].geometry.height - beautiful.wibox.height - (#module.layouts*beautiful.menu_height) - 22})
+            y = screen[1].geometry.height - beautiful.wibox.height - (#module.layouts*beautiful.menu_height) - 22
+        })
         local current = awful.layout.get(awful.tag.getscreen(awful.tag.selected()))
         for i, layout_real in ipairs(module.layouts) do
             local layout_name = awful.layout.getname(layout_real)
             if layout_name then
                 module.menu:add_item({
-                    icon = beautiful.path.."/layouts/"..layout_name..".png" or beautiful.unknown, 
-                    text = layout_name:gsub("^%l", string.upper), -- Change the first character of a word to upper case
+                    icon = beautiful.path.."/layouts/"..layout_name..".png",
+                    text = layout_name:gsub("^%l", string.upper), -- Changes the first character of a word to upper case
                     button1 = function()
                         awful.layout.set(module.layouts[module.menu.current_index] or module.layouts[1], awful.tag.selected())
                         common.hide_menu(module.menu)
                     end,
-                    selected = (layout_real == current), underlay = underlay(i),
+                    selected = (layout_real == current),
+                    underlay = i,
                 })
             end
         end

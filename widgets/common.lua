@@ -11,10 +11,7 @@ local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
 local gears     = require("gears")
-local dbg       = require("extern.dbg")
-
-
-local cairo = require("lgi").cairo
+local cairo     = require("lgi").cairo
 
 local module = {}
 module.timer = {}
@@ -22,7 +19,11 @@ module.timer = {}
 --- Register new menu timer
 -- @param m menu to register
 function module.reg_menu(m)
-    module.timer[m] = timer{ timeout = beautiful.popup_time_out }
+    local timeout = beautiful.menu_timeout or 10
+    for vm,_ in pairs(module.timer) do
+        if vm.visible then module.hide_menu(vm) end
+    end
+    module.timer[m] = timer{ timeout = timeout }
     module.timer[m]:connect_signal("timeout", function() module.hide_menu(m) end)
     module.timer[m]:start()
     m.visible = true
@@ -38,29 +39,21 @@ end
 --- Show menu and start timer
 -- @param m menu to show
 function module.show_menu(m)
+    for vm,_ in pairs(module.timer) do
+        if vm.visible then module.hide_menu(vm) end
+    end
     module.timer[m]:start()
     m.visible = true
 end
 
--- Apply color mask
-function module.apply_color_mask(img,mask)
-    img = gears.surface(img)
-    local cr = cairo.Context(img)
-    cr:set_source(gears.color(mask or beautiful.icon_grad or beautiful.fg_normal))
-    cr:set_operator(cairo.Operator.IN)
-    cr:paint()
-    return img
-end
-
 --- Create new imagebox widget
--- @param table with arguments
+-- @param table with arguments {icon, bg, b1, b2}
+-- @returns background widget, image widget
 function module.imagebox(args)
     local args = args or {}
     local imagewidget  = wibox.widget.imagebox()
     local background = wibox.widget.background()
-
     local bg = args.bg or beautiful.widget["bg"] or "#00121E"
-
     local b1 = args.b1 or nil
     local b3 = args.b3 or nil
 
@@ -71,15 +64,11 @@ function module.imagebox(args)
             imagewidget:set_image(beautiful.path .. args.icon)
         else
             dbg.error("File "..args.icon.." is not readable or does not exist.")
-            imagewidget:set_image(beautiful.path .. "/bg/warning.svg")
+            imagewidget:set_image(beautiful.unknown)
         end
     end
 
-    imagewidget:buttons(awful.util.table.join(
-        awful.button({ }, 1, b1),
-        awful.button({ }, 3, b3)
-    ))
-
+    imagewidget:buttons(awful.util.table.join(awful.button({ }, 1, b1), awful.button({ }, 3, b3)))
     background:set_widget(imagewidget)
     background:set_bg(bg)
 
@@ -88,6 +77,8 @@ end
 
 --- Create new textbox widget
 -- @param table with arguments
+-- {text, width, height, font, valign, align, bg, fg, b1, b2}
+-- @return background widget, text widget
 function module.textbox(args)
     local args = args or {}
     local text = args.text or "N/A"
@@ -112,10 +103,7 @@ function module.textbox(args)
     textwidget:set_font(font)
     textwidget.fit = function() return width,height end
 
-    textwidget:buttons(awful.util.table.join(
-        awful.button({ }, 1, b1),
-        awful.button({ }, 3, b3)
-    ))
+    textwidget:buttons(awful.util.table.join(awful.button({ }, 1, b1),awful.button({ }, 3, b3)))
 
     background:set_widget(textwidget)
     background:set_bg(bg)

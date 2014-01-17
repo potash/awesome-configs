@@ -10,8 +10,7 @@
 local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
-local radical   = require("extern.radical")
-local underlay  = require("extern.graph.underlay")
+local radical   = require("radical")
 local common    = require("widgets.common")
 
 local module = {}
@@ -41,13 +40,13 @@ module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 285,
+            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 215,
             y = screen[1].geometry.height - beautiful.wibox.height - (#awful.util.table.keys(module.lang)*beautiful.menu_height) - 22,
         })
         for k,v in pairs(module.lang) do
             module.menu:add_item({text = v,
                 button1 = function() module.set(k) common.hide_menu(module.menu) end,
-                icon = beautiful.path.."/flags/"..k..".png", underlay = underlay(string.upper(k))
+                icon = beautiful.path.."/flags/"..k..".png", underlay = string.upper(k)
             })
         end
         common.reg_menu(module.menu)

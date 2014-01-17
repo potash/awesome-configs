@@ -10,8 +10,7 @@
 local awful     = require("awful")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
-local underlay  = require("extern.graph.underlay")
-local radical   = require("extern.radical")
+local radical   = require("radical")
 local common    = require("widgets.common")
 
 local module = {}
@@ -39,12 +38,9 @@ module.mapp["Development"] = {
         { name="gdb promp",                command="prompt_gdb",           icon="gdb.png"         },
         { name="Python shell",             command="prompt_python",        icon="python.png"      },
         { name="Perl shell",               command="prompt_perl",          icon="perl.png"        },
-        { name="Lua shell",                command="prompt_lua",           icon="lua.png"         },
-        { name="Tcl/Tk shell",             command="tkcon",                icon="tcl-tk.png"      },
         { name="IDEA",                     command="idea",                 icon="idea.png"        },
-        { name="PyCrham",                  command="pycharm",              icon="pycharm.png"     },
-        { name="PhpStorm",                 command="phpstorm",             icon="phpstorm.png"    },
-        { name="Sqlite GUI",               command="sqlitestudio",         icon="sqlite.png"      },
+        { name="SlickEdit",                command="vs",                   icon="vs.png"          },
+        { name="SQLite Studio",            command="sqlitestudio",         icon="sqlite.png"      },
         { name="DBeaver",                  command="dbeaver",              icon="dbeaver.png"     },
         { name="KCachegrind",              command="kcachegrind",          icon="cachegrind.png"  },
         { name="IDA Hex-Rays",             command="ida",                  icon="ida.png"         },
@@ -56,15 +52,14 @@ module.mapp["Messenger"] = {
     icon = "messenger.svg",
     items = {
         { name="Kvirc",                    command="kvirc4",               icon="kvirc.png"       },
-        { name="Kopete",                   command="kopete",               icon="kopete.png"      },
-        { name="Skype",                    command="skype",                icon="skype.png"       }
+        { name="Psi",                      command="psi",                  icon="psi.png"         }
     }
 }
 module.mapp["Reader"] = {
     icon = "reader.svg",
     items = {
         { name="QuiteRSS",                 command="quiterss",             icon="quiterss.png"    },
-        { name="Ebook Reader",             command="qpdf",                 icon="ebook.png"       },
+        { name="Ebook Reader",             command="qpdfview",             icon="ebook.png"       },
         { name="Deskzilla",                command="deskzilla",            icon="deskzilla.png"   },
         { name="Thunderbird",              command="thunderbird",          icon="thunderbird.png" }
     }
@@ -73,8 +68,8 @@ module.mapp["Graphics"] = {
     icon = "graphics.svg",
     items = {
         { name="digiKam",                  command="digikam",              icon="digikam.png"     },
-        { name="Gimp",                     command="gimp-2.8",             icon="gimp.png"        },
         { name="showFoto",                 command="showfoto",             icon="showfoto.png"    },
+        { name="Gimp",                     command="gimp-2.8",             icon="gimp.png"        },
         { name="5up",                      command="5up",                  icon="5up.png"         },
         { name="Color Chooser",            command="ccolor",               icon="ccolor.png"      },
         { name="XnView",                   command="xnview",               icon="xnview.png"      }
@@ -190,7 +185,7 @@ function module.main_qapp()
             --module.menu_qapp:add_key_binding({}, string.lower(v.key), function() dbg.dump(v.key) end)
             module.menu_qapp:add_item({
                 button1 = function() run(v) end,
-                text = i or "N/A", underlay = underlay(string.upper(v.key)),
+                text = i or "N/A", underlay = string.upper(v.key),
                 icon = beautiful.path.."/launcher/quick/"..v.icon or beautiful.unknown
             })
         end

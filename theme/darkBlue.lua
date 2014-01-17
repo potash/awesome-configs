@@ -30,7 +30,8 @@ theme.wallpaper                       = theme.path.."/background.png"
 theme.unknown                         = theme.path.."/logos/unknown.svg"
 theme.bg_systray                      = "#00184800"
 theme.menu_height                     = 20
-theme.popup_time_out                  = 5
+theme.menu_timeout                    = 5
+theme.default_height                  = 16
 theme.icon_theme                      = nil
 
 -- Main wibox settings
@@ -120,7 +121,7 @@ theme.tooltip_bg                      = pattern(theme.path.."/background/tooltip
 theme.tooltip_fg                      = "#2666FF"
 
 -- Naughty settings
-naughty.config.defaults.timeout       = 30
+naughty.config.defaults.timeout       = 5
 naughty.config.defaults.position      = "bottom_right"
 naughty.config.defaults.margin        = 1
 naughty.config.defaults.gap           = 10
@@ -131,7 +132,7 @@ naughty.config.defaults.fg            = "#000000"
 naughty.config.defaults.bg            = "#F7DD65"
 naughty.config.defaults.border_color  = "#FFB111"
 naughty.config.defaults.border_width  = 1
-naughty.config.defaults.hover_timeout = 3
+naughty.config.defaults.hover_timeout = 1
 
 -- Awesome
 theme.border_width                    = 1

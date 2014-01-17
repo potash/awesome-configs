@@ -13,8 +13,7 @@ button 3: reset notifications
 
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
-local radical   = require("extern.radical")
-local underlay  = require("extern.graph.underlay")
+local radical   = require("radical")
 local awful     = require("awful")
 local common    = require("widgets.common")
 local naughty   = require("naughty")
@@ -26,6 +25,7 @@ module.items = {}
 local function update_icon()
     if #module.items >= 1 then
         module.icon:set_image(beautiful.path.."/widgets/notifications.svg")
+        module.icon:set_tooltip(#module.items.." message/s") -- Fails.
     else
         module.icon:set_image() -- reset
     end
@@ -66,12 +66,12 @@ function module.main()
         })
         for k,v in ipairs(module.items) do
             module.menu:add_item({
-                button1 = function() 
+                button1 = function()
                     table.remove(module.items, k)
                     update_icon()
                     module.main() -- display the menu again
                 end,
-                text=v.text, icon=v.icon,underlay = underlay(v.count),tooltip = v.time,
+                text=v.text, icon=v.icon, underlay = v.count, tooltip = v.time
             })
         end
         module.menu.visible = true

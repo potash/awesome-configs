@@ -9,8 +9,7 @@
 
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
-local radical   = require("extern.radical")
-local underlay  = require("extern.graph.underlay")
+local radical   = require("radical")
 local awful     = require("awful")
 local common    = require("widgets.common")
 
@@ -20,24 +19,24 @@ local HOME = os.getenv("HOME")
 
 module.OPEN = "krusader --left"
 module.PATHS = {
-    { "Home",        HOME,                 "home.svg",        "N" },
-    { "Cloud",       HOME.."/Cloud",       "remote.svg",      "R" },
-    { "Development", HOME.."/Development", "development.svg", "D" },
-    { "Workspace",   HOME.."/Workspace",   "workspace.svg",   "T" },
-    { "Documents",   HOME.."/Documents",   "documents.svg",   "H" },
-    { "Downloads",   HOME.."/Downloads",   "downloads.svg",   "F" },
-    { "Music",       HOME.."/Music",       "music.svg",       "M" },
-    { "Pictures",    HOME.."/Pictures",    "pictures.svg",    "P" },
-    { "Videos",      HOME.."/Videos",      "videos.svg",      "V" },
-    { "www",         HOME.."/public_html", "public_html.svg", "W" },
-    { "Security",    "/opt/Security",      "security.svg",    "S" }
+    { "Home",        HOME,                 "home.svg",        "n" },
+    { "Cloud",       HOME.."/Cloud",       "remote.svg",      "r" },
+    { "Development", HOME.."/Development", "development.svg", "d" },
+    { "Workspace",   HOME.."/Workspace",   "workspace.svg",   "t" },
+    { "Documents",   HOME.."/Documents",   "documents.svg",   "h" },
+    { "Downloads",   HOME.."/Downloads",   "downloads.svg",   "f" },
+    { "Music",       HOME.."/Music",       "music.svg",       "m" },
+    { "Pictures",    HOME.."/Pictures",    "pictures.svg",    "p" },
+    { "Videos",      HOME.."/Videos",      "videos.svg",      "v" },
+    { "www",         HOME.."/public_html", "public_html.svg", "w" },
+    { "Security",    "/opt/Security",      "security.svg",    "s" }
 }
 
 module.menu = false
 function module.main()
     if not module.menu then
         module.menu = radical.context({
-            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 210,
+            filer = false, enable_keyboard = true, direction = "bottom", x = screen[1].geometry.width - 140,
             y = screen[1].geometry.height - beautiful.wibox.height - (#module.PATHS*beautiful.menu_height) - 22,
         })
         local tags = awful.tag.gettags(1)
@@ -49,7 +48,7 @@ function module.main()
                     awful.tag.viewonly(tags[4])
                     common.hide_menu(module.menu)
                 end,
-                text=t[1], icon=beautiful.path.."/places/"..t[3], underlay = underlay(t[4]),
+                text=t[1], icon=beautiful.path.."/places/"..t[3], underlay = string.upper(t[4])
             })
         end
         common.reg_menu(module.menu)

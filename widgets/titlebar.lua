@@ -5,12 +5,12 @@
    Copyright:      Copyright (C) 2014 Free Software Foundation, Inc.
      Licence:      GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
         NOTE:      -------
+        TODO: 
 --]]
 
 local awful     = require("awful")
 local beautiful = require("beautiful")
 local wibox     = require("wibox")
-local dbg       = require("extern.dbg")
 
 local module = {}
 

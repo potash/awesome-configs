@@ -8,8 +8,7 @@ return {
     prompt        = require("widgets.prompt"),
     places        = require("widgets.places"),
     altTab        = require("widgets.altTab"),
-    titlebar      = require("widgets.titlebar"),      -- TODO
+    titlebar      = require("widgets.titlebar"),
     common        = require("widgets.common"),
-    notifications = require("widgets.notifications"), -- TODO
-    sys           = require("widgets.sys"),           -- TODO
+    notifications = require("widgets.notifications")
 }
