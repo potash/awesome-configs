@@ -19,6 +19,10 @@ local common    = require("widgets.common")
 local naughty   = require("naughty")
 
 local module = {}
+-- Maximum number of items before showing scrollbar
+module.items_limit = 10
+module.items_max_characters = 80
+-- Table where all items will be stored.
 module.items = {}
 
 -- Update notifications icon
@@ -34,11 +38,12 @@ local function update_icon()
         module.menu.visible = false
     end
 end
+
 -- Format notifications
 local function update_notifications(data)
-    local text,icon,count,limit,bg,time = data.text or "N/A", data.icon or beautiful.unknown,1,100
+    local text,icon,count,bg,time = data.text or "N/A", data.icon or beautiful.unknown,1
     if data.title and data.title ~= "" then text = "<b>"..data.title.."</b> - "..text end
-    local text = string.sub(text, 0, limit)
+    local text = string.sub(text, 0, module.items_max_characters)
     for k,v in ipairs(module.items) do
         if text == v.text then count, v.count = count + 1, v.count + 1 end
     end
@@ -48,21 +53,28 @@ local function update_notifications(data)
     update_icon()
 end
 
--- Reset
+-- Reset notifications count/icon
 function module.reset()
     module.items={}
     update_icon()
 end
 
+local function getX(i)
+    local a = screen[1].geometry.height - beautiful.wibox.height
+    if i > module.items_limit then
+        return a - (module.items_limit * beautiful.menu_height) - 40 -- 20 per scrollbar.
+    else
+        return a- i * beautiful.menu_height
+    end
+end
+
 function module.main()
     if module.menu and module.menu.visible then module.menu.visible = false return end
     if module.items and #module.items > 0 then
-        module.menu = radical.context({
-            filer = false, enable_keyboard = false, fkeys_prefix = false,
+        module.menu = radical.context({filer = false, enable_keyboard = false,
             style = radical.style.classic, item_style = radical.item_style.classic,
-            direction = "bottom", 
-            x = screen[1].geometry.width,
-            y = screen[1].geometry.height - beautiful.wibox.height - ((#module.items)*beautiful.menu_height)
+            direction = "bottom", max_items = module.items_limit,
+            x = screen[1].geometry.width, y = getX(#module.items),
         })
         for k,v in ipairs(module.items) do
             module.menu:add_item({
