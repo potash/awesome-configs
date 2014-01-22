@@ -44,6 +44,7 @@ end
 -- @param c client
 -- @param m menu
 local function items(c,m)
+    local c = c or client.focus
     -- Move to tag
     m:add_item({ text = "Move to tag", icon = beautiful.path.."/client/move.svg", sub_menu=move2tag(c) })
     -- Add titlebar

@@ -11,7 +11,7 @@ local awful     = require("awful")
 awful.rules     = require("awful.rules")
 awful.clientdb  = require("awful.clientdb")
 awful.dbg       = require("awful.dbg")
-awful.indicator = require("awful.indicator.focus")
+awful.indicator = require("awful.indicator")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
 
@@ -89,30 +89,42 @@ keys["client"] = awful.util.table.join(
     awful.key({ "Mod4"            }, "t",            function(c) c.ontop = not c.ontop                       end),
     awful.key({ "Mod4"            }, "s",            function(c) c.sticky = not c.sticky                     end),
     awful.key({ "Mod4"            }, "m",            function(c)
-        c.maximized_horizontal = not c.maximized_horizontal
-        c.maximized_vertical   = not c.maximized_vertical
+        if c.maximized_horizontal or c.maximized_vertical then
+            c.maximized_horizontal = false c.maximized_vertical = false
+        else
+            c.maximized_horizontal = true c.maximized_vertical = true
+        end
     end),
+    -- Move/Resize
+    awful.key({ "Mod4", "Control" }, "Left",         function(c) awful.client.moveresize(-5,  0,  0,  0, c)  end), --[ - x ]
+    awful.key({ "Mod4", "Control" }, "Right",        function(c) awful.client.moveresize( 5,  0,  0,  0, c)  end), --[ + x ]
+    awful.key({ "Mod4", "Control" }, "Up",           function(c) awful.client.moveresize( 0, -5,  0,  0, c)  end), --[ - y ]
+    awful.key({ "Mod4", "Control" }, "Down",         function(c) awful.client.moveresize( 0,  5,  0,  0, c)  end), --[ + y ]
+    awful.key({ "Mod4", "Mod1"    }, "Left",         function(c) awful.client.moveresize( 0,  0, -5,  0, c)  end), --[ - w ]
+    awful.key({ "Mod4", "Mod1"    }, "Right",        function(c) awful.client.moveresize( 0,  0,  5,  0, c)  end), --[ + w ]
+    awful.key({ "Mod4", "Mod1"    }, "Up",           function(c) awful.client.moveresize( 0,  0,  0, -5, c)  end), --[ - h ]
+    awful.key({ "Mod4", "Mod1"    }, "Down",         function(c) awful.client.moveresize( 0,  0,  0,  5, c)  end), --[ + h ]
     awful.key({ "Mod4"            }, "h",            function(c) c.size_hints_honor = not c.size_hints_honor end),
     awful.key({ "Mod4"            }, "a",            function(c) c.above = not c.above                       end),
     awful.key({ "Mod4"            }, "b",            function(c) c.below = not c.below                       end),
     awful.key({ "Mod4"            }, "f",            function(c) c.fullscreen = not c.fullscreen             end),
     awful.key({ "Mod4"            }, "v",            awful.client.floating.toggle                               ),
-    awful.key({ "Mod4"            }, "w",            function(c) awful.clientdb.save(c)                      end)
+    awful.key({ "Mod4"            }, "w",            function(c) awful.clientdb.save(c)                      end),
+    awful.key({ "Mod4"            }, "c",            function(c) widgets.tasklist.main(c)                    end)
 )
+
 --  Key bindings
 keys["global"] = awful.util.table.join(
-    awful.key({ "Mod4"            }, "x",            function() widgets.prompt.lua()                         end),
-    awful.key({ "Mod4"            }, "r",            function() widgets.prompt.run()                         end),
-    awful.key({ "Mod4"            }, "c",            function() widgets.prompt.cmd()                         end),
+    awful.key({ "Control"         }, "Escape",       function() killClient()                                 end),
+    awful.key({ "Mod4"            }, "r",            function() widgets.prompt.lua()                         end),
+    awful.key({ "Mod4"            }, "x",            function() widgets.prompt.run()                         end),
+    awful.key({ "Mod4"            }, "z",            function() widgets.prompt.cmd()                         end),
     awful.key({ "Mod4"            }, "space",        function() widgets.layout.main()                        end),
     awful.key({ "Mod4"            }, "q",            function() widgets.menu.main_qapp()                     end),
     awful.key({ "Mod4", "Shift"   }, "q",            function() widgets.menu.main_app()                      end),
-    awful.key({                   }, "Menu",         function() widgets.menu.main_qapp()                     end),
     awful.key({         "Shift"   }, "Menu",         function() widgets.menu.main_app()                      end),
-    awful.key({ "Mod4", "Mod1"    }, "Left",         awful.tag.viewprev                                         ),
-    awful.key({ "Mod4", "Mod1"    }, "Right",        awful.tag.viewnext                                         ),
-    awful.key({ "Mod4", "Mod1"    }, "Up",           function() widgets.taglist.main()                       end),
-    awful.key({ "Mod4", "Mod1"    }, "Down",         function() widgets.taglist.main()                       end),
+    awful.key({ "Mod4",           }, "n",            function() widgets.notifications.main()                 end),
+    awful.key({ "Mod4",           }, "t" ,           function() widgets.taglist.main()                       end),
     awful.key({ "Mod4"            }, "p",            function() widgets.places.main()                        end),
     awful.key({ "Mod1"            }, "Tab",          function() widgets.altTab()                             end),
     awful.key({ "Control"         }, "Tab",          awful.tag.history.restore                                  ),
@@ -121,33 +133,41 @@ keys["global"] = awful.util.table.join(
         awful.client.focus.history.previous()
         if client.focus then client.focus:raise() end
     end),
-    awful.key({ "Mod4",           }, "Left",         function() awful.indicator.bd("left")                   end),
-    awful.key({ "Mod4",           }, "Right",        function() awful.indicator.bd("down")                   end),
-    awful.key({ "Mod4",           }, "Up",           function() awful.indicator.bd("up")                     end),
-    awful.key({ "Mod4",           }, "Down",         function() awful.indicator.bd("down")                   end),
-    awful.key({ "Mod4", "Shift"   }, "Left",         function() awful.indicator.bd("left",nil,true)          end),
-    awful.key({ "Mod4", "Shift"   }, "Right",        function() awful.indicator.bd("down",nil,true)          end),
-    awful.key({ "Mod4", "Shift"   }, "Up",           function() awful.indicator.bd("up",nil,true)            end),
-    awful.key({ "Mod4", "Shift"   }, "Down",         function() awful.indicator.bd("down",nil,true)          end),
-    awful.key({ "Control"         }, "Escape",       function() killClient()                                 end),
+    -- Focus
+    awful.key({ "Mod4",           }, "Left",         function() awful.indicator.focus.bd("left")             end),
+    awful.key({ "Mod4",           }, "Right",        function() awful.indicator.focus.bd("down")             end),
+    awful.key({ "Mod4",           }, "Up",           function() awful.indicator.focus.bd("up")               end),
+    awful.key({ "Mod4",           }, "Down",         function() awful.indicator.focus.bd("down")             end),
+    -- Move
+    awful.key({ "Mod4", "Shift"   }, "Left",         function() awful.indicator.focus.bd("left",nil,true)    end),
+    awful.key({ "Mod4", "Shift"   }, "Right",        function() awful.indicator.focus.bd("down",nil,true)    end),
+    awful.key({ "Mod4", "Shift"   }, "Up",           function() awful.indicator.focus.bd("up",nil,true)      end),
+    awful.key({ "Mod4", "Shift"   }, "Down",         function() awful.indicator.focus.bd("down",nil,true)    end),
+    -- Volume controls
     awful.key({ "Mod4"            }, "KP_Add",       function() spawn("amixer -c 0 set Master 1+ unmute")    end),
     awful.key({ "Mod4"            }, "KP_Subtract",  function() spawn("amixer -c 0 set Master 1- unmute")    end),
-    awful.key({ "Mod4", "Shift"   }, "KP_Add",       function() spawn("/usr/bin/mpc volume +5")              end),
-    awful.key({ "Mod4", "Shift"   }, "KP_Subtract",  function() spawn("/usr/bin/mpc volume -5")              end),
     awful.key({ "Mod4", "Control" }, "KP_Add",       function() spawn("amixer -c 0 set Front 1+ unmute")     end),
     awful.key({ "Mod4", "Control" }, "KP_Subtract",  function() spawn("amixer -c 0 set Front 1- unmute")     end),
     awful.key({ "Mod4", "Mod1"    }, "KP_Add",       function() spawn("amixer -c 0 set Surround 1+ unmute")  end),
     awful.key({ "Mod4", "Mod1"    }, "KP_Subtract",  function() spawn("amixer -c 0 set Surround 1- unmute")  end),
+    -- Music Player Daemon
+    awful.key({ "Mod4", "Shift"   }, "KP_Add",       function() spawn("/usr/bin/mpc volume +5")              end),
+    awful.key({ "Mod4", "Shift"   }, "KP_Subtract",  function() spawn("/usr/bin/mpc volume -5")              end),
     awful.key({ "Mod4"            }, "Prior",        function() spawn("/usr/bin/mpc prev")                   end),
     awful.key({ "Mod4"            }, "Next",         function() spawn("/usr/bin/mpc next")                   end),
+    -- Awesome WM quit/restart
     awful.key({ "Mod4", "Control" }, "r",            awesome.restart                                            ),
     awful.key({ "Mod4", "Control" }, "q",            awesome.quit                                               ),
+    -- Swap a client by its relative index.
     awful.key({ "Mod1",           }, "bracketright", function() awful.client.swap.byidx(  1)                 end),
     awful.key({ "Mod1",           }, "bracketleft",  function() awful.client.swap.byidx( -1)                 end),
+    -- Increase master width factor.
     awful.key({ "Mod4",           }, "bracketright", function() awful.tag.incmwfact( 0.01)                   end),
     awful.key({ "Mod4",           }, "bracketleft",  function() awful.tag.incmwfact(-0.01)                   end),
+    -- Increase the number of master windows.
     awful.key({ "Mod4", "Shift"   }, "bracketright", function() awful.tag.incnmaster( 1)                     end),
     awful.key({ "Mod4", "Shift"   }, "bracketleft",  function() awful.tag.incnmaster(-1)                     end),
+    -- Increase number of column windows.
     awful.key({ "Mod4", "Control" }, "bracketright", function() awful.tag.incncol( 1)                        end),
     awful.key({ "Mod4", "Control" }, "bracketleft",  function() awful.tag.incncol(-1)                        end)
 )
@@ -179,7 +199,7 @@ awful.rules.rules = {{ rule = { },
 }}
 
 -- Initializes the windows rules system
-awful.clientdb.load(awful.rules.rules, tags)
+awful.clientdb.load()
 
 -- Sometimes dialogs apears to fast...
 table.insert(awful.rules.rules, {rule = { type = "dialog" }, properties = { floating = true }})
